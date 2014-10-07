@@ -1,0 +1,28 @@
+
+{
+  "node": true,
+  "browser": true,
+
+  "camelcase": true,
+  "eqeqeq": false,
+  "indent": false,
+  "forin": true,
+  "immed": true,
+  "newcap": true,
+  "noarg": true,
+  "nonbsp": true,
+  "nonew": true,
+  "quotmark": "single",
+  "undef": true,
+  "trailing": true,
+  "sub": true,
+
+  "-W041": true,
+  "-W004": true,
+  "-W083": true,
+  "-W086": true,
+  "asi": true,
+  "eqnull": true,
+  "laxcomma": true
+}
+
