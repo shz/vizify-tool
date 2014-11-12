@@ -17,3 +17,9 @@ shared:
       type: tap
       parameters:
         path: artifacts/test
+
+jobs:
+  component:
+    profile: [init, lint, test, publish]
+  pull-request:
+    profile: [init, lint, test]
