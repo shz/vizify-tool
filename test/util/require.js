@@ -7,6 +7,6 @@
 module.exports = function(mod) {
   var base = (process.env.NODE_PATH || 'lib').split(':')[0];
 
-  return require('../../../' + base + '/' + mod);
+  return require('../../' + base + '/' + mod);
 };
 
