@@ -15,4 +15,5 @@ shared:
   plugins:
     test_results:
       type: tap
-      path: artifacts/test
+      parameters:
+        path: artifacts/test
