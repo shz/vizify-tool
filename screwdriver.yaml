@@ -1,0 +1,17 @@
+platform: nodejs_lib
+shared:
+  notifications:
+    email: cards-dev@yahoo-inc.com
+
+  steps:
+    lint:
+      description: "Custom lint using jshint instead of yhint"
+      command: "./script/lint.sh"
+
+    test:
+      description: "Custom test using Whiskey"
+      command: "./script/test.sh"
+
+  plugins:
+    test_results:
+      type: tap
