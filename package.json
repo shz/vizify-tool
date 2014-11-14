@@ -48,9 +48,10 @@
     }
   },
   "dependencies": {
-    "vizify-javascript": "^1.0.18",
-    "mustache": "^0.8.2",
     "async": "^0.9.0",
-    "minimist": "^1.1.0"
+    "minimist": "^1.1.0",
+    "mustache": "^0.8.2",
+    "virgil": "^0.9.41",
+    "vizify-javascript": "^1.0.18"
   }
 }
