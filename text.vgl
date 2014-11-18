@@ -22,7 +22,7 @@ export method trimStart(s:str) : str {
         boolStillTrimming = false
       }
     }else{
-      result = result + s.at(i) 
+      result = result + s.at(i)
     }
   }
   return result
@@ -202,11 +202,11 @@ export method layoutParagraph(c : Canvas, text: str, fontname: str, width:float,
       xleft = (width - w).round()
     }
 
-    resultB.push(new LineLayoutSpec({
+    resultB.push(new LineLayoutSpec {
       text = line
       left = xleft
       width = w
-    }))
+    })
 
   }
 
@@ -226,7 +226,7 @@ export method layoutParagraph(c : Canvas, text: str, fontname: str, width:float,
     }
   }
 
-  return new ParagraphLayoutSpec({
+  return new ParagraphLayoutSpec {
     fontname = fontnameToUse
     size = settings.fontSize
     contentHeight = contentHeightCalc
@@ -235,7 +235,7 @@ export method layoutParagraph(c : Canvas, text: str, fontname: str, width:float,
     lines = resultB
     w = width
     h = height
-  })
+  }
 }
 
 

@@ -10,39 +10,39 @@ export extern vizify {
 }
 
 export function rgb(ir : int, ig : int, ib : int) : Color {
-  let c = new Color({
+  let c = new Color {
     r = ir.asFloat() / 255.0
     g = ig.asFloat() / 255.0
     b = ib.asFloat() / 255.0
-  })
+  }
   return c
 }
 
 export function rgba(ir : int, ig : int, ib : int, ia : float) : Color {
-  let c = new Color({
+  let c = new Color {
     r = ir.asFloat() / 255.0
     g = ig.asFloat() / 255.0
     b = ib.asFloat() / 255.0
     a = ia
-  })
+  }
   return c
 }
 
 export function blackish(ia : float) : Color {
-  let c = new Color({
+  let c = new Color {
     r = 0
     g = 0
     b = 0
     a = ia
-  })
+  }
   return c
 }
 
 export function interpolate(c1 : Color, c2 : Color, p : float) : Color {
-  return new Color({
+  return new Color {
     r = c1.r + p * (c2.r - c1.r)
     g = c1.g + p * (c2.g - c1.g)
     b = c1.b + p * (c2.b - c1.b)
     a = c1.a + p * (c2.a - c1.a)
-  })
+  }
 }

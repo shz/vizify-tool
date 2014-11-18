@@ -22,12 +22,12 @@ export method perform(a : Animation<'T>, action : func<Canvas, float, void>) : R
 export method tween(renderc : RenderContext<'T>,
                     inf : func<int, float>,
                     outf : func<int, float>, durPreDelay : int) : Animation<'T> {
-  return new Animation<'T> ({
+  return new Animation<'T> {
     rc = renderc
     i = inf
     o = outf
     durHoldAtZeroStart = durPreDelay
-  })
+  }
 }
 
 # Utility methods for doing symmetric tweens
@@ -169,7 +169,7 @@ export method draw(rc : RenderContext<'T>, f : func<RenderContext<'T>, void>) {
 
   # Now that we've used the operations stack, wipe it so that child
   # draw() calls don't inherit the operations themselves.
-  root.config.operations = new list<func<Canvas, Clock, void>>()
+  root.config.operations = new list<func<Canvas, Clock, void>>
   f(root)
 
   # Undo the effects of the operation stack
