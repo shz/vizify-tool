@@ -20,11 +20,11 @@ function poly(n1:float, n2:float) : PolyEngine {
   let cc = 3f * n1
   let bb = 3f * (n2 - n1) - cc
   let aa = 1f - cc - bb
-  return new PolyEngine({
+  return new PolyEngine {
     a = aa
     b = bb
     c = cc
-  })
+  }
 }
 
 export struct CubicBezierEngine {
@@ -54,7 +54,7 @@ export method at(cb : CubicBezierEngine, n : float) : float {
 }
 
 export function cubicBezier(x1 : float, y1 : float, x2 : float, y2 : float) : CubicBezierEngine {
-  let result = new CubicBezierEngine()
+  let result = new CubicBezierEngine
 
   # Bezier polynomials
   result.x = poly(x1, x2)
