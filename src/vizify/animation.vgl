@@ -1,0 +1,182 @@
+import env
+import clock
+import canvas
+import easing
+
+export struct Animation<'T> {
+  rc : RenderContext<'T> = null
+  i : func<int, float> = null
+  o : func<int, float> = null
+  durHoldAtZeroStart : int = 0
+}
+
+export method perform(a : Animation<'T>, action : func<Canvas, float, void>) : RenderContext<'T> {
+  let root = a.rc.fork()
+  root.config.operations.push(lambda(ctx : Canvas, clock : Clock) {
+    let v = (clock.fromStart <= a.durHoldAtZeroStart) ? 0f : (a.i(clock.fromStart-a.durHoldAtZeroStart) - (1f - a.o(clock.fromEnd)))
+    action(root.c, v)
+  })
+  return root
+}
+
+export method tween(renderc : RenderContext<'T>,
+                    inf : func<int, float>,
+                    outf : func<int, float>, durPreDelay : int) : Animation<'T> {
+  return new Animation<'T> ({
+    rc = renderc
+    i = inf
+    o = outf
+    durHoldAtZeroStart = durPreDelay
+  })
+}
+
+# Utility methods for doing symmetric tweens
+
+
+export method hillshape(rc : RenderContext<'T>, i : int, o : int) : Animation<'T> {
+  return rc.tween(ease(i), ease(o), 0)
+}
+export method hillshapeWithCustomShape(rc : RenderContext<'T>, cb : CubicBezierEngine, i : int, o : int) : Animation<'T> {
+  return rc.tween(easeCustomShape(i,cb), easeCustomShape(o,cb), 0)
+}
+
+export method ease(rc : RenderContext<'T>, i : int, o : int) : Animation<'T> {
+  # .ease is just a synonym for .hillshape
+  return rc.hillshape(i, o)
+}
+
+export method delayedHillshape(rc : RenderContext<'T>, i : int, o : int, durDelay : int) : Animation<'T> {
+  return rc.tween(ease(i), ease(o), durDelay)
+}
+
+export method linear(rc : RenderContext<'T>, i : int, o : int) : Animation<'T> {
+  return rc.tween(linear(i), linear(o), 0)
+}
+
+
+
+
+# Sample implementation of an animation method
+
+export method fade(a : Animation<'T>) : RenderContext<'T> {
+  return a.perform(lambda(c : Canvas, v : float) {
+    c.setGlobalAlpha(v)
+  })
+}
+
+export method scaleFromTo(a : Animation<'T>, from:float, to:float) : RenderContext<'T> {
+  return a.perform(lambda(c : Canvas, v : float) {
+    c.scale( (from + (to-from)*v), (from + (to-from)*v) )
+  })
+}
+
+export method shrinkAndFadeout(a : Animation<'T>) : RenderContext<'T> {
+  return a.perform(lambda(c : Canvas, v : float) {
+    c.scale(1f-v,1f-v)
+    c.setGlobalAlpha((1f-v)**3)
+  })
+}
+
+export method expandAndFade(a : Animation<'T>) : RenderContext<'T> {
+  return a.perform(lambda(c : Canvas, v : float) {
+    c.scale(v,v)
+    c.setGlobalAlpha(v**2)
+  })
+}
+
+
+export method fadeOut(a : Animation<'T>) : RenderContext<'T> {
+  return a.perform(lambda(c : Canvas, v : float) {
+    c.setGlobalAlpha(1f-v)
+  })
+}
+
+export method alphaFromTo(a : Animation<'T>, from:float, to:float) : RenderContext<'T> {
+  return a.perform(lambda(c : Canvas, v : float) {
+    c.setGlobalAlpha(from + (to-from)*v)
+  })
+}
+
+export method translate(a : Animation<'T>, xMax : float, yMax : float) : RenderContext<'T> {
+  return a.perform(lambda(c : Canvas, v : float) {
+    c.translate(v*xMax, v*yMax)
+  })
+}
+
+export method scale(a : Animation<'T>, xMax : float, yMax : float) : RenderContext<'T> {
+  return a.perform(lambda(c : Canvas, v : float) {
+    c.scale(v*xMax, v*yMax)
+  })
+}
+
+
+
+
+
+
+
+
+export method delay(rc : RenderContext<'T>, amount : int) : RenderContext<'T> {
+  let root = rc.fork()
+  root.config.start = amount
+  return root
+}
+
+export method duration(rc : RenderContext<'T>, amount : int) : RenderContext<'T> {
+  let root = rc.fork()
+  root.config.duration = amount
+  root.config.end = -1
+  return root
+}
+
+export method until(rc : RenderContext<'T>, amount : int) : RenderContext<'T> {
+  let root = rc.fork()
+  root.config.duration = -1
+  root.config.end = amount
+  return root
+}
+
+export method draw(rc : RenderContext<'T>, f : func<RenderContext<'T>, void>) {
+  # Sanity check on duration
+  if rc.config.end > 0 && rc.config.duration > -1 {
+    # TODO: throw new Error('This chain has both an end time and a duration, which is invalid')
+  }
+
+  # Do some timing calculation
+  mut fromStart = rc.clock.fromStart - rc.config.start
+  mut fromEnd = (rc.config.duration < 0) ? (rc.clock.fromEnd - rc.config.end) : (rc.config.start + rc.config.duration - rc.clock.fromStart)
+
+
+  # Skip if we don't need to be drawn right now
+  if fromStart < 0 || fromEnd < 0 {
+    return void
+  }
+
+  # Create a new, time-adjusted render context for the actual call
+  let root = rc.fork()
+  root.clock.fromStart = fromStart
+  root.clock.fromEnd = fromEnd
+  root.clock.percent = fromStart.asFloat() / (fromStart + fromEnd).asFloat()
+  root.config.duration = -1
+  root.config.end = 0
+  root.config.start = 0
+
+  # Apply the operation stack
+  root.c.save()
+  for i = 0 upto root.config.operations.length {
+    root.config.operations[i](root.c, root.clock)
+  }
+
+  # Now that we've used the operations stack, wipe it so that child
+  # draw() calls don't inherit the operations themselves.
+  root.config.operations = new list<func<Canvas, Clock, void>>()
+  f(root)
+
+  # Undo the effects of the operation stack
+  rc.c.restore()
+
+}
+
+export method drawNamedGroup(rc : RenderContext<'T>, name: str, f : func<RenderContext<'T>, void>) {
+  rc.draw(f)
+}
