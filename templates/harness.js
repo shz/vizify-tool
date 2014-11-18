@@ -11,7 +11,7 @@
     if (cardRatio > screenRatio) {
       scaleFactor = window.innerWidth / {{width}};
     } else {
-      scaleFactor = window.innerHEight / {{height}};
+      scaleFactor = window.innerHeight / {{height}};
     }
 
     canvas.resize({{width}}, {{height}}, scaleFactor);
