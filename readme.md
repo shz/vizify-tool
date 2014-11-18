@@ -22,3 +22,13 @@ vz watch js ~/some-card output-js
 vz update output-cpp
 vz update output-js
 ```
+
+## Developing
+
+#### Updating `vizify-virgil`
+
+We use a subtree for updating `vizify-virgil`.  Use this command to update:
+
+```bash
+git subtree pull --prefix src/vizify git@git.corp.yahoo.com:lpstein/vizify-virgil.git master --squash
+```
