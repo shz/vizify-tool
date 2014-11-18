@@ -1,0 +1,16 @@
+import env
+
+export extern {
+  function animTreeRecordPush(name:str, v:Config)
+  function animTreeDeclareDrawGroup(name:str)
+  function animTreeRecordDrawStart(v:RenderContext<'T>)
+  function animTreeRecordDrawEnd(v:RenderContext<'T>)
+
+  function animTreeInRecordingMode : bool
+
+  function animTreeStartFrame(ms:int)
+  function animTreeEndFrame
+
+  function animTreeStartTrack(idx:int)
+  function animTreeEndTrack(idx:int)
+}

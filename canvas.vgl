@@ -1,0 +1,63 @@
+import color
+
+export extern vizify {
+
+  struct TextLayoutLineSpecifier {
+  }
+
+  struct TextLayoutSpecifier {
+    lines: list<TextLayoutLineSpecifier>
+    lineHeight: float
+  }
+
+
+  struct Canvas {
+    width : int
+    height : int
+  }
+
+
+  # Attributes
+  method setFillStyle (c:Canvas, val:Color)
+  method setStrokeStyle (c:Canvas, val:Color)
+  method setGlobalAlpha (c:Canvas, val:float)
+  method setLineWidth (c:Canvas, val:float)
+  method setLineDash(c : Canvas, dashspec : list<int>)
+  method setFont (c:Canvas, fontFam:str, pxSize: int)
+
+  method setGlobalMaskMode(c:Canvas, mode:str)
+
+  method getGlobalAlpha (c:Canvas) : float
+
+  method fillRect(c : Canvas, x:float, y:float, w:float, h:float)
+
+  method beginPath(c : Canvas)
+  method closePath(c : Canvas)
+  method stroke(c : Canvas)
+  method fill(c : Canvas)
+
+  method setClipRect(c : Canvas, x:float, y:float, w:float, h:float)
+  method clearClipRect(c : Canvas)
+  method startClip(c : Canvas, x:float, y:float, w:float, h:float)
+  method endClip(c : Canvas)
+
+  method save(c : Canvas)
+  method restore(c : Canvas)
+
+  method drawImage(c : Canvas, img : str, x : float, y : float)
+  method drawImageSized(c : Canvas, img : str, x : float, y : float, w : float, h : float)
+  # method drawImageClipped(c : Canvas, img : str, sx : float, sy : float, dx : float, dy : float, dw : float, dh : float)
+
+  method translate(c : Canvas, x:float, y:float)
+  method scale(c : Canvas, x:float, y:float)
+
+  method arc(c : Canvas, xOrb:float, yOrb:float, radius:float, angleStart:float, angleEnd:float, counterClockwise:bool)
+  method rect(c : Canvas, x : float, y : float, w : float, h : float)
+  method bezierCurveTo(c : Canvas, x1:float, y1:float, x2:float, y2:float, x3:float, y3:float)
+  method quadraticCurveTo(c : Canvas, x1:float, y1:float, x2:float, y2:float)
+  method moveTo(c : Canvas, x : float, y : float)
+  method lineTo(c : Canvas, x : float, y : float)
+
+  method fillText(c : Canvas, text: str, x: float, y: float)
+  method measureTextWidth(c : Canvas, text: str) : float
+}

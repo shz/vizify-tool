@@ -1,0 +1,249 @@
+import canvas
+
+export method fillTextAligned(c : Canvas, text: str, x: float, y: float, aligntype: str) {
+  let wid = c.measureTextWidth(text)
+  mut theX = x
+  if (aligntype == "R") {
+    theX = x - wid
+  }
+  if (aligntype == "C") {
+    theX = x - wid/2f
+  }
+  c.fillText(text, theX, y)
+}
+
+export method trimStart(s:str) : str {
+  mut result = ""
+  mut boolStillTrimming = true
+  for i = 0 upto s.length {
+    if (boolStillTrimming) {
+      if (s.at(i) != " ") {
+        result = result + s.at(i)
+        boolStillTrimming = false
+      }
+    }else{
+      result = result + s.at(i) 
+    }
+  }
+  return result
+}
+
+export method trimEnd(s:str) : str {
+  mut result = ""
+  mut boolStillTrimming = true
+  for i = (s.length - 1) downto -1 {
+    if (boolStillTrimming) {
+      if (s.at(i) != " ") {
+        result = s.at(i) + result
+        boolStillTrimming = false
+      }
+    }
+    else{
+      result = s.at(i) + result
+    }
+  }
+  return result
+}
+
+export method trim(s:str) : str {
+  return s.trimStart().trimEnd()
+}
+
+export method join(strset : list<str>, delim : str) : str {
+  mut result = ""
+  for i = 0 upto (strset.length-1) {
+    result = result + strset[i] + delim
+  }
+  result = result + strset[strset.length-1]
+  return result
+}
+
+
+# The extract(startIndex, count) method returns a list containing the selected elements from a given list.
+# If the count is 0, the result is an empty list.
+# If the count is -1, the semantics are "return the entire sublist starting from given start index to the END OF THE LIST.
+export method extract(haystack : list<str>, start:int, count:int) : list<str> {
+  mut result : list<str> = []
+  mut numToExtract = count
+  if (count == 0) {
+    return result
+  }
+  if count < 0 {
+    numToExtract = haystack.length - start
+  }
+  for i = start upto start+count {
+    result.push(haystack[i])
+  }
+  return result
+}
+
+export method tokenizeByWhiteSpace(haystackIn : str) : list<str> {
+  let haystack = haystackIn.trim()
+  let result : list<str> = []
+  mut curAccum = ""
+  mut inWhiteSpace = false
+  for i = 0 upto haystack.length {
+    let curChar = haystack.at(i)
+    if (curChar == " ") {
+      inWhiteSpace = true
+    }else{
+      if (inWhiteSpace) {
+        result.push(curAccum)
+        curAccum = ""
+        inWhiteSpace = false
+      }
+    }
+    curAccum = curAccum + curChar
+  }
+  result.push(curAccum)
+  return result
+}
+
+export struct LineLayoutSpec {
+  text : str = ""
+  left : int = 0
+  width : int = 0
+}
+
+export struct TextLayoutParagraphConfig {
+ fontSize: int = 10
+ lineHeight: int = 10
+ textAlign: str = "left"
+ verticalAlign: str = "top"
+}
+
+export struct ParagraphLayoutSpec {
+  fontname: str = ""
+  size: int = 0
+  # metrics: m,
+  lineHeight : float = 0f
+  contentHeight: float = 0f
+  verticalOffset: float = 0f
+  lines: list<LineLayoutSpec> = []
+  w: int = 0
+  h: int = 0
+}
+
+export method layoutParagraph(c : Canvas, text: str, fontname: str, width:float, height:float, settings: TextLayoutParagraphConfig) : ParagraphLayoutSpec {
+
+  c.setFont(fontname, settings.fontSize)
+  let fontnameToUse = fontname
+  # settings = makeLayoutSettings(settings)
+
+  # In the future we will support splitting the text into paragraphs based on \r\n delimiters.
+  let linesIn : list<str> = [ text ]
+  let linesOut : list<list<str>> = []
+
+  for i=0 upto linesIn.length {
+
+    # Consider this line: "And this shall be the most interesting thing.  And this shall be."
+    # The result of the match will be: ["And ", "this ", "shall ", "be ", "the ", "most ", "interesting ", "thing.  ", "And ", "this ", "shall ", "be.", ""]
+    # After the filtering, the result will be the same EXCEPT that empty string at the very end will be gone.
+    mut chunks : list<str> = linesIn[i].tokenizeByWhiteSpace()       #match(/\S*\s*/g).filter(function(s) { return s.length })
+    let line : list<str> = []
+
+    # Find out how many words to chomp
+    while (chunks.length) {
+      mut max : int = chunks.length
+      mut min : int = 1
+      mut prevMax = 99999
+      mut prevMin = 0
+      while (true) {
+        prevMax = max
+        prevMin = min
+        let cur = (min.asFloat() + (max - min).asFloat()/2f).round()
+        let thisTest = chunks.extract(0, cur).join("").trim()
+        let mwidth = c.measureTextWidth(thisTest)
+        if (mwidth > width) {
+          max = cur
+        } else {
+          min = cur
+        }
+
+        if ((max == min) || (((prevMax == max) && (prevMin == min)))) {
+          break
+        }
+      }
+
+      # Chomp
+      line.push(chunks.removeRange(0, min).join("").trim())
+    }
+    linesOut.push(line)
+  }
+
+  # Flatten lines
+  let resultA : list<str> = []
+  for ii=0 upto linesOut.length {
+    for jj=0 upto linesOut[ii].length {
+      resultA.push(linesOut[ii][jj])
+    }
+  }
+
+  # Calculate line metrics
+  mut maxWidth = 0
+
+  let resultB : list<LineLayoutSpec> = []
+
+  for idxLine = 0 upto resultA.length {
+    let line = resultA[idxLine]
+
+    # Determine line width
+    let w = c.measureTextWidth(line)
+    if (w > maxWidth) {
+      maxWidth = w
+    }
+
+    # Adjust for text alignment
+    mut xleft : int = 0
+    if (settings.textAlign == "center") {
+      xleft = ((width - w) / 2f).round()
+    }
+    else if (settings.textAlign == "right") {
+      xleft = (width - w).round()
+    }
+
+    resultB.push(new LineLayoutSpec({
+      text = line
+      left = xleft
+      width = w
+    }))
+
+  }
+
+  # Get metrics for this font/size
+  # var m = metrics.get(font.family, font.style, settings.fontSize)
+  let lineHeightCalc = settings.fontSize.asFloat() * 1.07 * settings.lineHeight.asFloat()
+
+  # Adjust vertical offset to fit in space
+  mut verticalOffsetCalc = 0
+  let contentHeightCalc = resultB.length.asFloat() * lineHeightCalc
+  if (contentHeightCalc < height) {
+    if (settings.verticalAlign == "middle") {
+      verticalOffsetCalc = ((height / 2f) - (contentHeightCalc / 2f)).round()
+    }
+    else if (settings.verticalAlign == "bottom") {
+      verticalOffsetCalc = height - contentHeightCalc
+    }
+  }
+
+  return new ParagraphLayoutSpec({
+    fontname = fontnameToUse
+    size = settings.fontSize
+    contentHeight = contentHeightCalc
+    lineHeight = lineHeightCalc
+    verticalOffset = verticalOffsetCalc
+    lines = resultB
+    w = width
+    h = height
+  })
+}
+
+
+export method fillFittedText(c : Canvas, spec: ParagraphLayoutSpec, x: float, y: float) {
+  c.setFont(spec.fontname, spec.size)
+  mut yCur = y + spec.verticalOffset + (spec.size.asFloat()*0.7)
+  for i = 0 upto spec.lines.length {
+    c.fillText(spec.lines[i].text, (x + spec.lines[i].left.asFloat()), yCur)
+    yCur = yCur + spec.lineHeight
+  }
+}
