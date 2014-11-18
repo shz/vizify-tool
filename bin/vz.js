@@ -3,4 +3,4 @@
 var command = process.argv[2];
 var args = process.argv.slice(3);
 
-require('../run')(command, args);
+require('../lib/run')(command, args);

@@ -51,7 +51,9 @@
     "async": "^0.9.0",
     "minimist": "^1.1.0",
     "mustache": "^0.8.2",
+    "omnistor": "^1.1.6",
     "virgil": "^0.9.41",
-    "vizify-javascript": "^1.0.18"
+    "vizify-javascript": "^1.0.18",
+    "sugar": "^1.4.1"
   }
 }

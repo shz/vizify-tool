@@ -5,7 +5,7 @@
 
   var size = function() {
     var cardRatio = {{width}} / {{height}};
-    var screenRatio = window.innerWidth / window.innerHeight);
+    var screenRatio = window.innerWidth / window.innerHeight;
 
     var scaleFactor = 0;
     if (cardRatio > screenRatio) {
@@ -29,6 +29,6 @@
       }
     }
   };
-  xhr.open('GET', window.location.hash.replace(/^#/, ''));
+  xhr.open('GET', '{{{dataSource}}}' || window.location.hash.replace(/^#/, ''));
   xhr.send();
 })();
