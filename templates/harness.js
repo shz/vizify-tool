@@ -1,3 +1,6 @@
+// Dummy -- need to replace
+var querySt = function(name, def) { return def; };
+
 (function() {
   var canvas = window.canvas = new vizify.Canvas({{width}}, {{height}}, 1);
   document.body.appendChild(canvas.canvas);
@@ -17,13 +20,22 @@
     canvas.resize({{width}}, {{height}}, scaleFactor);
   };
   size();
-  window.addEventListener('resize', size, false);
+
+  var sizeTimeout = null;
+  window.addEventListener('resize', function(e) {
+    if (sizeTimeout) return;
+    sizeTimeout = setTimeout(function() {
+      sizeTimeout = null;
+      size();
+    }, 20);
+  }, false);
 
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4) {
       if (xhr.status == 200) {
         var card = window.card = new vizify.Card(canvas, {{entryPoint}}, xhr.responseText);
+        card.play();
       } else {
         // TODO - Error message of some kind
       }
