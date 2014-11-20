@@ -41,6 +41,6 @@ var querySt = function(name, def) { return def; };
       }
     }
   };
-  xhr.open('GET', '{{{dataSource}}}' || window.location.hash.replace(/^#/, ''));
+  xhr.open('GET', window.location.hash.replace(/^#/, '') || '{{{dataSource}}}');
   xhr.send();
 })();
