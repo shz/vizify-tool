@@ -28,5 +28,8 @@ shared:
 jobs:
   component:
     profile: [init, lint, test, publish]
+    steps:
+      publish:
+        bump_version: false
   pull-request:
     profile: [init, lint, test]

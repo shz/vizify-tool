@@ -1,13 +1,6 @@
 {
-  "devDependencies": {
-    "istanbul": "^0.3.2",
-    "supervisor": "^0.6.0",
-    "jshint": "^2.5.6",
-    "whiskey": "^0.8.4",
-    "esmangle": "^1.0.1"
-  },
   "name": "vizify-tool",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Command line tool for working with Vizify cards",
   "main": "lib/index.js",
   "scripts": {
@@ -54,6 +47,13 @@
     "omnistor": "^1.1.8",
     "sugar": "^1.4.1",
     "virgil": "^0.9.41",
-    "vizify-javascript": "^1.0.18"
+    "vizify-javascript": "^1.0.18",
+    "esmangle": "^1.0.1"
+  },
+  "devDependencies": {
+    "istanbul": "^0.3.2",
+    "supervisor": "^0.6.0",
+    "jshint": "^2.5.6",
+    "whiskey": "^0.8.4"
   }
 }
