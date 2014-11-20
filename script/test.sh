@@ -76,10 +76,11 @@ if [ $no_coverage -eq 0 ]; then
 fi
 
 # Run node.js tests
+test_dir=${TEST_RESULTS_DIR:-$TEST_DIR}
 files=`find test -name \\*.js | grep -v '/util' | grep -v '/browser' | xargs echo`
 test_opts="--concurrency 10"
-if [ -n "$TEST_RESULTS_DIR" ]; then
-  node_modules/.bin/whiskey $coverage_opts $test_opts --test-reporter tap --independent-tests "$files" | sed "s/^[ \t]*//" | tee ${TEST_RESULTS_DIR}/results.tap
+if [ -n "$test_dir" ]; then
+  node_modules/.bin/whiskey $coverage_opts $test_opts --test-reporter tap --independent-tests "$files" | sed "s/^[ \t]*//" | tee ${test_dir}/results.tap
 else
   mode='--tests'
   if [ $fast -ne 0 ]; then
