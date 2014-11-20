@@ -20,7 +20,7 @@
   "repository": {
     "type": "git",
     "url": "git@git.corp.yahoo.com:vizify/tool.git",
-    "revision": "cdf67bbfc38b8d7d77901360d7a3e9e7321a6abf"
+    "revision": "bdbf6f6a9d3eb80f1aea4a2d0d433ceeb31d7a2e"
   },
   "author": "Patrick Stein <lpstein@yahoo-inc.com>",
   "engines": {
@@ -42,7 +42,7 @@
       "url": "https://git.corp.yahoo.com/vizify/tool"
     },
     "screwdriver": {
-      "build_url": "http://jenkins.screwdriver.corp.yahoo.com:9999/jenkins/job/27334-v3-component/BUILD_CONTAINER=node10,label=DOCKER/9/",
+      "build_url": "http://jenkins.screwdriver.corp.yahoo.com:9999/jenkins/job/27334-v3-component/BUILD_CONTAINER=node10,label=DOCKER/10/",
       "project_id": 27334,
       "project_url": "http://screwdriver.corp.yahoo.com/projects/27334"
     }
