@@ -48,7 +48,8 @@
     "sugar": "^1.4.1",
     "virgil": "^0.9.41",
     "vizify-javascript": "^1.0.18",
-    "esmangle": "^1.0.1"
+    "esmangle": "^1.0.1",
+    "mime": "^1.2.11"
   },
   "devDependencies": {
     "istanbul": "^0.3.2",
