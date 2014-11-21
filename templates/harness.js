@@ -5,7 +5,7 @@ var querySt = function(name, def) { return def; };
   var canvas = window.canvas = new vizify.Canvas({{width}}, {{height}}, 1);
   document.body.appendChild(canvas.canvas);
 
-
+  // Sizes the card based on current window size
   var size = function() {
     var cardRatio = {{width}} / {{height}};
     var screenRatio = window.innerWidth / window.innerHeight;
@@ -21,6 +21,7 @@ var querySt = function(name, def) { return def; };
   };
   size();
 
+  // Trigger size() on debounced window size event
   var sizeTimeout = null;
   window.addEventListener('resize', function(e) {
     if (sizeTimeout) return;
@@ -30,12 +31,15 @@ var querySt = function(name, def) { return def; };
     }, 20);
   }, false);
 
+  // Kick things off by fetching data
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4) {
       if (xhr.status == 200) {
         var card = window.card = new vizify.Card(canvas, {{entryPoint}}, xhr.responseText);
-        card.play();
+        card.load(function() {
+          card.play();
+        });
       } else {
         // TODO - Error message of some kind
       }
