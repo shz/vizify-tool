@@ -78,9 +78,9 @@ exports.testGetDataUrls = function(test, assert) {
   assert.equal(result.length, 0);
 
   data = {data: {'foo': true}};
-  result = json.getDataUrls(data);
+  result = json.getDataUrls(data);  //non-production is implied
   assert.equal(result.length, 1);
-  assert.match(result[0], /fabulous\.land/);
+  assert.match(result[0], /cards-data\.rc\.staging\.manhattan/);
 
   result = json.getDataUrls(data, 'production');
   assert.equal(result.length, 1);

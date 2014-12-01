@@ -6,10 +6,8 @@ var querySt = function(name, def) { return def; };
   var canvas = window.canvas = new vizify.Canvas({{width}}, {{height}}, 1);
   document.body.appendChild(canvas.canvas);
 
-  // Patrick will edit this to obtain settings.
   var settings = {
-    replayable: true,
-    startWithFrameNumber: 8300  // Useful during devel.  Default: null
+    replayable: true // Patrick thought this would work but currently it produces a blank instead of expected boolean: {{replayable}}
   };
 
   // Sizes the card based on current window size
@@ -52,25 +50,24 @@ var querySt = function(name, def) { return def; };
               // Replay button is constructed.  The button element
               // is deleted if the user initiates a Replay, so
               // there is no leak in the case of multiple replays.
-              console.log("Handling the movie END event...");
               var elemCanv = card.canvas.canvas;
               var btn = document.createElement('div');
               btn.setAttribute('class', 'button-replay');
-              btn.appendChild(document.createTextNode("Replay"));
+              btn.appendChild(document.createTextNode('Replay'));
               var btnParent = elemCanv.parentElement;
               btnParent.appendChild(btn);
-              btn.addEventListener('click', function() {
-                // Handle user click on the Replay button.
-                console.log("Handling user click on REPLAY button...");
+
+              // Responding to a user tap on "Replay":
+              var tapHandler = function(e) {
                 card.seek(0);
                 card.play();
                 btnParent.removeChild(btn);
-              });
+                e.preventDefault();
+              };
+              btn.addEventListener('click', tapHandler);
+              btn.addEventListener('touchstart', tapHandler);
+
             });
-          }
-          if (settings.startWithFrameNumber) {
-            console.log("Jumping to frame " + settings.startWithFrameNumber + " before starting...");
-            card.seek(settings.startWithFrameNumber);
           }
           card.play();
         });
