@@ -64,10 +64,15 @@ export function cubicBezier(x1 : float, y1 : float, x2 : float, y2 : float) : Cu
 }
 
 export function ease(d : int) : func<int, float> {
-  let cb = cubicBezier(0.25, 0.1, 0.25, 1.0)
-
-  return lambda(t : int) : float {
-    return cb.at(t.asFloat() / d.asFloat())
+  if (d > 0) {
+    let cb = cubicBezier(0.25, 0.1, 0.25, 1.0)
+    return lambda(t : int) : float {
+      return cb.at(t.asFloat() / d.asFloat())
+    }
+  }else{
+    return lambda(t : int) : float {
+      return 1f
+    }
   }
 }
 
