@@ -48,3 +48,21 @@ var querySt = function(name, def) { return def; };
   xhr.open('GET', window.location.hash.replace(/^#/, '') || '{{{dataSource}}}');
   xhr.send();
 })();
+
+// When requested, send screenshot
+window.addEventListener('message', function(e) {
+  if (e.data != 'screenshot') return;
+
+  var data = '';
+  try {
+    window.card.frame(window.card.duration);
+    data = window.canvas.canvas.toDataURL();
+  } catch (err) {
+    setTimeout(function() {
+      throw err;
+    }, 10);
+  }
+  // TODO - Probably limit this to cards.yahoo.com
+  console.log('posting back', data.length);
+  e.source.postMessage(data, '*');
+}, false);
