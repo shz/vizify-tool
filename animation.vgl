@@ -30,8 +30,23 @@ export method tween(renderc : RenderContext<'T>,
   }
 }
 
-# Utility methods for doing symmetric tweens
 
+
+
+
+# Utility methods for doing 0-to-1 or 1-to-0 ramps for the entire RC duration
+
+export method rampUp(rc : RenderContext<'T>) : Animation<'T> {
+  return rc.tween(ease(rc.clock.fromEnd + rc.clock.fromStart), ease(0), 0)
+}
+export method rampDown(rc : RenderContext<'T>) : Animation<'T> {
+  return rc.tween(ease(0), ease(rc.clock.fromEnd + rc.clock.fromStart), 0)
+}
+
+
+
+
+# Utility methods for doing symmetric tweens (0 to 1 then hold than 1 to 0)
 
 export method hillshape(rc : RenderContext<'T>, i : int, o : int) : Animation<'T> {
   return rc.tween(ease(i), ease(o), 0)
@@ -39,6 +54,8 @@ export method hillshape(rc : RenderContext<'T>, i : int, o : int) : Animation<'T
 export method hillshapeWithCustomShape(rc : RenderContext<'T>, cb : CubicBezierEngine, i : int, o : int) : Animation<'T> {
   return rc.tween(easeCustomShape(i,cb), easeCustomShape(o,cb), 0)
 }
+
+
 
 export method ease(rc : RenderContext<'T>, i : int, o : int) : Animation<'T> {
   # .ease is just a synonym for .hillshape
@@ -72,6 +89,14 @@ export method scaleFromTo(a : Animation<'T>, from:float, to:float) : RenderConte
 
 export method shrinkAndFadeout(a : Animation<'T>) : RenderContext<'T> {
   return a.perform(lambda(c : Canvas, v : float) {
+    c.scale(1f-v,1f-v)
+    c.setGlobalAlpha((1f-v)**3)
+  })
+}
+
+export method shrinkAndFadeoutWithTranslation(a : Animation<'T>, dx : float, dy : float) : RenderContext<'T> {
+  return a.perform(lambda(c : Canvas, v : float) {
+    c.translate(v*dx, v*dy)
     c.scale(1f-v,1f-v)
     c.setGlobalAlpha((1f-v)**3)
   })
