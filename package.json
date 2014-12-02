@@ -1,6 +1,6 @@
 {
   "name": "vizify-tool",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "Command line tool for working with Vizify cards",
   "main": "lib/index.js",
   "scripts": {
@@ -49,7 +49,9 @@
     "virgil": "^0.9.41",
     "vizify-javascript": "^1.0.18",
     "esmangle": "^1.0.1",
-    "mime": "^1.2.11"
+    "mime": "^1.2.11",
+    "acorn": "^0.9.0",
+    "escodegen": "^1.4.1"
   },
   "devDependencies": {
     "istanbul": "^0.3.2",
