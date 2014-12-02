@@ -3,6 +3,21 @@ var run = require('./util/require')('run');
 exports.testHasCommands = function(test, assert) {
   assert.isDefined(run.commands.devel);
 
+  var temp = console.error;
+  var err = null;
+  console.error = function() {
+    err =  new Error(Array.prototype.join.call(arguments, ' '));
+  };
+  var temp2 = process.exit;
+  process.exit = function() {
+    throw (err || new Error('blah'));
+  };
+  assert.throws(function() {
+    run('blargh');
+  }, /unknown/i);
+  console.error = temp;
+  process.exit = temp2;
+
   test.finish();
 };
 
