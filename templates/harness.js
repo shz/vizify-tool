@@ -4,7 +4,7 @@ var querySt = function(name, def) { return def; };
 
 (function() {
   var canvas = window.canvas = new vizify.Canvas({{width}}, {{height}}, 1);
-  document.body.appendChild(canvas.canvas);
+  document.getElementById('holder').appendChild(canvas.canvas);
 
   // Sizes the card based on current window size
   var size = function() {
@@ -46,18 +46,19 @@ var querySt = function(name, def) { return def; };
               // Replay button is constructed.  The button element
               // is deleted if the user initiates a Replay, so
               // there is no leak in the case of multiple replays.
-              var elemCanv = card.canvas.canvas;
-              var btn = document.createElement('div');
-              btn.setAttribute('class', 'button-replay');
-              btn.appendChild(document.createTextNode('Replay'));
-              var btnParent = elemCanv.parentElement;
-              btnParent.appendChild(btn);
+              var btn = document.createElement('a');
+              btn.href = '#';
+              btn.className = 'replay';
+              btn.innerHTML = 'Replay';
+              document.getElementById('holder').appendChild(btn);
+              document.body.offsetLeft; // reflow
+              btn.className = 'replay visible';
 
               // Responding to a user tap on "Replay":
               var tapHandler = function(e) {
                 card.seek(0);
                 card.play();
-                btnParent.removeChild(btn);
+                btn.parentElement.removeChild(btn);
                 e.preventDefault();
               };
               btn.addEventListener('click', tapHandler);
@@ -90,6 +91,5 @@ window.addEventListener('message', function(e) {
     }, 10);
   }
   // TODO - Probably limit this to cards.yahoo.com
-  console.log('posting back', data.length);
   e.source.postMessage(data, '*');
 }, false);
