@@ -40,31 +40,31 @@ var querySt = function(name, def) { return def; };
       if (xhr.status == 200) {
         var card = window.card = new vizify.Card(canvas, {{entryPoint}}, xhr.responseText);
         card.load(function() {
-          if ({{replayable}}) {
-            card.on('end', function() {
-              // Each time the end of the movie is reached, a new
-              // Replay button is constructed.  The button element
-              // is deleted if the user initiates a Replay, so
-              // there is no leak in the case of multiple replays.
-              var elemCanv = card.canvas.canvas;
-              var btn = document.createElement('div');
-              btn.setAttribute('class', 'button-replay');
-              btn.appendChild(document.createTextNode('Replay'));
-              var btnParent = elemCanv.parentElement;
-              btnParent.appendChild(btn);
+          // environment setting: replayable is {{replayable}}
+          {{#replayable}}
+          card.on('end', function() {
+            // Each time the end of the movie is reached, a new
+            // Replay button is constructed.  The button element
+            // is deleted if the user initiates a Replay, so
+            // there is no leak in the case of multiple replays.
+            var elemCanv = card.canvas.canvas;
+            var btn = document.createElement('div');
+            btn.setAttribute('class', 'button-replay');
+            btn.appendChild(document.createTextNode('Replay'));
+            var btnParent = elemCanv.parentElement;
+            btnParent.appendChild(btn);
 
-              // Responding to a user tap on "Replay":
-              var tapHandler = function(e) {
-                card.seek(0);
-                card.play();
-                btnParent.removeChild(btn);
-                e.preventDefault();
-              };
-              btn.addEventListener('click', tapHandler);
-              btn.addEventListener('touchstart', tapHandler);
-
-            });
-          }
+            // Responding to a user tap on "Replay":
+            var tapHandler = function(e) {
+              card.seek(0);
+              card.play();
+              btnParent.removeChild(btn);
+              e.preventDefault();
+            };
+            btn.addEventListener('click', tapHandler);
+            btn.addEventListener('touchstart', tapHandler);
+          });
+          {{/replayable}}
           card.play();
         });
       } else {
