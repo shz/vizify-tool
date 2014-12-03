@@ -1,6 +1,6 @@
 {
   "name": "vizify-tool",
-  "version": "1.0.15",
+  "version": "1.0.19",
   "description": "Command line tool for working with Vizify cards",
   "main": "lib/index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "repository": {
     "type": "git",
     "url": "git@git.corp.yahoo.com:vizify/tool.git",
-    "revision": "622730e879f42280b0b801ebb5bf0b88789b7fab"
+    "revision": "dd9417343cc16acfebf0e3a68d98405423940f6e"
   },
   "author": "Patrick Stein <lpstein@yahoo-inc.com>",
   "engines": {
@@ -35,7 +35,7 @@
       "url": "https://git.corp.yahoo.com/vizify/tool"
     },
     "screwdriver": {
-      "build_url": "http://jenkins.screwdriver.corp.yahoo.com:9999/jenkins/job/27334-v3-component/BUILD_CONTAINER=node10,label=DOCKER-LOW/16/",
+      "build_url": "http://jenkins.screwdriver.corp.yahoo.com:9999/jenkins/job/27334-v3-component/BUILD_CONTAINER=node10,label=DOCKER-LOW/21/",
       "project_id": 27334,
       "project_url": "http://screwdriver.corp.yahoo.com/projects/27334"
     }
@@ -49,7 +49,9 @@
     "virgil": "^0.9.41",
     "vizify-javascript": "^1.0.18",
     "esmangle": "^1.0.1",
-    "mime": "^1.2.11"
+    "mime": "^1.2.11",
+    "acorn": "^0.9.0",
+    "escodegen": "^1.4.1"
   },
   "devDependencies": {
     "istanbul": "^0.3.2",
