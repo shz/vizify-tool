@@ -40,32 +40,33 @@ var querySt = function(name, def) { return def; };
       if (xhr.status == 200) {
         var card = window.card = new vizify.Card(canvas, {{entryPoint}}, xhr.responseText);
         card.load(function() {
-          if ({{replayable}}) {
-            card.on('end', function() {
-              // Each time the end of the movie is reached, a new
-              // Replay button is constructed.  The button element
-              // is deleted if the user initiates a Replay, so
-              // there is no leak in the case of multiple replays.
-              var btn = document.createElement('a');
-              btn.href = '#';
-              btn.className = 'replay';
-              btn.innerHTML = 'Replay';
-              document.getElementById('holder').appendChild(btn);
-              document.body.offsetLeft; // reflow
-              btn.className = 'replay visible';
+          // environment setting: replayable is {{replayable}}
+          {{#replayable}}
+          card.on('end', function() {
+            // Each time the end of the movie is reached, a new
+            // Replay button is constructed.  The button element
+            // is deleted if the user initiates a Replay, so
+            // there is no leak in the case of multiple replays.
+            var btn = document.createElement('a');
+            btn.href = '#';
+            btn.className = 'replay';
+            btn.innerHTML = 'Replay';
+            document.getElementById('holder').appendChild(btn);
+            document.body.offsetLeft; // reflow
+            btn.className = 'replay visible';
 
-              // Responding to a user tap on "Replay":
-              var tapHandler = function(e) {
-                card.seek(0);
-                card.play();
-                btn.parentElement.removeChild(btn);
-                e.preventDefault();
-              };
-              btn.addEventListener('click', tapHandler);
-              btn.addEventListener('touchstart', tapHandler);
+            // Responding to a user tap on "Replay":
+            var tapHandler = function(e) {
+              card.seek(0);
+              card.play();
+              btn.parentElement.removeChild(btn);
+              e.preventDefault();
+            };
+            btn.addEventListener('click', tapHandler);
+            btn.addEventListener('touchstart', tapHandler);
 
-            });
-          }
+          });
+          {{/replayable}}
           card.play();
         });
       } else {
