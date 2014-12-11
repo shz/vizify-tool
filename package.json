@@ -1,6 +1,6 @@
 {
   "name": "vizify-tool",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Command line tool for working with Vizify cards",
   "main": "lib/index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "repository": {
     "type": "git",
     "url": "git@git.corp.yahoo.com:vizify/tool.git",
-    "revision": "dd9417343cc16acfebf0e3a68d98405423940f6e"
+    "revision": "2eda6b6abf7e8be06e2473817c7d9b420dd7d2f3"
   },
   "author": "Patrick Stein <lpstein@yahoo-inc.com>",
   "engines": {
@@ -35,7 +35,7 @@
       "url": "https://git.corp.yahoo.com/vizify/tool"
     },
     "screwdriver": {
-      "build_url": "http://jenkins.screwdriver.corp.yahoo.com:9999/jenkins/job/27334-v3-component/BUILD_CONTAINER=node10,label=DOCKER-LOW/21/",
+      "build_url": "http://jenkins.screwdriver.corp.yahoo.com:9999/jenkins/job/27334-v3-component/BUILD_CONTAINER=node10,label=DOCKER-LOW/22/",
       "project_id": 27334,
       "project_url": "http://screwdriver.corp.yahoo.com/projects/27334"
     }
