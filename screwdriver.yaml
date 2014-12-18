@@ -14,7 +14,7 @@ shared:
 
   plugins:
     coverage:
-      # enabled: false
+      enabled: false
       type: lcov
       parameters:
         info_path: artifacts/coverage
