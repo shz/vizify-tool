@@ -101,7 +101,7 @@ if [ $no_coverage -eq 0 ]; then
   # save the coverage output, otherwise report to console.
   mode="text"
   if [ -n "$COVERAGE_DIR" ]; then
-    mode="html"
+    mode="lcov"
   fi
   ./node_modules/.bin/istanbul report --root $coverage_dir --dir $coverage_dir $mode
 
