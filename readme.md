@@ -12,11 +12,12 @@ ynpm install -g git+ssh://git@git.corp.yahoo.com:vizify/tool.git
 
 ## Usage
 
-Note: nothing implemented yet, this is all theoretical
+This describes command line usage, but this works as a library as well (docs for that TODO).
 
 ```bash
 vz devel [--dir=<working dir>] # Starts a development server for a card
 vz publish [--dir=<working dir>] # Compiles and publishes an HTML5 card to S3/Mobstor
+vz init # Scaffolds out a card in the current directory
 ```
 
 ## Developing
