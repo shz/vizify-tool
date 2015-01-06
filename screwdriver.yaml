@@ -15,10 +15,10 @@ shared:
   plugins:
     coverage:
       enabled: false
-      # type: lcov
-      # parameters:
-      #   info_path: artifacts/coverage
-      #   report_path: artifacts/coverage/lcov-report
+      type: lcov
+      parameters:
+        info_path: artifacts/coverage
+        report_path: artifacts/coverage/lcov-report
     test_results:
       type: tap
       parameters:

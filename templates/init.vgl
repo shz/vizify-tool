@@ -1,0 +1,32 @@
+import vizify.env
+import vizify.math
+import vizify.clock
+import vizify.canvas
+import vizify.animation
+import vizify.easing
+import vizify.color
+
+struct Data {
+  foo = 1
+}
+
+method drawFill(rc : RenderContext<Data>, c : Color) {
+  rc.draw(lambda (rc : RenderContext<Data>) {
+    rc.c.setFillStyle(c)
+    rc.c.fillRect(0f, 0f, rc.c.width.asFloat(), rc.c.height.asFloat())
+  })
+}
+
+function renderer(rc : RenderContext<Data>) {
+  rc.duration(500).drawFill(rgb(255, 0, 0))
+  rc.delay(1000).ease(1000, 1000).fade().drawFill(rgb(0, 255, 0))
+}
+
+export function main(json : str) : CardConfig<Data> {
+  let d = new Data
+  return new CardConfig<Data> {
+    data = d
+    renderer = renderer
+    duration = 3000
+  }
+}
