@@ -3,9 +3,9 @@ import math
 
 # A third degree polynomial
 struct PolyEngine {
-  c : float  = 0
-  b : float = 0
-  a : float = 0
+  c : float = 0f
+  b : float = 0f
+  a : float = 0f
 }
 
 method f(p : PolyEngine, x : float) : float {
