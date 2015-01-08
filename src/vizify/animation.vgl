@@ -21,59 +21,23 @@ export method perform(a : Animation<'T>, action : func<Canvas, float, void>) : R
 
 export method tween(renderc : RenderContext<'T>,
                     inf : func<int, float>,
-                    outf : func<int, float>, durPreDelay : int) : Animation<'T> {
+                    outf : func<int, float>) : Animation<'T> {
   return new Animation<'T> {
     rc = renderc
     i = inf
     o = outf
-    durHoldAtZeroStart = durPreDelay
+    durHoldAtZeroStart = 0
   }
 }
 
-
-
-
-
-# Utility methods for doing 0-to-1 or 1-to-0 ramps for the entire RC duration
-
-export method rampUp(rc : RenderContext<'T>) : Animation<'T> {
-  return rc.tween(ease(rc.clock.fromEnd + rc.clock.fromStart), ease(0), 0)
-}
-export method rampDown(rc : RenderContext<'T>) : Animation<'T> {
-  return rc.tween(ease(0), ease(rc.clock.fromEnd + rc.clock.fromStart), 0)
-}
-
-
-
-
-# Utility methods for doing symmetric tweens (0 to 1 then hold than 1 to 0)
-
-export method hillshape(rc : RenderContext<'T>, i : int, o : int) : Animation<'T> {
-  return rc.tween(ease(i), ease(o), 0)
-}
-export method hillshapeWithCustomShape(rc : RenderContext<'T>, cb : CubicBezierEngine, i : int, o : int) : Animation<'T> {
-  return rc.tween(easeCustomShape(i,cb), easeCustomShape(o,cb), 0)
-}
-
-
-
-export method ease(rc : RenderContext<'T>, i : int, o : int) : Animation<'T> {
-  # .ease is just a synonym for .hillshape
-  return rc.hillshape(i, o)
-}
-
-export method delayedHillshape(rc : RenderContext<'T>, i : int, o : int, durDelay : int) : Animation<'T> {
-  return rc.tween(ease(i), ease(o), durDelay)
-}
-
 export method linear(rc : RenderContext<'T>, i : int, o : int) : Animation<'T> {
-  return rc.tween(linear(i), linear(o), 0)
+  return rc.tween(linear(i), linear(o))
 }
 
 
 
 
-# Sample implementation of an animation method
+# Sample implementations of animation methods
 
 export method fade(a : Animation<'T>) : RenderContext<'T> {
   return a.perform(lambda(c : Canvas, v : float) {
@@ -81,42 +45,7 @@ export method fade(a : Animation<'T>) : RenderContext<'T> {
   })
 }
 
-export method scaleFromTo(a : Animation<'T>, from:float, to:float) : RenderContext<'T> {
-  return a.perform(lambda(c : Canvas, v : float) {
-    c.scale( (from + (to-from)*v), (from + (to-from)*v) )
-  })
-}
-
-export method shrinkAndFadeout(a : Animation<'T>) : RenderContext<'T> {
-  return a.perform(lambda(c : Canvas, v : float) {
-    c.scale(1f-v,1f-v)
-    c.setGlobalAlpha((1f-v)**3)
-  })
-}
-
-export method shrinkAndFadeoutWithTranslation(a : Animation<'T>, dx : float, dy : float) : RenderContext<'T> {
-  return a.perform(lambda(c : Canvas, v : float) {
-    c.translate(v*dx, v*dy)
-    c.scale(1f-v,1f-v)
-    c.setGlobalAlpha((1f-v)**3)
-  })
-}
-
-export method expandAndFade(a : Animation<'T>) : RenderContext<'T> {
-  return a.perform(lambda(c : Canvas, v : float) {
-    c.scale(v,v)
-    c.setGlobalAlpha(v**2)
-  })
-}
-
-
-export method fadeOut(a : Animation<'T>) : RenderContext<'T> {
-  return a.perform(lambda(c : Canvas, v : float) {
-    c.setGlobalAlpha(1f-v)
-  })
-}
-
-export method alphaFromTo(a : Animation<'T>, from:float, to:float) : RenderContext<'T> {
+export method fadeFromTo(a : Animation<'T>, from:float, to:float) : RenderContext<'T> {
   return a.perform(lambda(c : Canvas, v : float) {
     c.setGlobalAlpha(from + (to-from)*v)
   })
@@ -128,18 +57,32 @@ export method translate(a : Animation<'T>, xMax : float, yMax : float) : RenderC
   })
 }
 
+# Scales X from 0 to xMax
+# Scales Y from 0 to yMax
 export method scale(a : Animation<'T>, xMax : float, yMax : float) : RenderContext<'T> {
   return a.perform(lambda(c : Canvas, v : float) {
     c.scale(v*xMax, v*yMax)
   })
 }
 
+# Scales X across given from/to range
+export method scaleX(a : Animation<'T>, from:float, to:float) : RenderContext<'T> {
+  return a.perform(lambda(c : Canvas, v : float) {
+    c.scale( (from + (to-from)*v), 1f )
+  })
+}
+
+# Scales Y across given from/to range
+export method scaleY(a : Animation<'T>, from:float, to:float) : RenderContext<'T> {
+  return a.perform(lambda(c : Canvas, v : float) {
+    c.scale( 1f, (from + (to-from)*v) )
+  })
+}
 
 
 
 
-
-
+# Clock-context manipulation
 
 export method delay(rc : RenderContext<'T>, amount : int) : RenderContext<'T> {
   let root = rc.fork()
@@ -160,6 +103,10 @@ export method until(rc : RenderContext<'T>, amount : int) : RenderContext<'T> {
   root.config.end = amount
   return root
 }
+
+
+
+# This is a candidate for being refactored to a new name:  apply
 
 export method draw(rc : RenderContext<'T>, f : func<RenderContext<'T>, void>) {
   # Sanity check on duration
@@ -200,8 +147,4 @@ export method draw(rc : RenderContext<'T>, f : func<RenderContext<'T>, void>) {
   # Undo the effects of the operation stack
   rc.c.restore()
 
-}
-
-export method drawNamedGroup(rc : RenderContext<'T>, name: str, f : func<RenderContext<'T>, void>) {
-  rc.draw(f)
 }

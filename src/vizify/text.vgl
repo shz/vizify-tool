@@ -107,7 +107,7 @@ export struct LineLayoutSpec {
 
 export struct TextLayoutParagraphConfig {
  fontSize: int = 10
- lineHeight: int = 10
+ lineHeight: float = 1.32
  textAlign: str = "left"
  verticalAlign: str = "top"
 }
@@ -205,14 +205,14 @@ export method layoutParagraph(c : Canvas, text: str, fontname: str, width:float,
     resultB.push(new LineLayoutSpec {
       text = line
       left = xleft
-      width = w
+      width = w.round()
     })
 
   }
 
   # Get metrics for this font/size
   # var m = metrics.get(font.family, font.style, settings.fontSize)
-  let lineHeightCalc = settings.fontSize.asFloat() * 1.07 * settings.lineHeight.asFloat()
+  let lineHeightCalc = settings.fontSize.asFloat() * 1.07 * settings.lineHeight
 
   # Adjust vertical offset to fit in space
   mut verticalOffsetCalc = 0
@@ -231,10 +231,10 @@ export method layoutParagraph(c : Canvas, text: str, fontname: str, width:float,
     size = settings.fontSize
     contentHeight = contentHeightCalc
     lineHeight = lineHeightCalc
-    verticalOffset = verticalOffsetCalc
+    verticalOffset = verticalOffsetCalc.asFloat()
     lines = resultB
-    w = width
-    h = height
+    w = width.round()
+    h = height.round()
   }
 }
 
