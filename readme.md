@@ -1,4 +1,4 @@
-# Vizify Tool
+# Vizify Tool [![Build Status](http://api.screwdriver.corp.yahoo.com:4080/badge/27334/component/icon)](http://api.screwdriver.corp.yahoo.com:4080/badge/27334/component/target)
 
 A command-line utility for working with Vizify cards.
 

@@ -19,7 +19,7 @@ method drawFill(rc : RenderContext<Data>, c : Color) {
 
 function renderer(rc : RenderContext<Data>) {
   rc.duration(500).drawFill(rgb(255, 0, 0))
-  rc.delay(1000).ease(1000, 1000).fade().drawFill(rgb(0, 255, 0))
+  rc.delay(1000).tween(ease(1000), ease(1000)).fade().drawFill(rgb(0, 255, 0))
 }
 
 export function main(json : str) : CardConfig<Data> {
