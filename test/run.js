@@ -1,12 +1,15 @@
 var run = require('./util/require')('run');
 
 exports.testHasCommands = function(test, assert) {
+  assert.isDefined(run.commands.init);
+  assert.isDefined(run.commands.publish);
   assert.isDefined(run.commands.devel);
 
   var temp = console.error;
   var err = null;
   console.error = function() {
-    err =  new Error(Array.prototype.join.call(arguments, ' '));
+    if (!err)
+      err = new Error(Array.prototype.join.call(arguments, ' '));
   };
   var temp2 = process.exit;
   process.exit = function() {
@@ -14,7 +17,7 @@ exports.testHasCommands = function(test, assert) {
   };
   assert.throws(function() {
     run('blargh');
-  }, /unknown/i);
+  }, /usage/i);
   console.error = temp;
   process.exit = temp2;
 
