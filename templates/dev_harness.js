@@ -44,8 +44,8 @@ var querySt = function(name, def) { return def; };
   };
 
   // Now decide whether to get data from the remote datasource or a local file
-  var datafile = query('datafile', 'remote');
-  if (datafile != 'remote') {
+  var datafile = query('datafile', 'none');
+  if (datafile != 'none') {
     var data = localStorage['vz.datafiles.' + datafile];
     loadCardData(data);
   }
@@ -145,18 +145,22 @@ var querySt = function(name, def) { return def; };
       select.removeChild(children[i]);
     }
 
-    var addOption = function(name) {
+    var addOption = function(name, selected) {
       var item = document.createElement('option');
+      if (selected) {
+        item.setAttribute('selected', true);
+      }
       item.setAttribute('value', name);
       item.appendChild(document.createTextNode(name));
       select.appendChild(item);
     };
 
     // populate list with every data file
-    addOption('remote');
+    var datafile = query('datafile', 'none');
+    addOption('none', datafile === 'none');
     var filenames = getDataFileNames();
     filenames.forEach(function(f) {
-      addOption(f);
+      addOption(f, datafile === f);
     });
   };
 
@@ -182,7 +186,7 @@ var querySt = function(name, def) { return def; };
   var handleFileSelect = function(evt) {
     var file = evt.target.files[0]; // FileList object
 
-    if (file.type.indexOf('text') === -1) {
+    if (file.type.indexOf('text') === -1 && file.type.indexOf('json') === -1) {
       alert('Sorry, you can only load text files');
       return;
     }
@@ -194,6 +198,9 @@ var querySt = function(name, def) { return def; };
     reader.readAsText(file);
   };
   listDataFiles();
-  document.getElementById('datafile').addEventListener('change', handleFileSelect, false);
+  document.getElementById('filechooser').addEventListener('change', handleFileSelect, false);
+  document.getElementById('datafile').addEventListener('change', function() {
+    document.forms[0].submit();
+  }, false);
 
 })();
