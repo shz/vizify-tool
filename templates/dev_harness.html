@@ -11,8 +11,19 @@
         <input id="timestamp" name="t" readonly>
       </label>
 
-      <input type="submit" value="Save">
+      <label>Local Data Files:
+        <select name="datafile" id="datafile">
+        </select>
+      </label>
+
+        <input type="submit" value="Save">
     </form>
+    <label>
+        Add a local data file:
+        <br/>
+        <input type="file" id="datafile">
+    </label>
+
     <script src="/dev/vztouch.js"></script>
     <script src="vizify.js"></script>
     <script src="card.js"></script>
