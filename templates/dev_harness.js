@@ -41,6 +41,9 @@ var querySt = function(name, def) { return def; };
           s.MozTransform =
             s.msTransform = 'scale(' + (t / card.duration) + ', 1)';
     });
+
+    card.on('play', function() { updatePlayPauseButton(); });
+    card.on('pause', function() { updatePlayPauseButton(); });
   };
 
   // Now decide whether to get data from the remote datasource or a local file
@@ -130,7 +133,21 @@ var querySt = function(name, def) { return def; };
         t = card._offset;
       }
       document.getElementById('timestamp').value = t;
+      updatePlayPauseButton();
     }, 50);
+  };
+
+  var updatePlayPauseButton = function() {
+    document.getElementById('playpause').innerHTML =  (card.status == 'playing') ? "Pause" : "Play";
+  };
+
+  var handlePlayPause = function() {
+    if (card.status == 'playing') {
+      card.pause();
+    }
+    else {
+      card.play();
+    }
   };
 
   var getDataFileNames = function() {
@@ -217,6 +234,7 @@ var querySt = function(name, def) { return def; };
   };
 
   listDataFiles();
+  document.getElementById('playpause').addEventListener('click', handlePlayPause, false);
   document.getElementById('filechooser').addEventListener('change', handleFileSelect, false);
   document.getElementById('datafile').addEventListener('change', function() {
     document.forms[0].submit();
