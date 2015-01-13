@@ -123,14 +123,29 @@ var querySt = function(name, def) { return def; };
     timestampTo = setTimeout(function() {
       timestampTo = null;
 
+      var playpause = document.getElementById('playpause');
       var t = 0;
       if (card.status == 'playing') {
         t = Date.now() - card._start + card._offset;
+        playpause.innerHTML = "Pause";
       } else {
         t = card._offset;
+        playpause.innerHTML = "Play";
       }
       document.getElementById('timestamp').value = t;
     }, 50);
+  };
+
+  var handlePlayPause = function() {
+    var btn = document.getElementById('playpause');
+    if (card.status == 'playing') {
+      card.pause();
+      btn.innerHTML = "Play";
+    }
+    else {
+      card.play();
+      btn.innerHTML = "Pause";
+    }
   };
 
   var getDataFileNames = function() {
@@ -217,6 +232,7 @@ var querySt = function(name, def) { return def; };
   };
 
   listDataFiles();
+  document.getElementById('playpause').addEventListener('click', handlePlayPause, false);
   document.getElementById('filechooser').addEventListener('change', handleFileSelect, false);
   document.getElementById('datafile').addEventListener('change', function() {
     document.forms[0].submit();
