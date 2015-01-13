@@ -95,6 +95,7 @@ var querySt = function(name, def) { return def; };
       handleScrub(e.absolute.x - scrubBase.x);
     }
   });
+
   var handleScrub = function(x) {
     var p = x / scrubBase.w;
     p = Math.max(0, p);
@@ -115,6 +116,7 @@ var querySt = function(name, def) { return def; };
     s.MozTransform =
     s.msTransform = 'scale(' + p + ', 1)';
   };
+
   var timestampTo = null;
   var updateTimestamp = function() {
     if (timestampTo !== null) return;
@@ -136,13 +138,17 @@ var querySt = function(name, def) { return def; };
   };
 
   // populate files in local storage
-  var listDataFiles = function() {
+  var listDataFiles = function(selectedFile) {
+
+    var datafile = selectedFile ? selectedFile : query('datafile', 'none');
     var select = document.getElementById('datafile');
 
     // remove existing children
     var children = select.childNodes;
-    for (var i = 0; i < children.length; i++) {
-      select.removeChild(children[i]);
+    var len = children.length;
+    for (var i = 0; i < len; i++) {
+      // children is a 'live' list which shrinks each time we removeChild
+      select.removeChild(children[0]);
     }
 
     var addOption = function(name, selected) {
@@ -156,7 +162,7 @@ var querySt = function(name, def) { return def; };
     };
 
     // populate list with every data file
-    var datafile = query('datafile', 'none');
+
     addOption('none', datafile === 'none');
     var filenames = getDataFileNames();
     filenames.forEach(function(f) {
@@ -165,7 +171,6 @@ var querySt = function(name, def) { return def; };
   };
 
   var addFileToLocalStorage = function(file, data) {
-
     var filenames = getDataFileNames();
     var found = false;
     filenames.forEach(function(f) {
@@ -182,6 +187,17 @@ var querySt = function(name, def) { return def; };
     listDataFiles();
   };
 
+  var clearDataFiles = function() {
+    var filenames = getDataFileNames();
+    filenames.forEach(function(file) {
+      delete localStorage['vz.datafiles.' + file];
+    });
+    delete localStorage['vz.datafiles'];
+    listDataFiles('none');
+    alert("Local data files have been cleared.");
+    document.forms[0].submit();
+  };
+
   // Load local data file into local storage
   var handleFileSelect = function(evt) {
     var file = evt.target.files[0]; // FileList object
@@ -194,13 +210,17 @@ var querySt = function(name, def) { return def; };
     var reader = new FileReader();
     reader.onload = function(e) {
       addFileToLocalStorage(file, reader.result);
+      listDataFiles(file.name);
+      document.forms[0].submit();
     };
     reader.readAsText(file);
   };
+
   listDataFiles();
   document.getElementById('filechooser').addEventListener('change', handleFileSelect, false);
   document.getElementById('datafile').addEventListener('change', function() {
     document.forms[0].submit();
   }, false);
+  document.getElementById('clear-files').addEventListener('click', clearDataFiles, false);
 
 })();

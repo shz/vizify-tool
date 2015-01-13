@@ -11,18 +11,21 @@
         <input id="timestamp" name="t" readonly>
       </label>
 
-      <label>Use Local Data File:
-        <select name="datafile" id="datafile">
-        </select>
-      </label>
+      <div id="uselocalfile">
+          <label id="uselocalfile">Use Local Data File:
+            <select name="datafile" id="datafile">
+            </select>
+          </label>
+          <br>
+          <label for="filechooser" class="custom-file-chooser">Add data file
+          </label>
+          <input type="file" id="filechooser">
+          <label id="clear-files">Clear data files</label>
 
-        <input type="submit" value="Save">
+      </div>
+
+      <input type="submit" value="Save">
     </form>
-    <label>
-        Add a local data file:
-        <br/>
-        <input type="file" id="filechooser">
-    </label>
 
     <script src="/dev/vztouch.js"></script>
     <script src="vizify.js"></script>
