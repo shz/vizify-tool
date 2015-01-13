@@ -8,6 +8,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; }
   width: 100%;
   height: 30px;
 }
+
 #scrubber div {
   background-color: gray;
   height: 100%;
@@ -19,24 +20,39 @@ html, body { width: 100%; height: 100%; overflow: hidden; }
 }
 
 label {
-  font-size: 12pt;
+  font-size: 14pt;
   width: 100%;
 }
+
 label input {
   font-size: 12pt;
   padding: 4px 6px;
   border: none;
-  width: 100px;
+  width: 220px;
 }
 
-input[type="submit"] {
+#uselocalfile {
+  margin-top: 20px;
+  font-size: 14pt;
+  text-align: left;
+}
+
+#datafile {
+  font-size: 14pt;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-chooser, #clear-files, input[type="submit"] {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  display: block;
-  width: 140px;
-  padding: 6px 0;
   text-align: center;
+  display: block;
+  width: 160px;
+  padding: 6px 0;
   border: none;
   background-color: #444;
   color: white;

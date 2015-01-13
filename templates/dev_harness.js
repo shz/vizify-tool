@@ -20,41 +20,53 @@ var querySt = function(name, def) { return def; };
   var canvas = window.canvas = new vizify.Canvas({{width}}, {{height}}, 1);
   canvas.resize({{width}}, {{height}}, scale);
 
-  // Kick things off by fetching data
-  var xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState == 4) {
-      if (xhr.status == 200) {
-        var card = window.card = new vizify.Card(canvas, {{entryPoint}}, xhr.responseText);
+  var loadCardData = function(data) {
+    var card = window.card = new vizify.Card(canvas, {{entryPoint}}, data);
 
-        // Load card assets and play
-        card.load(function() {
-          card.seek(parseInt(query('t', 0), 10));
-          card.play();
-          var holder = document.getElementById('holder');
-          holder.insertBefore(canvas.canvas, holder.childNodes[0]);
-        });
+    // Load card assets and play
+    card.load(function() {
+      card.seek(parseInt(query('t', 0), 10));
+      card.play();
+      var holder = document.getElementById('holder');
+      holder.insertBefore(canvas.canvas, holder.childNodes[0]);
+    });
 
-        // Wire up scrubber updates
-        card.on('frame', function(t) {
-          updateTimestamp();
+    // Wire up scrubber updates
+    card.on('frame', function(t) {
+      updateTimestamp();
 
-          var s = scrubber.childNodes[0].style;
-          s.transform =
-          s.WebkitTransform =
+      var s = scrubber.childNodes[0].style;
+      s.transform =
+        s.WebkitTransform =
           s.MozTransform =
-          s.msTransform = 'scale(' + (t / card.duration) + ', 1)';
-        });
-      } else {
-        var error = document.createElement('pre');
-        error.className = 'error';
-        error.appendChild(document.createTextNode(xhr.responseText || 'Network Error'));
-        document.body.appendChild(error);
-      }
-    }
+            s.msTransform = 'scale(' + (t / card.duration) + ', 1)';
+    });
   };
-  xhr.open('GET', '{{{dataSource}}}');
-  xhr.send();
+
+  // Now decide whether to get data from the remote datasource or a local file
+  var datafile = query('datafile', 'none');
+  if (datafile != 'none') {
+    var data = localStorage['vz.datafiles.' + datafile];
+    loadCardData(data);
+  }
+  else {
+    // Kick things off by fetching data
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        if (xhr.status == 200) {
+          loadCardData(xhr.responseText);
+        } else {
+          var error = document.createElement('pre');
+          error.className = 'error';
+          error.appendChild(document.createTextNode(xhr.responseText || 'Network Error'));
+          document.body.appendChild(error);
+        }
+      }
+    };
+    xhr.open('GET', '{{{dataSource}}}');
+    xhr.send();
+  }
 
   // Wire up scrubber
   var scrubberPos = function() {
@@ -83,6 +95,7 @@ var querySt = function(name, def) { return def; };
       handleScrub(e.absolute.x - scrubBase.x);
     }
   });
+
   var handleScrub = function(x) {
     var p = x / scrubBase.w;
     p = Math.max(0, p);
@@ -103,6 +116,7 @@ var querySt = function(name, def) { return def; };
     s.MozTransform =
     s.msTransform = 'scale(' + p + ', 1)';
   };
+
   var timestampTo = null;
   var updateTimestamp = function() {
     if (timestampTo !== null) return;
@@ -118,4 +132,95 @@ var querySt = function(name, def) { return def; };
       document.getElementById('timestamp').value = t;
     }, 50);
   };
+
+  var getDataFileNames = function() {
+    return localStorage['vz.datafiles'] ? localStorage['vz.datafiles'].split('|') : [];
+  };
+
+  // populate files in local storage
+  var listDataFiles = function(selectedFile) {
+
+    var datafile = selectedFile ? selectedFile : query('datafile', 'none');
+    var select = document.getElementById('datafile');
+
+    // remove existing children
+    var children = select.childNodes;
+    var len = children.length;
+    for (var i = 0; i < len; i++) {
+      // children is a 'live' list which shrinks each time we removeChild
+      select.removeChild(children[0]);
+    }
+
+    var addOption = function(name, selected) {
+      var item = document.createElement('option');
+      if (selected) {
+        item.setAttribute('selected', true);
+      }
+      item.setAttribute('value', name);
+      item.appendChild(document.createTextNode(name));
+      select.appendChild(item);
+    };
+
+    // populate list with every data file
+
+    addOption('none', datafile === 'none');
+    var filenames = getDataFileNames();
+    filenames.forEach(function(f) {
+      addOption(f, datafile === f);
+    });
+  };
+
+  var addFileToLocalStorage = function(file, data) {
+    var filenames = getDataFileNames();
+    var found = false;
+    filenames.forEach(function(f) {
+      if (f === file.name) {
+        found = true;
+      }
+    });
+    // only add this file to the list if it's not there already
+    if (!found) {
+      filenames.push(file.name);
+    }
+    localStorage['vz.datafiles'] = filenames.join('|');
+    localStorage['vz.datafiles.' + file.name] = data;
+    listDataFiles();
+  };
+
+  var clearDataFiles = function() {
+    var filenames = getDataFileNames();
+    filenames.forEach(function(file) {
+      delete localStorage['vz.datafiles.' + file];
+    });
+    delete localStorage['vz.datafiles'];
+    listDataFiles('none');
+    alert("Local data files have been cleared.");
+    document.forms[0].submit();
+  };
+
+  // Load local data file into local storage
+  var handleFileSelect = function(evt) {
+    var file = evt.target.files[0]; // FileList object
+
+    if (file.type.indexOf('text') === -1 && file.type.indexOf('json') === -1) {
+      alert('Sorry, you can only load text files');
+      return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      addFileToLocalStorage(file, reader.result);
+      listDataFiles(file.name);
+      document.forms[0].submit();
+    };
+    reader.readAsText(file);
+  };
+
+  listDataFiles();
+  document.getElementById('filechooser').addEventListener('change', handleFileSelect, false);
+  document.getElementById('datafile').addEventListener('change', function() {
+    document.forms[0].submit();
+  }, false);
+  document.getElementById('clear-files').addEventListener('click', clearDataFiles, false);
+
 })();
