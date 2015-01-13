@@ -1,6 +1,6 @@
 {
   "name": "vizify-tool",
-  "version": "1.0.31",
+  "version": "1.0.33",
   "description": "Command line tool for working with Vizify cards",
   "main": "lib/index.js",
   "scripts": {
@@ -57,6 +57,7 @@
     "istanbul": "^0.3.2",
     "supervisor": "^0.6.0",
     "jshint": "^2.5.6",
-    "whiskey": "^0.8.4"
+    "whiskey": "^0.8.4",
+    "mock-fs": "^2.3.2"
   }
 }
