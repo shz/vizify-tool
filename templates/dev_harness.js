@@ -41,6 +41,9 @@ var querySt = function(name, def) { return def; };
           s.MozTransform =
             s.msTransform = 'scale(' + (t / card.duration) + ', 1)';
     });
+
+    card.on('play', function() { updatePlayPauseButton(); });
+    card.on('pause', function() { updatePlayPauseButton(); });
   };
 
   // Now decide whether to get data from the remote datasource or a local file
@@ -145,7 +148,6 @@ var querySt = function(name, def) { return def; };
     else {
       card.play();
     }
-    updatePlayPauseButton();
   };
 
   var getDataFileNames = function() {
