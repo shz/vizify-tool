@@ -123,29 +123,29 @@ var querySt = function(name, def) { return def; };
     timestampTo = setTimeout(function() {
       timestampTo = null;
 
-      var playpause = document.getElementById('playpause');
       var t = 0;
       if (card.status == 'playing') {
         t = Date.now() - card._start + card._offset;
-        playpause.innerHTML = "Pause";
       } else {
         t = card._offset;
-        playpause.innerHTML = "Play";
       }
       document.getElementById('timestamp').value = t;
+      updatePlayPauseButton();
     }, 50);
   };
 
+  var updatePlayPauseButton = function() {
+    document.getElementById('playpause').innerHTML =  (card.status == 'playing') ? "Pause" : "Play";
+  };
+
   var handlePlayPause = function() {
-    var btn = document.getElementById('playpause');
     if (card.status == 'playing') {
       card.pause();
-      btn.innerHTML = "Play";
     }
     else {
       card.play();
-      btn.innerHTML = "Pause";
     }
+    updatePlayPauseButton();
   };
 
   var getDataFileNames = function() {
