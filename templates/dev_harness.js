@@ -104,14 +104,9 @@ var querySt = function(name, def) { return def; };
     p = Math.max(0, p);
     p = Math.min(1, p);
     var t = (card.duration * p)|0;
-    var resume = card.status == 'playing';
-    if (resume)
-      card.pause();
+    card.pause();
     card.seek(t);
-    if (resume)
-      card.play();
-    else
-      card.frame(t);
+    card.frame(t);
 
     var s = scrubber.childNodes[0].style;
     s.transform =
@@ -125,14 +120,7 @@ var querySt = function(name, def) { return def; };
     if (timestampTo !== null) return;
     timestampTo = setTimeout(function() {
       timestampTo = null;
-
-      var t = 0;
-      if (card.status == 'playing') {
-        t = Date.now() - card._start + card._offset;
-      } else {
-        t = card._offset;
-      }
-      document.getElementById('timestamp').value = t;
+      document.getElementById('timestamp').value = card.getTime();
       updatePlayPauseButton();
     }, 50);
   };
