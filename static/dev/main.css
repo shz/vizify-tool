@@ -80,3 +80,7 @@ input[type="file"] {
   outline: none;
   cursor: pointer;
 }
+
+.datasource {
+  font-size: 12pt;
+}
