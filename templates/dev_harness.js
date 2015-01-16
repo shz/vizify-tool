@@ -47,12 +47,12 @@ var querySt = function(name, def) { return def; };
   };
 
   // Now decide whether to get data from the remote datasource or a local file
-  var datafile = query('datafile', 'none');
-  if (datafile != 'none') {
-    var data = localStorage['vz.datafiles.' + datafile];
-    loadCardData(data);
-  }
-  else {
+//  var datafile = query('datafile', 'none');
+//  if (datafile != 'none') {
+//    var data = localStorage['vz.datafiles.' + datafile];
+//    loadCardData(data);
+//  }
+//  else {
     // Kick things off by fetching data
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
@@ -67,9 +67,10 @@ var querySt = function(name, def) { return def; };
         }
       }
     };
+    console.log("getting data from: {{{dataSource}}}");
     xhr.open('GET', '{{{dataSource}}}');
     xhr.send();
-  }
+//  }
 
   // Wire up scrubber
   var scrubberPos = function() {
@@ -138,95 +139,11 @@ var querySt = function(name, def) { return def; };
     }
   };
 
-  var getDataFileNames = function() {
-    return localStorage['vz.datafiles'] ? localStorage['vz.datafiles'].split('|') : [];
-  };
-
-  // populate files in local storage
-  var listDataFiles = function(selectedFile) {
-
-    var datafile = selectedFile ? selectedFile : query('datafile', 'none');
-    var select = document.getElementById('datafile');
-
-    // remove existing children
-    var children = select.childNodes;
-    var len = children.length;
-    for (var i = 0; i < len; i++) {
-      // children is a 'live' list which shrinks each time we removeChild
-      select.removeChild(children[0]);
-    }
-
-    var addOption = function(name, selected) {
-      var item = document.createElement('option');
-      if (selected) {
-        item.setAttribute('selected', true);
-      }
-      item.setAttribute('value', name);
-      item.appendChild(document.createTextNode(name));
-      select.appendChild(item);
-    };
-
-    // populate list with every data file
-
-    addOption('none', datafile === 'none');
-    var filenames = getDataFileNames();
-    filenames.forEach(function(f) {
-      addOption(f, datafile === f);
-    });
-  };
-
-  var addFileToLocalStorage = function(file, data) {
-    var filenames = getDataFileNames();
-    var found = false;
-    filenames.forEach(function(f) {
-      if (f === file.name) {
-        found = true;
-      }
-    });
-    // only add this file to the list if it's not there already
-    if (!found) {
-      filenames.push(file.name);
-    }
-    localStorage['vz.datafiles'] = filenames.join('|');
-    localStorage['vz.datafiles.' + file.name] = data;
-    listDataFiles();
-  };
-
-  var clearDataFiles = function() {
-    var filenames = getDataFileNames();
-    filenames.forEach(function(file) {
-      delete localStorage['vz.datafiles.' + file];
-    });
-    delete localStorage['vz.datafiles'];
-    listDataFiles('none');
-    alert("Local data files have been cleared.");
-    document.forms[0].submit();
-  };
-
-  // Load local data file into local storage
-  var handleFileSelect = function(evt) {
-    var file = evt.target.files[0]; // FileList object
-
-    if (file.type.indexOf('text') === -1 && file.type.indexOf('json') === -1) {
-      alert('Sorry, you can only load text files');
-      return;
-    }
-
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      addFileToLocalStorage(file, reader.result);
-      listDataFiles(file.name);
-      document.forms[0].submit();
-    };
-    reader.readAsText(file);
-  };
-
-  listDataFiles();
   document.getElementById('playpause').addEventListener('click', handlePlayPause, false);
-  document.getElementById('filechooser').addEventListener('change', handleFileSelect, false);
   document.getElementById('datafile').addEventListener('change', function() {
+    // always ignore timestamp when changing data files
+    document.getElementById('timestamp').value = 0;
     document.forms[0].submit();
   }, false);
-  document.getElementById('clear-files').addEventListener('click', clearDataFiles, false);
 
 })();
