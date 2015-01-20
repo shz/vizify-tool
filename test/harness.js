@@ -7,10 +7,6 @@ exports.testJavascript = function(test, assert) {
   async.parallel([
     function(callback) {
       harness.create('javascript', {name: 'foo', dir: dir}, function(err, result) {
-        console.log(JSON.stringify(result, null, 2));
-        if (err) {
-          console.log("yarr-error:", JSON.stringify(err, null, 2));
-        }
         assert.ifError(err);
         assert.notEqual(Object.keys(result).length, 0);
 
@@ -19,10 +15,6 @@ exports.testJavascript = function(test, assert) {
     },
     function(callback) {
       harness.create('javascript', {name: 'foo', dir: dir, development: true}, function(err, result) {
-        console.log(JSON.stringify(result, null, 2));
-        if (err) {
-          console.log("yarr-error:", JSON.stringify(err, null, 2));
-        }
         assert.ifError(err);
         assert.notEqual(Object.keys(result).length, 0);
 
