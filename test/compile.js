@@ -15,7 +15,7 @@ exports.testValid = function(test, assert) {
         assert.ifError(err);
         assert.isDefined(files);
         assert.type(files, 'object');
-        assert.equal(true, Object.keys(files).length > 1);
+        assert.equal(true, Object.keys(files).length >= 1);
       } catch (e) {
         err = e;
       }
@@ -23,6 +23,8 @@ exports.testValid = function(test, assert) {
       callback(err);
     });
   }, function(err) {
+    if (err)
+      console.log(err.stack);
     assert.ifError(err);
     test.finish(err);
   });
@@ -32,7 +34,7 @@ exports.testMissing = function(test, assert) {
   eachLang(function(language, callback) {
     compile.compileCard({dir: dir + '/foo', name: 'foo-bar'}, language, callback);
   }, function(err) {
-    assert.ifError(err);
+    assert.isDefined(err);
 
     test.finish();
   });
