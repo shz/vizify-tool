@@ -96,7 +96,10 @@ var querySt = function(name, def) { return def; };
 
   document.addEventListener('keydown', function (e) {
     var tickDelta;
-    if (e.keyCode === 39) {
+    if (e.keyCode === 32) {
+      handlePlayPause();
+      return;
+    } else if (e.keyCode === 39) {
       tickDelta = MILLISECONDS_PER_FRAME;
     } else if (e.keyCode === 37) {
       tickDelta = -MILLISECONDS_PER_FRAME;
