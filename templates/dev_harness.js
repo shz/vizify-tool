@@ -46,31 +46,23 @@ var querySt = function(name, def) { return def; };
     card.on('pause', function() { updatePlayPauseButton(); });
   };
 
-  // Now decide whether to get data from the remote datasource or a local file
-//  var datafile = query('datafile', 'none');
-//  if (datafile != 'none') {
-//    var data = localStorage['vz.datafiles.' + datafile];
-//    loadCardData(data);
-//  }
-//  else {
-    // Kick things off by fetching data
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4) {
-        if (xhr.status == 200) {
-          loadCardData(xhr.responseText);
-        } else {
-          var error = document.createElement('pre');
-          error.className = 'error';
-          error.appendChild(document.createTextNode(xhr.responseText || 'Network Error'));
-          document.body.appendChild(error);
-        }
+  // Kick things off by fetching data
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4) {
+      if (xhr.status == 200) {
+        loadCardData(xhr.responseText);
+      } else {
+        var error = document.createElement('pre');
+        error.className = 'error';
+        error.appendChild(document.createTextNode(xhr.responseText || 'Network Error'));
+        document.body.appendChild(error);
       }
-    };
-    console.log("getting data from: {{{dataSource}}}");
-    xhr.open('GET', '{{{dataSource}}}');
-    xhr.send();
-//  }
+    }
+  };
+  console.log("getting data from: {{{dataSource}}}");
+  xhr.open('GET', '{{{dataSource}}}');
+  xhr.send();
 
   // Wire up scrubber
   var scrubberPos = function() {
