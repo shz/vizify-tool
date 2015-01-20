@@ -2,6 +2,8 @@
 var querySt = function(name, def) { return def; };
 
 (function() {
+  var MILLISECONDS_PER_FRAME = 1000 / 60;
+
   var queryString = {};
   window.location.search.substr(1).split('&').map(function(s) {
     return s.split('=').map(decodeURIComponent);
@@ -97,6 +99,22 @@ var querySt = function(name, def) { return def; };
 
       handleScrub(e.absolute.x - scrubBase.x);
     }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var tickDelta;
+    if (e.keyCode === 39) {
+      tickDelta = MILLISECONDS_PER_FRAME;
+    } else if (e.keyCode === 37) {
+      tickDelta = -MILLISECONDS_PER_FRAME;
+    } else {
+      return;
+    }
+    var duration = card.duration;
+    var playHead = Math.max(0, Math.min(card.getTime() + tickDelta, duration));
+    var p = playHead / duration;
+    scrubberPos();
+    handleScrub(p * scrubBase.w);
   });
 
   var handleScrub = function(x) {
