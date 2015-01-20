@@ -80,7 +80,7 @@ test_dir=${TEST_RESULTS_DIR:-$TEST_DIR}
 files=`find test -name \\*.js | grep -v '/util' | grep -v '/browser' | xargs echo`
 test_opts="--concurrency 10"
 if [ -n "$test_dir" ]; then
-  node_modules/.bin/whiskey $coverage_opts $test_opts --test-reporter tap --independent-tests "$files" | sed "s/^[ \t]*//" | tee ${test_dir}/results.tap
+  node_modules/.bin/whiskey $coverage_opts $test_opts --test-reporter cli --independent-tests "$files" | sed "s/^[ \t]*//" | tee ${test_dir}/results.tap
 else
   mode='--tests'
   if [ $fast -ne 0 ]; then
