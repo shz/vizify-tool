@@ -52,7 +52,8 @@
     "mime": "^1.2.11",
     "acorn": "^0.9.0",
     "escodegen": "^1.4.1",
-    "mkdirp": "^0.5.0"
+    "mkdirp": "^0.5.0",
+    "tmp": "0.0.24"
   },
   "devDependencies": {
     "istanbul": "^0.3.2",
