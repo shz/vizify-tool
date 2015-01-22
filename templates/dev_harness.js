@@ -2,6 +2,8 @@
 var querySt = function(name, def) { return def; };
 
 (function() {
+  var MILLISECONDS_PER_FRAME = 1000 / 60;
+
   var queryString = {};
   window.location.search.substr(1).split('&').map(function(s) {
     return s.split('=').map(decodeURIComponent);
@@ -46,31 +48,23 @@ var querySt = function(name, def) { return def; };
     card.on('pause', function() { updatePlayPauseButton(); });
   };
 
-  // Now decide whether to get data from the remote datasource or a local file
-//  var datafile = query('datafile', 'none');
-//  if (datafile != 'none') {
-//    var data = localStorage['vz.datafiles.' + datafile];
-//    loadCardData(data);
-//  }
-//  else {
-    // Kick things off by fetching data
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4) {
-        if (xhr.status == 200) {
-          loadCardData(xhr.responseText);
-        } else {
-          var error = document.createElement('pre');
-          error.className = 'error';
-          error.appendChild(document.createTextNode(xhr.responseText || 'Network Error'));
-          document.body.appendChild(error);
-        }
+  // Kick things off by fetching data
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4) {
+      if (xhr.status == 200) {
+        loadCardData(xhr.responseText);
+      } else {
+        var error = document.createElement('pre');
+        error.className = 'error';
+        error.appendChild(document.createTextNode(xhr.responseText || 'Network Error'));
+        document.body.appendChild(error);
       }
-    };
-    console.log("getting data from: {{{dataSource}}}");
-    xhr.open('GET', '{{{dataSource}}}');
-    xhr.send();
-//  }
+    }
+  };
+  console.log("getting data from: {{{dataSource}}}");
+  xhr.open('GET', '{{{dataSource}}}');
+  xhr.send();
 
   // Wire up scrubber
   var scrubberPos = function() {
@@ -98,6 +92,25 @@ var querySt = function(name, def) { return def; };
 
       handleScrub(e.absolute.x - scrubBase.x);
     }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var tickDelta;
+    if (e.keyCode === 32) {
+      handlePlayPause();
+      return;
+    } else if (e.keyCode === 39) {
+      tickDelta = MILLISECONDS_PER_FRAME;
+    } else if (e.keyCode === 37) {
+      tickDelta = -MILLISECONDS_PER_FRAME;
+    } else {
+      return;
+    }
+    var duration = card.duration;
+    var playHead = Math.max(0, Math.min(card.getTime() + tickDelta, duration));
+    var p = playHead / duration;
+    scrubberPos();
+    handleScrub(p * scrubBase.w);
   });
 
   var handleScrub = function(x) {
