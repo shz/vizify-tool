@@ -78,7 +78,7 @@ fi
 # Run node.js tests
 test_dir=${TEST_RESULTS_DIR:-$TEST_DIR}
 files=`find test -name \\*.js | grep -v '/util' | grep -v '/browser' | xargs echo`
-test_opts="--concurrency 10"
+test_opts="--concurrency 1"
 if [ -n "$test_dir" ]; then
   node_modules/.bin/whiskey $coverage_opts $test_opts --test-reporter tap --independent-tests "$files" | sed "s/^[ \t]*//" | tee ${test_dir}/results.tap
 else
