@@ -50,6 +50,7 @@ export extern vizify {
 
   method translate(c : Canvas, x:float, y:float)
   method scale(c : Canvas, x:float, y:float)
+  method rotate(c : Canvas, angleInRadians:float)
 
   method arc(c : Canvas, xOrb:float, yOrb:float, radius:float, angleStart:float, angleEnd:float, counterClockwise:bool)
   method rect(c : Canvas, x : float, y : float, w : float, h : float)
