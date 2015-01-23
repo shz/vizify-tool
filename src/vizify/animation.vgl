@@ -57,6 +57,12 @@ export method translate(a : Animation<'T>, xMax : float, yMax : float) : RenderC
   })
 }
 
+export method rotate(a : Animation<'T>, angleMax : float) : RenderContext<'T> {
+  return a.perform(lambda(c : Canvas, v : float) {
+    c.rotate(v*angleMax)
+  })
+}
+
 # Scales X from 0 to xMax
 # Scales Y from 0 to yMax
 export method scale(a : Animation<'T>, xMax : float, yMax : float) : RenderContext<'T> {
