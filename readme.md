@@ -39,6 +39,8 @@ root-folder/
   card.json - Card spec
   src/
     main.vgl - Entry point, must export: function main(json : str)
+  img/ - In this folder, place all images that must be packaged with the card.
+  sample-data/ - In this folder, place JSON payloads for use during development/diagnostics.
 ```
 
 #### `card.json`
