@@ -90,5 +90,11 @@ exports.testGetDataUrls = function(test, assert) {
   result = json.getDataUrls(data);
   assert.equal(result.length, 2);
 
+  data = {data: {'foo': true}};
+  result = json.getDataUrls(data, 'production', 'localhost:3000');
+  assert.equal(result.length, 1);
+  assert.match(result[0], /^https:\/\/localhost:3000/);
+
+
   test.finish();
 };
