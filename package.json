@@ -1,6 +1,6 @@
 {
   "name": "vizify-tool",
-  "version": "1.0.41",
+  "version": "1.0.52",
   "description": "Command line tool for working with Vizify cards",
   "main": "lib/index.js",
   "scripts": {
@@ -44,7 +44,7 @@
     "async": "^0.9.0",
     "minimist": "^1.1.0",
     "mustache": "^0.8.2",
-    "omnistor": "^1.1.8",
+    "omnistor": "^2.0.0",
     "sugar": "^1.4.1",
     "virgil": "^0.9.41",
     "vizify-javascript": "^1.0.21",
@@ -53,13 +53,15 @@
     "acorn": "^0.9.0",
     "escodegen": "^1.4.1",
     "mkdirp": "^0.5.0",
-    "tmp": "0.0.24"
+    "tmp": "0.0.24",
+    "shelljs": "^0.3.0"
   },
   "devDependencies": {
     "istanbul": "^0.3.2",
-    "supervisor": "^0.6.0",
     "jshint": "^2.5.6",
-    "whiskey": "^0.8.4",
-    "mock-fs": "^2.3.2"
+    "mock-fs": "^2.3.2",
+    "stream-buffers": "~1.1.0",
+    "supervisor": "^0.6.0",
+    "whiskey": "^0.8.4"
   }
 }
