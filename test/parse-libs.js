@@ -6,7 +6,7 @@ exports.testAll = function(test, assert) {
   var libs = parseLibs();
   assert.equal(libs.length, 1);
   assert.match(libs[0], /\/src$/);
-  
+
   // a single path should be first element of returned array w/ default path the second
   libs = parseLibs('foo/bar');
   assert.equal(libs.length, 2);
