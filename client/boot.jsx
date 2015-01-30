@@ -9,7 +9,8 @@ module.exports = function(opts) {
     query[a[0]] = a[1];
   });
 
-  opts.initialTime = parseFloat(query.t);
+  opts.initialTime = query.t ? parseFloat(query.t) : null;
+  opts.initialTime = isNaN(opts.initialTime) ? null : opts.initialTime;
 
   var dataSource = opts.dataSource;
   // Kick things off by fetching data

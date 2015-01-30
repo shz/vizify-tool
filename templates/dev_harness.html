@@ -4,37 +4,17 @@
     <link rel="stylesheet" href="/dev/main.css">
   </head>
   <body>
-    <form id="holder">
-      <div id="scrubber"><div></div></div>
-      <label id="playpause">Pause</label>
-      <label>
-        Current timestamp:
-        <input id="timestamp" name="t" readonly>
-      </label>
-
-      <div id="uselocalfile">
-          <label id="uselocalfile">Test Data File:
-            <select name="datafile" id="datafile">
-              <option value="none">None</option>
-              {{#testDataFiles}}
-                <option value="{{name}}" {{#selected}}selected{{/selected}}>{{name}}</option>
-              {{/testDataFiles}}
-            </select>
-          </label>
-      </div>
-
-      <p>
-      </p>
-
-      <input type="submit" value="Save">
-    </form>
-
-    <p class="datasource">Datasource: <a target="_blank" href="{{{dataSource}}}">{{{dataSource}}}</a></p>
-    <p><a href="/production">Production preview</a></p>
-
-    <script src="/dev/vztouch.js"></script>
+    <!--<script src="/dev/vztouch.js"></script>-->
+    <script src="/dev/react.js"></script>
     <script src="vizify.js"></script>
     <script src="card.js"></script>
     <script src="show.js"></script>
+    <div id="app-opts" data-payload="{{opts}}"></div>
+    <script>
+      (function () {
+        var data = JSON.parse(document.getElementById('app-opts').dataset.payload);
+        boot(data);
+      }());
+    </script>
   </body>
 </html>
