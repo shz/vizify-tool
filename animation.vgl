@@ -112,9 +112,9 @@ export method until(rc : RenderContext<'T>, amount : int) : RenderContext<'T> {
 
 
 
-# This is a candidate for being refactored to a new name:  apply
 
-export method draw(rc : RenderContext<'T>, f : func<RenderContext<'T>, void>) {
+
+export method apply(rc : RenderContext<'T>, f : func<RenderContext<'T>, void>) {
   # Sanity check on duration
   if rc.config.end > 0 && rc.config.duration > -1 {
     # TODO: throw new Error('This chain has both an end time and a duration, which is invalid')
