@@ -1,4 +1,5 @@
 var update = React.addons.update;
+var StoreMixin = require('fluxible').StoreMixin;
 
 var Vizify = window.vizify.react.VizifyComponent;
 var Scrubber = require('./scrubber.jsx');
@@ -6,11 +7,17 @@ var Scrubber = require('./scrubber.jsx');
 var CardPlayerActions = require('../actions/card-player-actions');
 var CardPlayerStateStore = require('../stores/card-player-state-store');
 
-var CardPlayerComponent = module.exports = React.createClass({
+var CardPlayerComponent = React.createClass({
+  mixins: [StoreMixin],
+  statics: {
+    storeListeners: {
+      onPlayerStateStoreUpdate: CardPlayerStateStore
+    }
+  },
   displayName: "CardPlayer",
 
   getInitialState: function() {
-    var playerState = CardPlayerStateStore.playerState;
+    var playerState = this.props.context.getStore(CardPlayerStateStore).getState();
     var state = update({}, {$merge: playerState});
 
     var testDataFiles = this.props.testDataFiles;
@@ -42,38 +49,25 @@ var CardPlayerComponent = module.exports = React.createClass({
   },
 
   componentDidMount: function() {
-    CardPlayerStateStore.addChangeListener(this.onPlayerStateChanged);
-
     // This is when we get our reference to the card object.
     var card = this.refs.vizify.card;
     this.syncWithCard();
 
     // Is this cheating?
-    CardPlayerStateStore.playerState.duration = card.duration;
-  },
-
-  componentWillUnmount: function() {
-    CardPlayerStateStore.removeChangeListener(this.onPlayerStateChanged);
+    this.props.context.getStore(CardPlayerStateStore).playerState.duration = card.duration;
   },
 
   componentDidUpdate: function(prevProps, prevState) {
     var card = this.refs.vizify.card;
 
-    if (prevState.time !== this.state.time) {
-      if (this.state.isPaused) {
-        card.seek(this.state.time);
-        card.frame(this.state.time);
-      }
-    }
-
-    if (this.state.isPaused !== prevState.isPaused) {
-      if (this.state.isPaused) {
-        card.pause();
-      } else {
-        card.seek(this.state.time);
-        card.play();
-        this.syncWithCard();
-      }
+    if (this.state.isPaused) {
+      card.pause();
+      card.seek(this.state.time);
+      card.frame(this.state.time);
+    } else if (this.state.isPaused !== prevState.isPaused) {
+      card.seek(this.state.time);
+      card.play();
+      this.syncWithCard();
     }
   },
 
@@ -83,7 +77,7 @@ var CardPlayerComponent = module.exports = React.createClass({
       if (this.state.isPaused) {
         return;
       }
-      CardPlayerActions.updateFrame(card.getTime());
+      this.props.context.executeAction(CardPlayerActions.updateFrame, card.getTime());
       requestAnimationFrame(sync);
     }).bind(this);
     requestAnimationFrame(sync);
@@ -101,7 +95,7 @@ var CardPlayerComponent = module.exports = React.createClass({
           {card}
         </div>
         <form id="holder">
-          <Scrubber duration={this.state.duration} time={this.state.time} />
+          <Scrubber context={this.props.context} duration={this.state.duration} time={this.state.time} />
           <button id="playpause" onClick={this.togglePause}>
             {this.state.isEnded ? "Replay" :
               (this.state.isPaused ? "Play" : "Pause")}
@@ -129,8 +123,8 @@ var CardPlayerComponent = module.exports = React.createClass({
     );
   },
 
-  onPlayerStateChanged: function() {
-    this.updateState({$merge: CardPlayerStateStore.playerState});
+  onPlayerStateStoreUpdate: function() {
+    this.updateState({$merge: this.props.context.getStore(CardPlayerStateStore).getState()});
   },
 
   onDataFileChange: function(e) {
@@ -142,7 +136,9 @@ var CardPlayerComponent = module.exports = React.createClass({
   togglePause: function(e) {
     e.stopPropagation();
     e.preventDefault();
-    CardPlayerActions.togglePlayPause();
+    this.props.context.executeAction(CardPlayerActions.togglePlayPause);
   }
 
 });
+
+module.exports = CardPlayerComponent;

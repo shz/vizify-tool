@@ -1,30 +1,21 @@
-var AppDispatcher = require('../dispatcher');
-
 module.exports = {
-  togglePlayPause: function () {
-    AppDispatcher.dispatch({
-      actionType: "CardPlayerTogglePlayPause"
-    });
+  togglePlayPause: function(context, payload, done) {
+    context.dispatch("CardPlayerTogglePlayPause", {});
+    done();
   },
 
-  updateFrame: function (t) {
-    AppDispatcher.dispatch({
-      actionType: "CardPlayerUpdateFrame",
-      time: t
-    });
+  updateFrame: function(context, t, done) {
+    context.dispatch("CardPlayerUpdateFrame", {time: t});
+    done();
   },
 
-  seek: function(position) {
-    AppDispatcher.dispatch({
-      actionType: "CardPlayerSeek",
-      position: position
-    });
+  seek: function(context, position, done) {
+    context.dispatch("CardPlayerSeek", {position: position});
+    done();
   },
 
-  seekToTime: function(time) {
-    AppDispatcher.dispatch({
-      actionType: "CardPlayerSeekToTime",
-      time: time
-    })
+  seekToTime: function(context, time, done) {
+    context.dispatch("CardPlayerSeekToTime", {time: time});
+    done();
   }
 };
