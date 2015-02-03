@@ -14,15 +14,19 @@ var CardPlayerComponent = module.exports = React.createClass({
     var state = update({}, {$merge: playerState});
 
     var testDataFiles = this.props.testDataFiles;
-    for (var dataFile in testDataFiles) {
-      if (testDataFiles.hasOwnProperty(dataFile)) {
-        if (testDataFiles[dataFile].selected) {
-          state.dataFile = testDataFiles[dataFile].name;
-          break;
+    if (testDataFiles) {
+      for (var dataFile in testDataFiles) {
+        if (testDataFiles.hasOwnProperty(dataFile)) {
+          if (testDataFiles[dataFile].selected) {
+            state.dataFile = testDataFiles[dataFile].name;
+            break;
+          }
         }
       }
     }
-
+    else {
+      this.props.testDataFiles = [];
+    }
     return state;
   },
 

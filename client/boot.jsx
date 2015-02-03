@@ -27,8 +27,13 @@ module.exports = function(opts) {
       }
     }
   };
-  console.log("getting data from:", dataSource);
-  xhr.open('GET', dataSource);
-  xhr.send();
-
+  if (dataSource) {
+    console.log("getting data from:", dataSource);
+    xhr.open('GET', dataSource);
+    xhr.send();
+  }
+  else {
+    // no datasource so just instantiate the app with no data
+    React.render(<App {...opts} cardData={"{}"}/>, document.body);
+  }
 };
