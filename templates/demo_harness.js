@@ -33,7 +33,7 @@ var querySt = function(name, def) { return def; };
     }, 20);
   }, false);
 
-  var card = window.card = new vizify.Card(canvas, {{entryPoint}}, "{}");
+  var card = window.card = new vizify.Card(canvas, {{entryPoint}}, JSON.stringify(window.vizifyData));
   card.load(function() {
     card.play();
   });
