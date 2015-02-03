@@ -21,7 +21,6 @@ var CardPlayerComponent = React.createClass({
     var state = update({}, {$merge: playerState});
 
     var testDataFiles = this.props.testDataFiles;
-    if (testDataFiles) {
       for (var dataFile in testDataFiles) {
         if (testDataFiles.hasOwnProperty(dataFile)) {
           if (testDataFiles[dataFile].selected) {
@@ -30,10 +29,6 @@ var CardPlayerComponent = React.createClass({
           }
         }
       }
-    }
-    else {
-      this.props.testDataFiles = [];
-    }
     return state;
   },
 
