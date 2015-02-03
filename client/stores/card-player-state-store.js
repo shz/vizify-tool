@@ -1,90 +1,71 @@
-var util = require('util');
-var events = require('events');
-var AppDispatcher = require('../dispatcher');
+var createStore = require('fluxible/utils/createStore');
+var CardPlayerStateStore = createStore({
+  storeName: 'CardPlayerStateStore',
 
-// Class definition
-var CardPlayerStateStore = (function() {
-  function CardPlayerStateStore() {
-    events.EventEmitter.call(this);
+  initialize: function() {
     this.playerState = {
       isEnded: false,
       isPaused: false,
       time: 0
     }
-  }
+  },
 
-  util.inherits(CardPlayerStateStore, events.EventEmitter);
+  handlers: {
+    CardPlayerTogglePlayPause: 'handleTogglePlayPause',
+    CardPlayerUpdateFrame: 'handleUpdateFrame',
+    CardPlayerSeek: 'handleSeek',
+    CardPlayerSeekToTime: 'handleSeekToTime'
+  },
 
-  CardPlayerStateStore.CHANGE_EVENT = 'change';
+  handleTogglePlayPause: function() {
+    if (this.playerState.isEnded) {
+      this.playerState.time = 0;
+      this.playerState.isPaused = false;
+      this.playerState.isEnded = false;
+    } else {
+      this.playerState.isPaused = !this.playerState.isPaused;
+    }
+    this.emitChange();
+  },
 
-  CardPlayerStateStore.prototype.addChangeListener = function(callback) {
-    this.on(CardPlayerStateStore.CHANGE_EVENT, callback);
-  };
+  handleUpdateFrame: function(payload) {
+    if (this.playerState.isPaused) {
+      return;
+    }
 
-  CardPlayerStateStore.prototype.removeChangeListener = function(callback) {
-    this.removeListener(CardPlayerStateStore.CHANGE_EVENT, callback);
-  };
+    this.playerState.time = payload.time;
+    if (this.playerState.duration && this.playerState.time === this.playerState.duration) {
+      this.playerState.isPaused = true;
+      this.playerState.isEnded = true;
+    }
+    this.emitChange();
+  },
 
-  CardPlayerStateStore.prototype.emitChange = function() {
-    this.emit(CardPlayerStateStore.CHANGE_EVENT);
-  };
+  handleSeek: function(payload) {
+    if (!this.playerState.duration) {
+      return;
+    }
+    this.handleSeekToTime({time: Math.floor(payload.position * this.playerState.duration)});
+  },
 
-  return CardPlayerStateStore;
-}());
+  handleSeekToTime: function(payload) {
+    if (!this.playerState.duration) {
+      return;
+    }
+    this.playerState.time = Math.max(0, Math.min(this.playerState.duration, payload.time));
+    this.playerState.isPaused = true;
 
+    if (this.playerState.duration && this.playerState.time === this.playerState.duration) {
+      this.playerState.isEnded = true;
+    } else {
+      this.playerState.isEnded = false;
+    }
 
-// Create an instance and export it
-var storeInstance = new CardPlayerStateStore();
-module.exports = storeInstance;
+    this.emitChange();
+  },
 
-
-// Register callback to handle all updates
-storeInstance.dispatchToken = AppDispatcher.register(function(action) {
-  if (actionHandlers.hasOwnProperty(action.actionType)) {
-    actionHandlers[action.actionType](action);
+  getState: function() {
+    return this.playerState;
   }
 });
-var actionHandlers = {
-  CardPlayerTogglePlayPause: function(action) {
-    if (storeInstance.playerState.isEnded) {
-      storeInstance.playerState.time = 0;
-      storeInstance.playerState.isPaused = false;
-      storeInstance.playerState.isEnded = false;
-    } else {
-      storeInstance.playerState.isPaused = !storeInstance.playerState.isPaused;
-    }
-    storeInstance.emitChange();
-  },
-
-  CardPlayerUpdateFrame: function(action) {
-    storeInstance.playerState.time = action.time;
-    if (storeInstance.playerState.duration && storeInstance.playerState.time === storeInstance.playerState.duration) {
-      storeInstance.playerState.isPaused = true;
-      storeInstance.playerState.isEnded = true;
-    }
-    storeInstance.emitChange();
-  },
-
-  CardPlayerSeek: function(action) {
-    if (!storeInstance.playerState.duration) {
-      return;
-    }
-    this.CardPlayerSeekToTime({time: Math.floor(action.position * storeInstance.playerState.duration)});
-  },
-
-  CardPlayerSeekToTime: function(action) {
-    if (!storeInstance.playerState.duration) {
-      return;
-    }
-    storeInstance.playerState.time = Math.max(0, Math.min(storeInstance.playerState.duration, action.time));
-    storeInstance.playerState.isPaused = true;
-
-    if (storeInstance.playerState.duration && storeInstance.playerState.time === storeInstance.playerState.duration) {
-      storeInstance.playerState.isEnded = true;
-    } else {
-      storeInstance.playerState.isEnded = false;
-    }
-
-    storeInstance.emitChange();
-  }
-};
+module.exports = CardPlayerStateStore;

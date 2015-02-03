@@ -43,7 +43,7 @@ var ScrubberComponent = module.exports = React.createClass({
     var scrubberPos = this.scrubberPos();
     var railOriginX = scrubberPos.x;
     var completionRate = Math.max(0, Math.min(1, (clientX - railOriginX) / scrubberPos.w));
-    CardPlayerActions.seek(completionRate);
+    this.props.context.executeAction(CardPlayerActions.seek, completionRate);
   },
 
   scrubberPos: function() {
@@ -61,11 +61,11 @@ var ScrubberComponent = module.exports = React.createClass({
 
   keyDown: function(e) {
     if (e.keyCode === 32) {
-      CardPlayerActions.togglePlayPause();
+      this.props.context.executeAction(CardPlayerActions.togglePlayPause);
     } else if (e.keyCode === 39) {
-      CardPlayerActions.seekToTime(this.props.time + 16);
+      this.props.context.executeAction(CardPlayerActions.seekToTime, this.props.time + 16);
     } else if (e.keyCode === 37) {
-      CardPlayerActions.seekToTime(this.props.time - 16);
+      this.props.context.executeAction(CardPlayerActions.seekToTime, this.props.time - 16);
     }
   }
 

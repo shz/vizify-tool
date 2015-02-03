@@ -1,5 +1,11 @@
-var App = require('./components/app.jsx');
-var CardPlayerStateStore = require('./stores/card-player-state-store');
+'use strict';
+var FluxibleApp = require('fluxible');
+
+var app = new FluxibleApp({
+  appComponent: React.createFactory(require('./components/app.jsx'))
+});
+app.registerStore(require('./stores/card-player-state-store'));
+
 
 module.exports = function(opts) {
   var query = {};
@@ -12,13 +18,25 @@ module.exports = function(opts) {
   opts.initialTime = query.t ? parseFloat(query.t) : null;
   opts.initialTime = isNaN(opts.initialTime) ? null : opts.initialTime;
 
+  var App = app.getAppComponent();
   var dataSource = opts.dataSource;
+
+  var loadApp = function(data) {
+    app.rehydrate({context: {}}, function(err, context) {
+      if (err) {
+        throw err;
+      }
+      window.context = context;
+      React.render(<App {...opts} context={context.getComponentContext()} cardData={data} />, document.body);
+    });
+  }
+
   // Kick things off by fetching data
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4) {
       if (xhr.status == 200) {
-        React.render(<App {...opts} cardData={xhr.responseText}/>, document.body);
+        loadApp(xhr.responseText);
       } else {
         var error = document.createElement('pre');
         error.className = 'error';
@@ -27,13 +45,14 @@ module.exports = function(opts) {
       }
     }
   };
+
   if (dataSource) {
-    console.log("getting data from:", dataSource);
+    console.log("Loading app with data from: ", dataSource);
     xhr.open('GET', dataSource);
     xhr.send();
   }
   else {
-    // no datasource so just instantiate the app with no data
-    React.render(<App {...opts} cardData={"{}"}/>, document.body);
+    console.log("Loading app with no data");
+    loadApp("{}");
   }
 };
