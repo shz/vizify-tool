@@ -50,6 +50,7 @@
     "minimist": "^1.1.0",
     "mkdirp": "^0.5.0",
     "mustache": "^0.8.2",
+    "node-uuid": "^1.4.2",
     "omnistor": "^2.0.0",
     "shelljs": "^0.3.0",
     "sugar": "^1.4.1",

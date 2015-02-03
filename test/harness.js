@@ -20,9 +20,18 @@ exports.testJavascript = function(test, assert) {
 
         callback();
       });
-    },
+    }
   ], function(err) {
     assert.ifError(err);
+    test.finish();
+  });
+};
+
+exports.testDemo = function(test, assert) {
+
+  harness.create('javascript', {mode: 'demo', name: 'foo', dir: dir}, function(err, result) {
+    assert.ifError(err);
+    assert.notEqual(Object.keys(result).length, 0);
     test.finish();
   });
 };
@@ -43,7 +52,7 @@ exports.testCpp = function(test, assert) {
 
         callback();
       });
-    },
+    }
   ], function(err) {
     assert.ifError(err);
     test.finish();
