@@ -5,22 +5,29 @@ var ScrubberComponent = module.exports = React.createClass({
   displayName: "Scrubber",
 
   componentDidMount: function() {
-    document.addEventListener("mouseup", this.mouseUp);
-    document.addEventListener("mousemove", this.mouseMove);
-    document.addEventListener("keydown", this.keyDown);
+    window.document.addEventListener("keydown", this.keyDown);
+    var self = this;
+    this.removeTouchHandlers = window.vz.touch(this.getDOMNode(), {dragDirection: 'horizontal'}, {
+      click: function(e) {
+        self.scrub(e.absolute.x);
+      },
+      drag: function(e) {
+        self.scrub(e.absolute.x);
+      }
+    });
+
   },
 
   componentWillUnmount: function() {
-    document.removeEventListener("mouseup", this.mouseUp);
-    document.removeEventListener("mousemove", this.mouseMove);
-    document.removeEventListener("keydown", this.keyDown);
+    window.document.removeEventListener("keydown", this.keyDown);
+    this.removeTouchHandlers();
   },
 
   render: function() {
     var completionRate = this.props.duration ? (this.props.time / this.props.duration) : 0;
     var scale = 'scale(' + completionRate + ', 1)';
     return (
-      <div id="scrubber" onMouseDown={this.mouseDown}>
+      <div id="scrubber">
         <div style={{
           transform: scale,
           WebkitTransform: scale,
@@ -39,39 +46,6 @@ var ScrubberComponent = module.exports = React.createClass({
     CardPlayerActions.seek(completionRate);
   },
 
-  mouseDown: function(e) {
-    this.scrub(e.clientX);
-    document.body.classList.add("unselectable");
-    this.drag = {
-      startX: e.clientX
-    };
-  },
-
-  mouseUp: function(e) {
-    if (!this.drag) {
-      return;
-    }
-    this.drag = null;
-    document.body.classList.remove("unselectable");
-  },
-
-  mouseMove: function(e) {
-    if (!this.drag) {
-      return;
-    }
-    this.scrub(e.clientX);
-  },
-
-  keyDown: function(e) {
-    if (e.keyCode === 32) {
-      CardPlayerActions.togglePlayPause();
-    } else if (e.keyCode === 39) {
-      CardPlayerActions.seekToTime(this.props.time + 16);
-    } else if (e.keyCode === 37) {
-      CardPlayerActions.seekToTime(this.props.time - 16);
-    }
-  },
-
   scrubberPos: function() {
     var x = 0;
     var y = 0;
@@ -83,6 +57,16 @@ var ScrubberComponent = module.exports = React.createClass({
     }
 
     return {x: x, y: y, w: rail.offsetWidth};
+  },
+
+  keyDown: function(e) {
+    if (e.keyCode === 32) {
+      CardPlayerActions.togglePlayPause();
+    } else if (e.keyCode === 39) {
+      CardPlayerActions.seekToTime(this.props.time + 16);
+    } else if (e.keyCode === 37) {
+      CardPlayerActions.seekToTime(this.props.time - 16);
+    }
   }
 
 });
