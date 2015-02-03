@@ -17,6 +17,7 @@ module.exports = function(opts) {
 
   opts.initialTime = query.t ? parseFloat(query.t) : null;
   opts.initialTime = isNaN(opts.initialTime) ? null : opts.initialTime;
+  opts.testDataFiles = opts.testDataFiles || [];
 
   var App = app.getAppComponent();
   var dataSource = opts.dataSource;
