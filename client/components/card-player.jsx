@@ -135,6 +135,7 @@ var CardPlayerComponent = React.createClass({
     this.updateState({
       dataFile: {$set: e.target.value}
     });
+    document.forms[0].submit();
   },
 
   togglePause: function(e) {
