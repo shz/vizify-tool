@@ -21,20 +21,22 @@ module.exports = function(opts) {
   var App = app.getAppComponent();
   var dataSource = opts.dataSource;
 
+  var loadApp = function(data) {
+    app.rehydrate({context: {}}, function(err, context) {
+      if (err) {
+        throw err;
+      }
+      window.context = context;
+      React.render(<App {...opts} context={context.getComponentContext()} cardData={data} />, document.body);
+    });
+  }
+
   // Kick things off by fetching data
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4) {
       if (xhr.status == 200) {
-        app.rehydrate({context: {}}, function(err, context) {
-          if (err) {
-            throw err;
-          }
-
-          window.context = context;
-
-          React.render(<App {...opts} context={context.getComponentContext()} cardData={xhr.responseText} />, document.body);
-        });
+        loadApp(xhr.responseText);
       } else {
         var error = document.createElement('pre');
         error.className = 'error';
@@ -43,7 +45,14 @@ module.exports = function(opts) {
       }
     }
   };
-  console.log("getting data from:", dataSource);
-  xhr.open('GET', dataSource);
-  xhr.send();
+
+  if (dataSource) {
+    console.log("Loading app with data from: ", dataSource);
+    xhr.open('GET', dataSource);
+    xhr.send();
+  }
+  else {
+    console.log("Loading app with no data");
+    loadApp("{}");
+  }
 };
