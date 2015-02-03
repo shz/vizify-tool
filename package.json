@@ -1,9 +1,10 @@
 {
   "name": "vizify-tool",
-  "version": "1.0.72",
+  "version": "1.1.0",
   "description": "Command line tool for working with Vizify cards",
   "main": "lib/index.js",
   "scripts": {
+    "build": "./script/build.sh",
     "test": "./script/test.sh",
     "lint": "./script/lint.sh"
   },
@@ -41,26 +42,30 @@
     }
   },
   "dependencies": {
+    "acorn": "^0.9.0",
     "async": "^0.9.0",
-    "minimist": "^1.1.0",
-    "mustache": "^0.8.2",
-    "omnistor": "^2.0.0",
-    "sugar": "^1.4.1",
-    "virgil": "^0.9.41",
-    "vizify-javascript": "^1.0.21",
+    "escodegen": "^1.4.1",
     "esmangle": "^1.0.1",
     "mime": "^1.2.11",
-    "acorn": "^0.9.0",
-    "escodegen": "^1.4.1",
+    "minimist": "^1.1.0",
     "mkdirp": "^0.5.0",
-    "tmp": "0.0.24",
+    "mustache": "^0.8.2",
+    "node-uuid": "^1.4.2",
+    "omnistor": "^2.0.0",
     "shelljs": "^0.3.0",
-    "node-uuid": "^1.4.2"
+    "sugar": "^1.4.1",
+    "tmp": "0.0.24",
+    "virgil": "^0.9.41",
+    "vizify-javascript": "^1.2.0"
   },
   "devDependencies": {
+    "browserify": "~8.1.1",
+    "flux": "^2.0.1",
     "istanbul": "^0.3.2",
     "jshint": "^2.5.6",
     "mock-fs": "^2.3.2",
+    "react": "~0.12.2",
+    "reactify": "~1.0.0",
     "stream-buffers": "~1.1.0",
     "supervisor": "^0.6.0",
     "whiskey": "^0.8.4"
