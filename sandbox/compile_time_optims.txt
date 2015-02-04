@@ -1,0 +1,24 @@
+Debugging compile times
+
+Full = 5.85s
+Frameworks/glfw = 5.6s
+Empty main.cpp = 2.4s
+Only includes main.cpp = 5.6s
+No include vizify, empty main.cpp = 0.6s
+No include vizify, only includes main.cpp
+
+GLFW include time: none
+STDlib include time: 0.2s
+vizify include time: 0.3s
+gwv include time: 3s
+$(SOURCES) compile time: 1.8s
+
+So the meat of all the delay comes from gwv.  Explorations
+in preventing includes (deltas):
+
+director: 3s
+drawers: 2s
+renderers_graph: 2.3s
+import_from_json: 0.9s
+animutils: 0.8s
+data_analyzer: 0.8s
