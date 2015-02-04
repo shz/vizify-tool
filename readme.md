@@ -24,10 +24,12 @@ vz init # Scaffolds out a card in the current directory
 
 #### Updating `vizify-virgil`
 
-We use a subtree for updating `vizify-virgil`.  Use this command to update:
+We use a subtree for updating `vizify-virgil` and `vizify-cpp`.  Use this
+command to update:
 
 ```bash
 git subtree pull --prefix src/vizify git@git.corp.yahoo.com:lpstein/vizify-virgil.git master --squash
+git subtree pull --prefix src/vizify-cpp git@git.corp.yahoo.com:vizify/vizify-cpp.git master --squash
 ```
 
 ## Card Format
