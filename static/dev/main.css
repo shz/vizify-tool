@@ -106,3 +106,35 @@ input[type="file"] {
 .datasource {
   font-size: 12pt;
 }
+
+/* Virgil Editor */
+.virgil-editor {
+    margin-top: 20px;
+    padding: 10px;
+}
+.file-list {
+    vertical-align: top;
+    text-align: left;
+    background-color: #ccdeff;
+    height: 100%;
+    padding: 0;
+}
+.file-list h1 {
+    background-color: #000000;
+    color: #ffffff;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 12pt;
+    padding: 5px 10px;
+}
+
+.file-entry {
+    cursor: pointer;
+    display: block;
+}
+.virgil-editor div {
+    display: inline-block;
+}
+.virgil-editor div textarea {
+    margin: 0 10px;
+}
