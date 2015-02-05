@@ -55,7 +55,7 @@
     "shelljs": "^0.3.0",
     "sugar": "^1.4.1",
     "tmp": "0.0.24",
-    "virgil": "0.9.65",
+    "virgil": "^0.9.67",
     "vizify-javascript": "^1.2.0"
   },
   "devDependencies": {
