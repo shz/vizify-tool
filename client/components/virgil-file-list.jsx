@@ -1,9 +1,12 @@
-var VirgilFileEntry = require('./virgil-file-entry.jsx');
+var fs = require('fs')
+  , VirgilFileEntry = require('./virgil-file-entry.jsx');
 
 var VirgilFileList = React.createClass({
 
   handleFileSelect: function(file) {
-    alert('file selected: ' + file);
+    fs.readFile('/src/' + file, function(err, body) {
+      this.props.onLoadFile(err, file, body);
+    }.bind(this));
   },
 
   render: function() {

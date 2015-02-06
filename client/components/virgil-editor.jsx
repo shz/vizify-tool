@@ -8,12 +8,6 @@ var VirgilEditor = React.createClass({
   handleCompile: function(e) {
     e.preventDefault();
 
-    console.log('calling fs.readFile', fs);
-
-    fs.readFile('foo', {}, function(err, body) {
-      alert(err);
-    });
-
     var src = this.refs.text.getDOMNode().value.trim();
     if (!src) {
       return;
@@ -21,19 +15,28 @@ var VirgilEditor = React.createClass({
 
     var options = {};
     try {
-      var result = virgil.compile(src, 'javascript', options);
+      var rootFilename = '/src/' + this.state.selectedFile;
+      var src = this.state.selectedFileBody;
 
-      this.refs.output.getDOMNode().value = result;
+      var opts = {
+        namespace: 'hello'
+        // libs: util.parseLibs(options.libs),
+        // namespace: options.name.camelize(false),
+        // browserify: !!options.browserify
+      };
+      virgil.compileModule(rootFilename, src, 'javascript', opts, function(err, result) {
+        console.log('compile result: ', result);
+        this.refs.output.getDOMNode().value = result;
+      }.bind(this));
     }
     catch(e) {
-      this.refs.output.getDOMNode().value = e.toString();
+      throw(e);
+      // this.refs.output.getDOMNode().value = e.toString();
     }
   },
 
   getInitialState: function() {
-    return {data: [
-      {name: 'main.vgl'}
-    ]};
+    return {files: [], selectedFile: null, selectedFileBody: null};
   },
 
   componentDidMount: function() {
@@ -41,7 +44,7 @@ var VirgilEditor = React.createClass({
       url: '/src',
       dataType: 'json',
       success: function(data) {
-        this.setState({data: data});
+        this.setState({files: data});
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -49,12 +52,16 @@ var VirgilEditor = React.createClass({
     });
   },
 
+  handleLoadFile: function(err, filename, body) {
+    this.setState({files: this.state.files, selectedFile: filename, selectedFileBody: body});
+  },
+
   render: function() {
     return (
       <form className="virgil-editor" onSubmit={this.handleCompile}>
-        <VirgilFileList data={this.state.data}/>
+        <VirgilFileList onLoadFile={this.handleLoadFile} data={this.state.files}/>
         <div>
-          <textarea rows="20" cols="80" placeholder="Your Virgil here..." ref="text" />
+          <textarea rows="20" cols="80" placeholder="Your Virgil here..." ref="text" value={this.state.selectedFileBody}/>
           <textarea rows="20" cols="80" placeholder="compiler output here..." ref="output" />
         </div>
         <input type="submit" value="Compile" />
