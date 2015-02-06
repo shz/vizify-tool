@@ -2,8 +2,8 @@ var fs = require('fs');
 
 var VirgilFileEntry = React.createClass({
 
-  handleClick: function(e) {
-    alert('file click: ' + e.target.innerHTML);
+  handleClick: function() {
+    this.props.onClick(this.props.name);
   },
 
   render: function() {
