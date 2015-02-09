@@ -17,6 +17,7 @@ module.exports = function(opts) {
 
   opts.initialTime = query.t ? parseFloat(query.t) : null;
   opts.initialTime = isNaN(opts.initialTime) ? null : opts.initialTime;
+  opts.testDataFiles = opts.testDataFiles || [];
 
   var App = app.getAppComponent();
   var dataSource = opts.dataSource;
@@ -27,9 +28,11 @@ module.exports = function(opts) {
         throw err;
       }
       window.context = context;
-      React.render(<App {...opts} context={context.getComponentContext()} cardData={data} />, document.body);
+      React.withContext(context.getComponentContext(), function () {
+        React.render(<App {...opts} cardData={data} />, document.body);
+      });
     });
-  }
+  };
 
   // Kick things off by fetching data
   var xhr = new XMLHttpRequest();

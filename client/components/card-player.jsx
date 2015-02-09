@@ -1,5 +1,5 @@
 var update = React.addons.update;
-var StoreMixin = require('fluxible').StoreMixin;
+var FluxibleMixin = require('fluxible').Mixin;
 
 var Vizify = window.vizify.react.VizifyComponent;
 var Scrubber = require('./scrubber.jsx');
@@ -8,20 +8,21 @@ var CardPlayerActions = require('../actions/card-player-actions');
 var CardPlayerStateStore = require('../stores/card-player-state-store');
 
 var CardPlayerComponent = React.createClass({
-  mixins: [StoreMixin],
+  mixins: [FluxibleMixin],
+
   statics: {
     storeListeners: {
       onPlayerStateStoreUpdate: CardPlayerStateStore
     }
   },
+
   displayName: "CardPlayer",
 
   getInitialState: function() {
-    var playerState = this.props.context.getStore(CardPlayerStateStore).getState();
+    var playerState = this.getStore(CardPlayerStateStore).getState();
     var state = update({}, {$merge: playerState});
 
     var testDataFiles = this.props.testDataFiles;
-    if (testDataFiles) {
       for (var dataFile in testDataFiles) {
         if (testDataFiles.hasOwnProperty(dataFile)) {
           if (testDataFiles[dataFile].selected) {
@@ -30,10 +31,6 @@ var CardPlayerComponent = React.createClass({
           }
         }
       }
-    }
-    else {
-      this.props.testDataFiles = [];
-    }
     return state;
   },
 
@@ -58,7 +55,7 @@ var CardPlayerComponent = React.createClass({
     this.syncWithCard();
 
     // Is this cheating?
-    this.props.context.getStore(CardPlayerStateStore).playerState.duration = card.duration;
+    this.getStore(CardPlayerStateStore).playerState.duration = card.duration;
   },
 
   componentDidUpdate: function(prevProps, prevState) {
@@ -81,7 +78,7 @@ var CardPlayerComponent = React.createClass({
       if (this.state.isPaused) {
         return;
       }
-      this.props.context.executeAction(CardPlayerActions.updateFrame, card.getTime());
+      this.executeAction(CardPlayerActions.updateFrame, card.getTime());
       requestAnimationFrame(sync);
     }).bind(this);
     requestAnimationFrame(sync);
@@ -99,7 +96,7 @@ var CardPlayerComponent = React.createClass({
           {card}
         </div>
         <form id="holder">
-          <Scrubber context={this.props.context} duration={this.state.duration} time={this.state.time} />
+          <Scrubber duration={this.state.duration} time={this.state.time} />
           <button id="playpause" onClick={this.togglePause}>
             {this.state.isEnded ? "Replay" :
               (this.state.isPaused ? "Play" : "Pause")}
@@ -128,7 +125,7 @@ var CardPlayerComponent = React.createClass({
   },
 
   onPlayerStateStoreUpdate: function() {
-    this.updateState({$merge: this.props.context.getStore(CardPlayerStateStore).getState()});
+    this.updateState({$merge: this.getStore(CardPlayerStateStore).getState()});
   },
 
   onDataFileChange: function(e) {
@@ -141,7 +138,7 @@ var CardPlayerComponent = React.createClass({
   togglePause: function(e) {
     e.stopPropagation();
     e.preventDefault();
-    this.props.context.executeAction(CardPlayerActions.togglePlayPause);
+    this.executeAction(CardPlayerActions.togglePlayPause);
   }
 
 });
