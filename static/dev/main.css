@@ -1,6 +1,11 @@
 html { display: table; font-family: "Helvetica Neue", "Helvetica", sans-serif; }
 body { display: table-cell; margin: 0; font-size: 12pt; text-align: center; vertical-align: middle; }
-html, body { width: 100%; height: 100%; overflow: hidden; }
+html, body { width: 100%; height: 100% }
+
+
+body {
+    background-color: #eee;
+}
 
 .unselectable {
   -moz-user-select: none;
@@ -11,16 +16,17 @@ html, body { width: 100%; height: 100%; overflow: hidden; }
 
 #cardcontainer {
   margin: auto;
+  border: 1px solid dodgerblue;
 }
 
-#holder { display: inline-block; position: relative; width: 500px; }
-
-body {
-    background-color: #eee;
-}
-
-#holder canvas {
+#cardcontainer canvas {
     background-color: #fff;
+}
+
+#holder {
+  display: inline-block;
+  position: relative;
+  width: 500px;
 }
 
 #scrubber {

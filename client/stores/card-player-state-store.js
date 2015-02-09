@@ -11,10 +11,17 @@ var CardPlayerStateStore = createStore({
   },
 
   handlers: {
+    CardPlayerReloadCard: 'handleReloadCard',
     CardPlayerTogglePlayPause: 'handleTogglePlayPause',
     CardPlayerUpdateFrame: 'handleUpdateFrame',
     CardPlayerSeek: 'handleSeek',
     CardPlayerSeekToTime: 'handleSeekToTime'
+  },
+
+  handleReloadCard: function() {
+    this.playerState.reload = true;
+    console.log("state store.handleReloadCard");
+    this.emitChange();
   },
 
   handleTogglePlayPause: function() {

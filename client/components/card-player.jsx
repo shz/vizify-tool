@@ -70,6 +70,16 @@ var CardPlayerComponent = React.createClass({
     }
   },
 
+  // Called after card is compiled
+  reloadCard: function() {
+    console.log("CardPlayer.reloadCard()");
+    if (this.props.entryPoint) {
+      var split = this.props.entryPoint.split('.');
+      this.cardFn = window[split[0]][split[1]];
+    }
+    this.refs.vizify.card.reload(this.cardFn, this.props.data);
+  },
+
   syncWithCard: function() {
     var card = this.refs.vizify.card;
     var sync = (function() {
@@ -83,6 +93,7 @@ var CardPlayerComponent = React.createClass({
   },
 
   render: function() {
+    console.log("CardPlayer.render");
     var card;
     if (this.cardFn && this.props.cardData) {
       card = <Vizify ref="vizify" {...this.props} card={this.cardFn} data={this.props.cardData} autoplay={!this.state.isPaused}/>;

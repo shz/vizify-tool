@@ -8,15 +8,12 @@ var VirgilEditor = React.createClass({
   handleCompile: function(e) {
     e.preventDefault();
 
-    var src = this.refs.text.getDOMNode().value.trim();
-    if (!src) {
-      return;
-    }
-
-    var options = {};
     try {
       var rootFilename = '/src/' + this.state.selectedFile;
-      var src = this.state.selectedFileBody;
+      var src = this.refs.text.getDOMNode().value.trim();
+      if (!src) {
+        return;
+      }
 
       var opts = {
         namespace: 'hello'
@@ -24,14 +21,20 @@ var VirgilEditor = React.createClass({
         // namespace: options.name.camelize(false),
         // browserify: !!options.browserify
       };
+
+
       virgil.compileModule(rootFilename, src, 'javascript', opts, function(err, result) {
-        console.log('compile result: ', result);
-        this.refs.output.getDOMNode().value = result;
+        console.log('compile result: ', err ? err : result);
+        var main = result['main.js'];
+        window.hello = null;
+        eval(main);
+        var compiledResult = window.hello;
+        console.log(compiledResult);
+        this.props.onCompile();
       }.bind(this));
     }
     catch(e) {
       throw(e);
-      // this.refs.output.getDOMNode().value = e.toString();
     }
   },
 
@@ -53,7 +56,8 @@ var VirgilEditor = React.createClass({
   },
 
   handleLoadFile: function(err, filename, body) {
-    this.setState({files: this.state.files, selectedFile: filename, selectedFileBody: body});
+    this.setState({files: this.state.files, selectedFile: filename});
+    this.refs.text.getDOMNode().value = body;
   },
 
   render: function() {
@@ -61,8 +65,7 @@ var VirgilEditor = React.createClass({
       <form className="virgil-editor" onSubmit={this.handleCompile}>
         <VirgilFileList onLoadFile={this.handleLoadFile} data={this.state.files}/>
         <div>
-          <textarea rows="20" cols="80" placeholder="Your Virgil here..." ref="text" value={this.state.selectedFileBody}/>
-          <textarea rows="20" cols="80" placeholder="compiler output here..." ref="output" />
+          <textarea rows="20" cols="80" placeholder="Your Virgil here..." ref="text" />
         </div>
         <input type="submit" value="Compile" />
       </form>

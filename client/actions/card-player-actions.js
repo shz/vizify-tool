@@ -1,4 +1,10 @@
 module.exports = {
+  reloadCard: function(context, payload, done) {
+    console.log("cardplayeractions.reloadCard");
+    context.dispatch("CardPlayerReloadCard", {});
+    done();
+  },
+
   togglePlayPause: function(context, payload, done) {
     context.dispatch("CardPlayerTogglePlayPause", {});
     done();
