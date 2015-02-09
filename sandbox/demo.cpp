@@ -7,19 +7,13 @@
 #include <GLFW/glfw3.h>
 #include <vizify.hpp>
 
-#include "viz/main.cpp"
+#include "../main.cpp"
 
 using namespace std;
 using namespace vizify;
 
-int SIZE = 286;
-double SCALE = 3.0f;
-
-// See render.cpp
-void render(vizify::Canvas& canvas);
-
-// see json-print.cpp
-int jsonPrint();
+const int WIDTH = 300; // TODO - Fill in
+const int HEIGHT = 300; // TODO - Fill in
 
 int curMS()
 {
@@ -28,24 +22,24 @@ int curMS()
   return (int)millis;
 }
 
-int main(void)
+int main(int argc, char** argv)
 {
   GLFWwindow *window;
 
-  if (!glfwInit()) {
-    cerr << "Failed to initialize GLFW" << endl;
-    return -1;
-  }
-
   // Create window
+  if (!glfwInit())
+  {
+    cerr << "Failed to initialize GLFW" << endl;
+    return 1;
+  }
   glfwWindowHint(GLFW_SAMPLES, 8);
   glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-  window = glfwCreateWindow(SIZE * SCALE, SIZE * SCALE, "Vizify Sandbox", nullptr, nullptr);
+  window = glfwCreateWindow(WIDTH, HEIGHT, "Vizify Demo", nullptr, nullptr);
   if (!window)
   {
     cerr << "Failed to create GLFW window" << endl;
     glfwTerminate();
-    return -1;
+    return 1;
   }
   glfwMakeContextCurrent(window);
   glfwSwapInterval(1);
@@ -56,19 +50,25 @@ int main(void)
   int fbWidth;
   int fbHeight;
   glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
-  double dpi = ((double)fbWidth) / (SCALE * SIZE);
+  double dpi = ((double)fbWidth / WIDTH);
 
-  std::ifstream jsonFile("../great-white-virgil/frozendata/ge_nighttime.json");
-  std::string json((std::istreambuf_iterator<char>(jsonFile)),
-                 std::istreambuf_iterator<char>());
+  // Load data
+  string data = "";
+  if (argc >= 2)
+  {
+    ifstream dataStream(argv[1]);
+    stringstream buf;
+    buf << dataStream.rdbuf();
+    data = buf.str();
+  }
+  cout << data << endl;
 
-  // std::cout << json << endl;
-
-  vizify::Card card(main, json);
-  vizify::Canvas canvas(SIZE, SIZE, SCALE * dpi);
-  canvas.loadFont("Liberation Sans", "sandbox/liberation-sans-regular.ttf");
+  // Set up the Vizify card
+  vizify::Card card(demoViz::main, data);
+  vizify::Canvas canvas(WIDTH, HEIGHT, dpi);
   card.setCanvas(canvas);
 
+  // Render loop
   auto start = curMS();
   while (!glfwWindowShouldClose(window))
   {
