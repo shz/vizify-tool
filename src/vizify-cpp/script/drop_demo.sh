@@ -6,6 +6,7 @@ if [ "$#" -ne 1 ]; then
   echo "Must specify an output directory"
 fi
 
+rm -rf $1/demo
 mkdir $1/demo
 mkdir $1/demo/vizify
 mkdir $1/demo/deps
