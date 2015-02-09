@@ -5,44 +5,22 @@ var fs = require('fs')
 
 var VirgilEditor = React.createClass({
 
-  handleCompile: function(e) {
-    e.preventDefault();
-
-    try {
-      var rootFilename = '/src/' + this.state.selectedFile;
-      var src = this.refs.text.getDOMNode().value.trim();
-      if (!src) {
-        return;
-      }
-
-      var opts = {
-        namespace: 'hello'
-        // libs: util.parseLibs(options.libs),
-        // namespace: options.name.camelize(false),
-        // browserify: !!options.browserify
-      };
-
-
-      virgil.compileModule(rootFilename, src, 'javascript', opts, function(err, result) {
-        console.log('compile result: ', err ? err : result);
-        var main = result['main.js'];
-        window.hello = null;
-        eval(main);
-        var compiledResult = window.hello;
-        console.log(compiledResult);
-        this.props.onCompile();
-      }.bind(this));
-    }
-    catch(e) {
-      throw(e);
-    }
-  },
-
   getInitialState: function() {
-    return {files: [], selectedFile: null, selectedFileBody: null};
+    return {files: [], selectedFile: null};
   },
 
   componentDidMount: function() {
+    // insert codemirror editor
+    var parent = this.refs.codemirror.getDOMNode();
+
+    var options = {
+      mode: {name: 'javascript', json: false},
+      tabSize: 2,
+      lineNumbers: true,
+      dragDrop: false
+    };
+    this.codeEditor = CodeMirror(parent, options);
+
     $.ajax({
       url: '/src',
       dataType: 'json',
@@ -55,21 +33,53 @@ var VirgilEditor = React.createClass({
     });
   },
 
-  handleLoadFile: function(err, filename, body) {
-    this.setState({files: this.state.files, selectedFile: filename});
-    this.refs.text.getDOMNode().value = body;
-  },
-
   render: function() {
     return (
-      <form className="virgil-editor" onSubmit={this.handleCompile}>
+      <div id="virgil-editor">
         <VirgilFileList onLoadFile={this.handleLoadFile} data={this.state.files}/>
-        <div>
-          <textarea rows="20" cols="80" placeholder="Your Virgil here..." ref="text" />
-        </div>
-        <input type="submit" value="Compile" />
-      </form>
+        <div id="codemirror" ref="codemirror"/>
+        <button className="compile" onClick={this.handleCompile}>Compile</button>
+      </div>
     );
+  },
+
+  handleLoadFile: function(err, filename, body) {
+    this.setState({files: this.state.files, selectedFile: filename});
+    this.codeEditor.setValue(body);
+  },
+
+  handleCompile: function(e) {
+    e.preventDefault();
+
+    try {
+      var rootFilename = '/src/' + this.state.selectedFile;
+      var src = this.codeEditor.getValue().trim();
+      if (!src) {
+        return;
+      }
+
+      // save file before compiling
+      fs.writeFile(rootFilename, src, function(err, data) {
+        // now compile main
+        var opts = {
+          namespace: 'hello'
+        };
+        var mainFile = '/src/main.vgl';
+        fs.readFile(mainFile, {}, function(err, data) {
+          virgil.compileModule(mainFile, data, 'javascript', opts, function(err, result) {
+            console.log('compile result: ', err ? err : result);
+            var main = result['main.js'];
+            eval(main);
+            var compiledResult = window.hello;
+            console.log(compiledResult);
+            this.props.onCompile();
+          }.bind(this));
+        }.bind(this));
+      }.bind(this));
+    }
+    catch(e) {
+      throw(e);
+    }
   }
 });
 

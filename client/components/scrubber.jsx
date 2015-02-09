@@ -5,7 +5,8 @@ var ScrubberComponent = module.exports = React.createClass({
   displayName: "Scrubber",
 
   componentDidMount: function() {
-    window.document.addEventListener("keydown", this.keyDown);
+    // todo: only handle key events when editor is not active.
+    // window.document.addEventListener("keydown", this.keyDown);
     var self = this;
     this.removeTouchHandlers = window.vz.touch(this.getDOMNode(), {dragDirection: 'horizontal'}, {
       click: function(e) {
@@ -28,6 +29,7 @@ var ScrubberComponent = module.exports = React.createClass({
     var scale = 'scale(' + completionRate + ', 1)';
     return (
       <div id="scrubber">
+        <span id="timestamp">Timestamp: {this.props.time} / {this.props.duration}</span>
         <div style={{
           transform: scale,
           WebkitTransform: scale,

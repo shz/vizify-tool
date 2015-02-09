@@ -1,6 +1,4 @@
 var CardPlayer = require('./card-player.jsx');
-var CardPlayerActions = require('../actions/card-player-actions');
-var CardCompiler = require('./card-compiler.jsx');
 var VirgilEditor = require('./virgil-editor.jsx');
 
 var AppComponent = module.exports = React.createClass({

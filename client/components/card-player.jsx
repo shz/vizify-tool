@@ -100,18 +100,18 @@ var CardPlayerComponent = React.createClass({
     }
 
     return (
-      <div>
-        <div id="cardcontainer" style={{width: this.props.width, height: this.props.height}}>
+      <div id="card-player">
+        <div id="card-container" style={{width: this.props.width, height: this.props.height}}>
           {card}
         </div>
-        <form id="holder">
+        <form id="card-controls">
           <Scrubber context={this.props.context} duration={this.state.duration} time={this.state.time} />
           <button id="playpause" onClick={this.togglePause}>
             {this.state.isEnded ? "Replay" :
               (this.state.isPaused ? "Play" : "Pause")}
           </button>
+          <input id="savetimestamp" type="submit" value="Save Timestamp" />
 
-          Current timestamp: {this.state.time} / {this.state.duration}
           <input type="hidden" name="t" value={this.state.time} readOnly />
 
           <div id="uselocalfile">
@@ -124,10 +124,6 @@ var CardPlayerComponent = React.createClass({
               </select>
             </label>
           </div>
-
-          <p></p>
-
-          <input type="submit" value="Save" />
         </form>
       </div>
     );
