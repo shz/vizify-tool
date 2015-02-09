@@ -36,7 +36,7 @@ var VirgilEditor = React.createClass({
   render: function() {
     return (
       <div id="virgil-editor">
-        <VirgilFileList onLoadFile={this.handleLoadFile} data={this.state.files}/>
+        <VirgilFileList onLoadFile={this.handleLoadFile} files={this.state.files}/>
         <div id="codemirror" ref="codemirror"/>
         <button className="compile" onClick={this.handleCompile}>Compile</button>
       </div>

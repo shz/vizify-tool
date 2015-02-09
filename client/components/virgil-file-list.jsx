@@ -3,27 +3,32 @@ var fs = require('fs')
 
 var VirgilFileList = React.createClass({
 
-  handleFileSelect: function(file) {
-    // todo: de-select others
-
-    fs.readFile('/src/' + file, function(err, body) {
-      this.props.onLoadFile(err, file, body);
-    }.bind(this));
+  getInitialState: function() {
+    return {
+      selectedFile: ''
+    };
   },
 
   render: function() {
-    var fileNodes = this.props.data.map(function(f) {
-      return (
-        <VirgilFileEntry onClick={this.handleFileSelect} name={f.name}/>
-      );
-    }.bind(this));
-
+    console.log('selected: ' + this.state.selectedFile);
     return (
       <div className='file-list'>
         <h1>Source Files</h1>
-        {fileNodes}
+        {this.props.files.map(function(f) {
+          var selected = (this.state.selectedFile == f.name);
+          return (
+            <VirgilFileEntry onClick={this.handleFileSelect} key={f.name} name={f.name} selected={selected}/>
+          );
+        }.bind(this))}
       </div>
     );
+  },
+
+  handleFileSelect: function(file) {
+    this.setState({selectedFile: file});
+    fs.readFile('/src/' + file, function(err, body) {
+      this.props.onLoadFile(err, file, body);
+    }.bind(this));
   }
 });
 

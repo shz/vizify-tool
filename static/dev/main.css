@@ -126,7 +126,7 @@ button.compile {
 
 .CodeMirror {
     width: 600px;
-    height: 700px;
+    height: 500px;
 }
 .file-list {
     display: inline-block;
