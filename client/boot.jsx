@@ -28,9 +28,11 @@ module.exports = function(opts) {
         throw err;
       }
       window.context = context;
-      React.render(<App {...opts} context={context.getComponentContext()} cardData={data} />, document.body);
+      React.withContext(context.getComponentContext(), function () {
+        React.render(<App {...opts} cardData={data} />, document.body);
+      });
     });
-  }
+  };
 
   // Kick things off by fetching data
   var xhr = new XMLHttpRequest();

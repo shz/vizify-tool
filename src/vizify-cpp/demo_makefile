@@ -1,0 +1,14 @@
+CXXFLAGS := -std=c++11 -g -Wno-parentheses-equality
+
+all: sandbox
+sandbox:
+	$(CXX) $(CXXFLAGS) \
+		-framework Cocoa \
+		-framework OpenGL \
+		-framework IOKit \
+		-framework CoreVideo \
+		-I deps/glfw/include -L deps/glfw/lib-osx -l glfw3 \
+		-I vizify/include \
+		-I ../runtime \
+		$(wildcard vizify/src/*.cpp) main.cpp \
+		-o viz
