@@ -10,6 +10,9 @@ var VirgilEditor = React.createClass({
   },
 
   componentDidMount: function() {
+
+    window.document.addEventListener("keydown", this.handleKeyDown);
+
     // insert codemirror editor
     var parent = this.refs.codemirror.getDOMNode();
 
@@ -43,6 +46,13 @@ var VirgilEditor = React.createClass({
     );
   },
 
+  // Ctrl-Enter == compile
+  handleKeyDown: function(e) {
+    if (e.keyCode === 13 && e.ctrlKey) {
+      this.handleCompile(e);
+    }
+  },
+
   handleLoadFile: function(err, filename, body) {
     this.setState({files: this.state.files, selectedFile: filename});
     this.codeEditor.setValue(body);
@@ -62,7 +72,7 @@ var VirgilEditor = React.createClass({
       fs.writeFile(rootFilename, src, function(err, data) {
         // now compile main
         var opts = {
-          namespace: 'hello'
+          namespace: 'devenvreload'
         };
         var mainFile = '/src/main.vgl';
         fs.readFile(mainFile, {}, function(err, data) {
@@ -70,7 +80,7 @@ var VirgilEditor = React.createClass({
             console.log('compile result: ', err ? err : result);
             var main = result['main.js'];
             eval(main);
-            var compiledResult = window.hello;
+            var compiledResult = window.devenvreload;
             console.log(compiledResult);
             this.props.onCompile();
           }.bind(this));

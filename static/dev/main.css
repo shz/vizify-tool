@@ -58,11 +58,6 @@ body {
     text-align: center;
 }
 
-label {
-  font-size: 14pt;
-  width: 100%;
-}
-
 label input {
   font-size: 12pt;
   padding: 4px 6px;
@@ -106,7 +101,7 @@ button, input[type="submit"] {
 button.compile {
     position: absolute;
     left: 10px;
-    top: 600px;
+    top: 480px;
 }
 
 .datasource {
@@ -125,7 +120,7 @@ button.compile {
 }
 
 .CodeMirror {
-    width: 600px;
+    width: 700px;
     height: 500px;
 }
 .file-list {

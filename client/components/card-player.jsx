@@ -72,12 +72,8 @@ var CardPlayerComponent = React.createClass({
 
   // Called after card is compiled
   reloadCard: function() {
-    console.log("CardPlayer.reloadCard()");
-    if (this.props.entryPoint) {
-      var split = this.props.entryPoint.split('.');
-      this.cardFn = window[split[0]][split[1]];
-    }
-    this.refs.vizify.card.reload(this.cardFn, this.props.data);
+    this.cardFn = window.devenvreload.main;
+    this.refs.vizify.card.reload(this.cardFn, this.props.cardData);
   },
 
   syncWithCard: function() {
@@ -114,8 +110,8 @@ var CardPlayerComponent = React.createClass({
 
           <input type="hidden" name="t" value={this.state.time} readOnly />
 
-          <div id="uselocalfile">
-            <label id="uselocalfile">Test Data File:
+          <div id="usedatafile">
+            <label>Test Data File:
               <select name="datafile" id="datafile" value={this.state.dataFile} onChange={this.onDataFileChange}>
                 <option value="none">None</option>
                 {this.props.testDataFiles.map(function(file) {
@@ -124,6 +120,12 @@ var CardPlayerComponent = React.createClass({
               </select>
             </label>
           </div>
+          <p className="datasource">
+            Datasource: <a target="_blank" href={this.props.dataSource}>{this.props.dataSource}</a>
+          </p>
+          <p>
+            <a href="/production">Production preview</a>
+          </p>
         </form>
       </div>
     );
