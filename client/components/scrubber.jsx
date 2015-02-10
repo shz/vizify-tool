@@ -1,6 +1,8 @@
+var FluxibleMixin = require('fluxible').Mixin;
 var CardPlayerActions = require('../actions/card-player-actions');
 
 var ScrubberComponent = module.exports = React.createClass({
+  mixins: [FluxibleMixin],
 
   displayName: "Scrubber",
 
@@ -45,7 +47,7 @@ var ScrubberComponent = module.exports = React.createClass({
     var scrubberPos = this.scrubberPos();
     var railOriginX = scrubberPos.x;
     var completionRate = Math.max(0, Math.min(1, (clientX - railOriginX) / scrubberPos.w));
-    this.props.context.executeAction(CardPlayerActions.seek, completionRate);
+    this.executeAction(CardPlayerActions.seek, completionRate);
   },
 
   scrubberPos: function() {
@@ -63,11 +65,11 @@ var ScrubberComponent = module.exports = React.createClass({
 
   keyDown: function(e) {
     if (e.keyCode === 32) {
-      this.props.context.executeAction(CardPlayerActions.togglePlayPause);
+      this.executeAction(CardPlayerActions.togglePlayPause);
     } else if (e.keyCode === 39) {
-      this.props.context.executeAction(CardPlayerActions.seekToTime, this.props.time + 16);
+      this.executeAction(CardPlayerActions.seekToTime, this.props.time + 16);
     } else if (e.keyCode === 37) {
-      this.props.context.executeAction(CardPlayerActions.seekToTime, this.props.time - 16);
+      this.executeAction(CardPlayerActions.seekToTime, this.props.time - 16);
     }
   }
 
