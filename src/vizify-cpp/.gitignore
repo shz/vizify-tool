@@ -1,4 +1,3 @@
-*.a
 *.o
 release/
 .DS_Store
@@ -6,3 +5,4 @@ platform/vizify-ios-test/vizify-ios-test.xcodeproj/project.xcworkspace/xcsharedd
 platform/vizify-ios-test/vizify-ios-test.xcodeproj/project.xcworkspace/xcuserdata/*
 platform/vizify-ios-test/vizify-ios-test.xcodeproj/xcuserdata/*
 sandbox/viz/
+obj/
