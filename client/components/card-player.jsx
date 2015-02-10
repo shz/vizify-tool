@@ -121,7 +121,7 @@ var CardPlayerComponent = React.createClass({
             </label>
           </div>
           <p className="datasource">
-            Datasource: <a target="_blank" href={this.props.dataSource}>{this.props.dataSource}</a>
+            Datasource: <a target="_blank" href={this.props.dataSource} title={this.props.dataSource}>here</a>
           </p>
           <p>
             <a href="/production">Production preview</a>
