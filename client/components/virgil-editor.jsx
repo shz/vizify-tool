@@ -1,12 +1,17 @@
 var fs = require('fs')
   , virgil = require('virgil')
   , VirgilFileList = require('./virgil-file-list.jsx')
+  , formatCompileError = require('../../lib/util/format-compile-error');
   ;
 
 var VirgilEditor = React.createClass({
 
   getInitialState: function() {
-    return {files: [], selectedFile: null};
+    return {
+      files: [],
+      selectedFile: null,
+      compilerOutput: 'Ready...'
+    };
   },
 
   componentDidMount: function() {
@@ -40,7 +45,10 @@ var VirgilEditor = React.createClass({
     return (
       <div id="virgil-editor">
         <VirgilFileList onLoadFile={this.handleLoadFile} files={this.state.files}/>
-        <div id="codemirror" ref="codemirror"/>
+          <div id="codemirror" ref="codemirror"/>
+          <pre id="virgil-console">
+            {this.state.compilerOutput}
+          </pre>
         <button className="compile" onClick={this.handleCompile}>Compile</button>
       </div>
     );
@@ -56,6 +64,12 @@ var VirgilEditor = React.createClass({
   handleLoadFile: function(err, filename, body) {
     this.setState({files: this.state.files, selectedFile: filename});
     this.codeEditor.setValue(body);
+  },
+
+  setCompilerOutput: function(text) {
+    var state = this.state;
+    state.compilerOutput = text;
+    this.setState(state);
   },
 
   handleCompile: function(e) {
@@ -77,7 +91,13 @@ var VirgilEditor = React.createClass({
         var mainFile = '/src/main.vgl';
         fs.readFile(mainFile, {}, function(err, data) {
           virgil.compileModule(mainFile, data, 'javascript', opts, function(err, result) {
-            console.log('compile result: ', err ? err : result);
+            if (err) {
+              this.setCompilerOutput(formatCompileError(err));
+              return;
+            }
+            else {
+              this.setCompilerOutput("Success");
+            }
             var main = result['main.js'];
             eval(main);
             var compiledResult = window.devenvreload;

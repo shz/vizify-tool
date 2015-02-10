@@ -115,6 +115,7 @@ button.compile {
     display: inline-block;
     vertical-align: top;
 }
+
 #codemirror {
     display: inline-block;
 }
@@ -123,6 +124,15 @@ button.compile {
     width: 700px;
     height: 500px;
 }
+#virgil-console {
+    max-width: 815px;
+    overflow: scroll;
+    width: 100%;
+    height: 200px;
+    background-color: #fff;
+    color: #000;
+}
+
 .file-list {
     display: inline-block;
     vertical-align: top;
