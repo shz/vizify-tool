@@ -20,8 +20,7 @@ var ScrubberComponent = module.exports = React.createClass({
   },
 
   componentDidMount: function() {
-    // todo: only handle key events when editor is not active.
-    // window.document.addEventListener("keydown", this.keyDown);
+    window.document.addEventListener("keydown", this.keyDown);
     var self = this;
     this.removeTouchHandlers = window.vz.touch(this.getDOMNode(), {dragDirection: 'horizontal'}, {
       click: function(e) {
@@ -40,7 +39,6 @@ var ScrubberComponent = module.exports = React.createClass({
   },
 
   render: function() {
-    console.log("scrubber render: " + this.state.time + "/" + this.state.duration);
     var completionRate = this.state.duration ? (this.state.time / this.state.duration) : 0;
     var scale = 'scale(' + completionRate + ', 1)';
     return (
@@ -83,13 +81,8 @@ var ScrubberComponent = module.exports = React.createClass({
   },
 
   keyDown: function(e) {
-    if (e.keyCode === 32) {
+    if (e.ctrlKey && e.keyCode === 32) {
       this.executeAction(CardPlayerActions.togglePlayPause);
-    } else if (e.keyCode === 39) {
-      this.executeAction(CardPlayerActions.seekToTime, this.state.time + 16);
-    } else if (e.keyCode === 37) {
-      this.executeAction(CardPlayerActions.seekToTime, this.state.time - 16);
     }
   }
-
 });

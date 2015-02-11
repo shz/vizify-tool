@@ -94,7 +94,6 @@ var CardPlayerComponent = React.createClass({
   },
 
   render: function() {
-    console.log("CardPlayer.render");
     var card;
     if (this.cardFn && this.props.cardData) {
       card = <Vizify ref="vizify" {...this.props} card={this.cardFn} data={this.props.cardData} autoplay={!this.state.isPaused}/>;

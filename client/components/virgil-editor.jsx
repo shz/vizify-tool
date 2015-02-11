@@ -84,6 +84,9 @@ var VirgilEditor = React.createClass({
 
       // save file before compiling
       fs.writeFile(rootFilename, src, function(err, data) {
+        if (err) {
+          // todo: show write error
+        }
         // now compile main
         var opts = {
           namespace: 'devenvreload'
