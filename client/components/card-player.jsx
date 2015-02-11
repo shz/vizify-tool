@@ -76,6 +76,9 @@ var CardPlayerComponent = React.createClass({
   reloadCard: function() {
     this.cardFn = window.devenvreload.main;
     this.refs.vizify.card.reload(this.cardFn, this.props.cardData);
+
+    // duration may have changed so must update it.
+    this.executeAction(CardPlayerActions.reloadCard, this.refs.vizify.card.duration);
   },
 
   syncWithCard: function() {

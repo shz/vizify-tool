@@ -18,9 +18,13 @@ var CardPlayerStateStore = createStore({
     CardPlayerSeekToTime: 'handleSeekToTime'
   },
 
-  handleReloadCard: function() {
-    this.playerState.reload = true;
-    console.log("state store.handleReloadCard");
+  handleReloadCard: function(payload) {
+    this.playerState.duration = payload.duration;
+    if (this.playerState.time > this.playerState.duration) {
+      this.playerState.time = this.playerState.duration;
+      this.playerState.isEnded = true;
+    }
+
     this.emitChange();
   },
 

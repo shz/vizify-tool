@@ -1,7 +1,7 @@
 module.exports = {
-  reloadCard: function(context, payload, done) {
+  reloadCard: function(context, duration, done) {
     console.log("cardplayeractions.reloadCard");
-    context.dispatch("CardPlayerReloadCard", {});
+    context.dispatch("CardPlayerReloadCard", {duration: duration});
     done();
   },
 
