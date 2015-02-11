@@ -20,7 +20,8 @@ var CardPlayerStateStore = createStore({
 
   handleReloadCard: function(payload) {
     this.playerState.duration = payload.duration;
-    if (this.playerState.time > this.playerState.duration) {
+
+    if (this.playerState.time > this.playerState.duration || this.playerState.isEnded ) {
       this.playerState.time = this.playerState.duration;
       this.playerState.isEnded = true;
     }
