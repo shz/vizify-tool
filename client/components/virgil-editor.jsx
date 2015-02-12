@@ -28,6 +28,7 @@ var VirgilEditor = React.createClass({
       dragDrop: false
     };
     this.codeEditor = CodeMirror(parent, options);
+    this.codeEditor.on('change', this.handleCodeChanged);
 
     $.ajax({
       url: '/src',
@@ -49,15 +50,26 @@ var VirgilEditor = React.createClass({
           <pre id="virgil-console">
             {this.state.compilerOutput}
           </pre>
-        <button className="compile" onClick={this.handleCompile}>Compile</button>
+        <button className="compile" onClick={this.handleSave}>Save</button>
       </div>
     );
+  },
+
+  handleCodeChanged: function() {
+    if (this.idleTimer) {
+      clearTimeout(this.idleTimer);
+    }
+    this.idleTimer = setTimeout(function() {
+      console.log('auto compile');
+      this.handleCompile();
+    }.bind(this), 500);
   },
 
   // Ctrl-Enter == compile
   handleKeyDown: function(e) {
     if (e.keyCode === 13 && e.ctrlKey) {
-      this.handleCompile(e);
+      e.preventDefault();
+      this.handleCompile();
     }
   },
 
@@ -72,22 +84,34 @@ var VirgilEditor = React.createClass({
     this.setState(state);
   },
 
-  handleCompile: function(e) {
-    e.preventDefault();
+  handleSave: function() {
+    this.saveCurrentFile(function(err) {
+      if (err) {
+        this.setCompilerOutput(err.toString());
+      } else {
+        this.setCompilerOutput("Saved.");
+      }
+    });
+  },
 
-    try {
-      var rootFilename = '/src/' + this.state.selectedFile;
-      var src = this.codeEditor.getValue().trim();
-      if (!src) {
+  saveCurrentFile: function(options, callback) {
+    options = options || {};
+    var rootFilename = '/src/' + this.state.selectedFile;
+    var data = this.codeEditor.getValue();
+    if (data) {
+      fs.writeFile(rootFilename, data, options, callback);
+    }
+  },
+
+  handleCompile: function() {
+    // do a "soft" save of the current file so when the Virgil compiler
+    // does an fs.readFile on it
+    this.saveCurrentFile({localOnly: true}, function(err) {
+      if (err) {
+        this.setCompilerOutput(err.toString());
         return;
       }
-
-      // save file before compiling
-      fs.writeFile(rootFilename, src, function(err, data) {
-        if (err) {
-          // todo: show write error
-        }
-        // now compile main
+      try {
         var opts = {
           namespace: 'devenvreload'
         };
@@ -108,11 +132,11 @@ var VirgilEditor = React.createClass({
             this.props.onCompile();
           }.bind(this));
         }.bind(this));
-      }.bind(this));
-    }
-    catch(e) {
-      throw(e);
-    }
+      }
+      catch(e) {
+        throw(e);
+      }
+    }.bind(this));
   }
 });
 
