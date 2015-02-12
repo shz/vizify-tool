@@ -98,7 +98,7 @@ button, input[type="submit"] {
     margin-left: 10px;
 }
 
-button.compile {
+button.save {
     position: absolute;
     left: 10px;
     top: 480px;

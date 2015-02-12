@@ -50,7 +50,7 @@ var VirgilEditor = React.createClass({
           <pre id="virgil-console">
             {this.state.compilerOutput}
           </pre>
-        <button className="compile" onClick={this.handleSave}>Save</button>
+        <button className="save" onClick={this.handleSave}>Save</button>
       </div>
     );
   },
@@ -89,13 +89,16 @@ var VirgilEditor = React.createClass({
       if (err) {
         this.setCompilerOutput(err.toString());
       } else {
-        this.setCompilerOutput("Saved.");
+        this.setCompilerOutput("Saved " + this.state.selectedFile);
       }
-    });
+    }.bind(this));
   },
 
   saveCurrentFile: function(options, callback) {
-    options = options || {};
+    if (typeof(options) == 'function') {
+      callback = options;
+      options = {}
+    }
     var rootFilename = '/src/' + this.state.selectedFile;
     var data = this.codeEditor.getValue();
     if (data) {
