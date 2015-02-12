@@ -3,14 +3,14 @@ import clock
 import canvas
 import easing
 
-export struct Animation<'T> {
-  rc : RenderContext<'T> = null
+export struct Animation<'T, 'L> {
+  rc : RenderContext<'T, 'L> = null
   i : func<int, float> = null
   o : func<int, float> = null
   durHoldAtZeroStart : int = 0
 }
 
-export method perform(a : Animation<'T>, action : func<Canvas, float, void>) : RenderContext<'T> {
+export method perform(a : Animation<'T, 'L>, action : func<Canvas, float, void>) : RenderContext<'T, 'L> {
   let root = a.rc.fork()
   root.config.operations.push(lambda(ctx : Canvas, clock : Clock) {
     let v = (clock.fromStart <= a.durHoldAtZeroStart) ? 0f : (a.i(clock.fromStart-a.durHoldAtZeroStart) - (1f - a.o(clock.fromEnd)))
@@ -19,10 +19,10 @@ export method perform(a : Animation<'T>, action : func<Canvas, float, void>) : R
   return root
 }
 
-export method tween(renderc : RenderContext<'T>,
+export method tween(renderc : RenderContext<'T, 'L>,
                     inf : func<int, float>,
-                    outf : func<int, float>) : Animation<'T> {
-  return new Animation<'T> {
+                    outf : func<int, float>) : Animation<'T, 'L> {
+  return new Animation<'T, 'L> {
     rc = renderc
     i = inf
     o = outf
@@ -30,7 +30,7 @@ export method tween(renderc : RenderContext<'T>,
   }
 }
 
-export method linear(rc : RenderContext<'T>, i : int, o : int) : Animation<'T> {
+export method linear(rc : RenderContext<'T, 'L>, i : int, o : int) : Animation<'T, 'L> {
   return rc.tween(linear(i), linear(o))
 }
 
@@ -39,25 +39,25 @@ export method linear(rc : RenderContext<'T>, i : int, o : int) : Animation<'T> {
 
 # Sample implementations of animation methods
 
-export method fade(a : Animation<'T>) : RenderContext<'T> {
+export method fade(a : Animation<'T, 'L>) : RenderContext<'T, 'L> {
   return a.perform(lambda(c : Canvas, v : float) {
     c.setGlobalAlpha(v)
   })
 }
 
-export method fadeFromTo(a : Animation<'T>, from:float, to:float) : RenderContext<'T> {
+export method fadeFromTo(a : Animation<'T, 'L>, from:float, to:float) : RenderContext<'T, 'L> {
   return a.perform(lambda(c : Canvas, v : float) {
     c.setGlobalAlpha(from + (to-from)*v)
   })
 }
 
-export method translate(a : Animation<'T>, xMax : float, yMax : float) : RenderContext<'T> {
+export method translate(a : Animation<'T, 'L>, xMax : float, yMax : float) : RenderContext<'T, 'L> {
   return a.perform(lambda(c : Canvas, v : float) {
     c.translate(v*xMax, v*yMax)
   })
 }
 
-export method rotate(a : Animation<'T>, angleMax : float) : RenderContext<'T> {
+export method rotate(a : Animation<'T, 'L>, angleMax : float) : RenderContext<'T, 'L> {
   return a.perform(lambda(c : Canvas, v : float) {
     c.rotate(v*angleMax)
   })
@@ -65,21 +65,21 @@ export method rotate(a : Animation<'T>, angleMax : float) : RenderContext<'T> {
 
 # Scales X from 0 to xMax
 # Scales Y from 0 to yMax
-export method scale(a : Animation<'T>, xMax : float, yMax : float) : RenderContext<'T> {
+export method scale(a : Animation<'T, 'L>, xMax : float, yMax : float) : RenderContext<'T, 'L> {
   return a.perform(lambda(c : Canvas, v : float) {
     c.scale(v*xMax, v*yMax)
   })
 }
 
 # Scales X across given from/to range
-export method scaleX(a : Animation<'T>, from:float, to:float) : RenderContext<'T> {
+export method scaleX(a : Animation<'T, 'L>, from:float, to:float) : RenderContext<'T, 'L> {
   return a.perform(lambda(c : Canvas, v : float) {
     c.scale( (from + (to-from)*v), 1f )
   })
 }
 
 # Scales Y across given from/to range
-export method scaleY(a : Animation<'T>, from:float, to:float) : RenderContext<'T> {
+export method scaleY(a : Animation<'T, 'L>, from:float, to:float) : RenderContext<'T, 'L> {
   return a.perform(lambda(c : Canvas, v : float) {
     c.scale( 1f, (from + (to-from)*v) )
   })
@@ -90,20 +90,20 @@ export method scaleY(a : Animation<'T>, from:float, to:float) : RenderContext<'T
 
 # Clock-context manipulation
 
-export method delay(rc : RenderContext<'T>, amount : int) : RenderContext<'T> {
+export method delay(rc : RenderContext<'T, 'L>, amount : int) : RenderContext<'T, 'L> {
   let root = rc.fork()
   root.config.start = amount
   return root
 }
 
-export method duration(rc : RenderContext<'T>, amount : int) : RenderContext<'T> {
+export method duration(rc : RenderContext<'T, 'L>, amount : int) : RenderContext<'T, 'L> {
   let root = rc.fork()
   root.config.duration = amount
   root.config.end = -1
   return root
 }
 
-export method until(rc : RenderContext<'T>, amount : int) : RenderContext<'T> {
+export method until(rc : RenderContext<'T, 'L>, amount : int) : RenderContext<'T, 'L> {
   let root = rc.fork()
   root.config.duration = -1
   root.config.end = amount
@@ -114,7 +114,7 @@ export method until(rc : RenderContext<'T>, amount : int) : RenderContext<'T> {
 
 
 
-export method apply(rc : RenderContext<'T>, f : func<RenderContext<'T>, void>) {
+export method apply(rc : RenderContext<'T, 'L>, f : func<RenderContext<'T, 'L>, void>) {
   # Sanity check on duration
   if rc.config.end > 0 && rc.config.duration > -1 {
     # TODO: throw new Error('This chain has both an end time and a duration, which is invalid')
