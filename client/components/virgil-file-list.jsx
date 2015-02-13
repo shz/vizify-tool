@@ -3,6 +3,8 @@ var fs = require('fs')
 
 var VirgilFileList = React.createClass({
 
+  displayName: 'VirgilFileList',
+
   getInitialState: function() {
     return {
       selectedFile: ''

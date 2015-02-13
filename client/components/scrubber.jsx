@@ -1,7 +1,8 @@
 var update = React.addons.update
   , FluxibleMixin = require('fluxible').Mixin
   , CardPlayerActions = require('../actions/card-player-actions')
-  , CardPlayerStateStore = require('../stores/card-player-state-store');
+  , CardPlayerStateStore = require('../stores/card-player-state-store')
+  ;
 
 var ScrubberComponent = module.exports = React.createClass({
   mixins: [FluxibleMixin],
@@ -19,6 +20,14 @@ var ScrubberComponent = module.exports = React.createClass({
     return update({}, {$merge: playerState});
   },
 
+  shouldComponentUpdate: function(nextProps, nextState) {
+    return nextState !== this.state;
+  },
+
+  updateState: function(descriptor) {
+    this.setState(update(this.state, descriptor));
+  },
+
   componentDidMount: function() {
     window.document.addEventListener("keydown", this.keyDown);
     var self = this;
@@ -30,7 +39,6 @@ var ScrubberComponent = module.exports = React.createClass({
         self.scrub(e.absolute.x);
       }
     });
-
   },
 
   componentWillUnmount: function() {
@@ -56,9 +64,8 @@ var ScrubberComponent = module.exports = React.createClass({
   },
 
   onPlayerStateStoreUpdate: function() {
-    this.setState(update(this.state, {$merge: this.getStore(CardPlayerStateStore).getState()}));
+    this.updateState({$merge: this.getStore(CardPlayerStateStore).getState()});
   },
-
 
   scrub: function(clientX) {
     var scrubberPos = this.scrubberPos();

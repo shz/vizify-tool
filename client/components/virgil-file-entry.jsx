@@ -2,6 +2,8 @@ var fs = require('fs');
 
 var VirgilFileEntry = React.createClass({
 
+  displayName: 'VirgilFileEntry',
+
   render: function() {
     var cx = React.addons.classSet;
     var classes = cx({

@@ -1,10 +1,12 @@
 var fs = require('fs')
   , virgil = require('virgil')
   , VirgilFileList = require('./virgil-file-list.jsx')
-  , formatCompileError = require('../../lib/util/format-compile-error');
+  , formatCompileError = require('../../lib/util/format-compile-error')
   ;
 
 var VirgilEditor = React.createClass({
+
+  displayName: 'VirgilEditor',
 
   getInitialState: function() {
     return {
@@ -42,14 +44,19 @@ var VirgilEditor = React.createClass({
     });
   },
 
+  componentWillUnmount: function() {
+    window.document.removeEventListener("keydown", this.handleKeyDown);
+    this.codeEditor.off('change', this.handleCodeChanged);
+  },
+
   render: function() {
     return (
       <div id="virgil-editor">
         <VirgilFileList onLoadFile={this.handleLoadFile} files={this.state.files}/>
-          <div id="codemirror" ref="codemirror"/>
-          <pre id="virgil-console">
+        <div id="codemirror" ref="codemirror"/>
+        <pre id="virgil-console">
             {this.state.compilerOutput}
-          </pre>
+        </pre>
         <button className="save" onClick={this.handleSave}>Save</button>
       </div>
     );
@@ -136,7 +143,7 @@ var VirgilEditor = React.createClass({
           }.bind(this));
         }.bind(this));
       }
-      catch(e) {
+      catch (e) {
         throw(e);
       }
     }.bind(this));
