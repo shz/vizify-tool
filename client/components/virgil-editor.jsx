@@ -2,18 +2,32 @@ var fs = require('fs')
   , virgil = require('virgil')
   , VirgilFileList = require('./virgil-file-list.jsx')
   , formatCompileError = require('../../lib/util/format-compile-error')
+  , FluxibleMixin = require('fluxible').Mixin
+  , AppActions = require('../actions/app-actions')
+  , AppStateStore = require('../stores/app-state-store')
   ;
 
 var VirgilEditor = React.createClass({
+  mixins: [FluxibleMixin],
+
+  statics: {
+    storeListeners: {
+      onAppStateStoreUpdate: AppStateStore
+    }
+  },
 
   displayName: 'VirgilEditor',
 
   getInitialState: function() {
+
     return {
       files: [],
       selectedFile: null,
       compilerOutput: 'Ready...'
     };
+  },
+
+  onAppStateStoreUpdate: function() {
   },
 
   componentDidMount: function() {
@@ -63,6 +77,8 @@ var VirgilEditor = React.createClass({
   },
 
   handleCodeChanged: function() {
+    this.executeAction(AppActions.codeChanged);
+
     if (this.idleTimer) {
       clearTimeout(this.idleTimer);
     }
@@ -81,6 +97,8 @@ var VirgilEditor = React.createClass({
   },
 
   handleLoadFile: function(err, filename, body) {
+    this.executeAction(AppActions.openFile, filename);
+
     this.setState({files: this.state.files, selectedFile: filename});
     this.codeEditor.setValue(body);
   },
@@ -92,6 +110,8 @@ var VirgilEditor = React.createClass({
   },
 
   handleSave: function() {
+    this.executeAction(AppActions.save);
+
     this.saveCurrentFile(function(err) {
       if (err) {
         this.setCompilerOutput(err.toString());
@@ -114,6 +134,8 @@ var VirgilEditor = React.createClass({
   },
 
   handleCompile: function() {
+    this.executeAction(AppActions.compile);
+
     // do a "soft" save of the current file so when the Virgil compiler
     // does an fs.readFile on it
     this.saveCurrentFile({localOnly: true}, function(err) {

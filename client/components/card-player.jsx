@@ -1,11 +1,10 @@
-var update = React.addons.update;
-var FluxibleMixin = require('fluxible').Mixin;
-
-var Vizify = window.vizify.react.VizifyComponent;
-var Scrubber = require('./scrubber.jsx');
-
-var CardPlayerActions = require('../actions/card-player-actions');
-var CardPlayerStateStore = require('../stores/card-player-state-store');
+var update = React.addons.update
+  , FluxibleMixin = require('fluxible').Mixin
+  , Vizify = window.vizify.react.VizifyComponent
+  , Scrubber = require('./scrubber.jsx')
+  , CardPlayerActions = require('../actions/card-player-actions')
+  , CardPlayerStateStore = require('../stores/card-player-state-store')
+  ;
 
 var CardPlayerComponent = React.createClass({
   mixins: [FluxibleMixin],
