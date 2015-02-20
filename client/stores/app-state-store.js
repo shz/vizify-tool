@@ -14,6 +14,7 @@ var AppStateStore = createStore({
       fileBody: null,
       fileDirty: false,
       selectedFile: null,
+      reloadCard: false,
       compilerOutput: 'Ready...'
     };
   },
@@ -24,7 +25,8 @@ var AppStateStore = createStore({
     AppCodeChanged: 'handleCodeChanged',
     AppSave: 'handleSave',
     AppCompile: 'handleCompile',
-    AppReloadCard: 'handleReloadCard'
+    AppReloadCard: 'handleReloadCard',
+    AppCardReloaded: 'handleCardReloaded'
   },
 
   getState: function() {
@@ -125,11 +127,11 @@ var AppStateStore = createStore({
 
             eval(result['main.js']);
             this.appState.compilerOutput = "Success";
+            this.appState.reloadCard = true;
             this.emitChange();
 
             // var compiledResult = window.devenvreload;
             // console.log(compiledResult);
-            this.executeAction(AppActions.reloadCard);
           }.bind(this));
         }.bind(this));
       }
@@ -139,8 +141,8 @@ var AppStateStore = createStore({
     }.bind(this));
   },
 
-  handleReloadCard: function() {
-    console.log("AppStateStore.handleReloadCard");
+  handleCardReloaded: function() {
+    this.appState.reloadCard = false;
     this.emitChange();
   }
 });

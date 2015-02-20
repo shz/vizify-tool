@@ -30,7 +30,6 @@ var VirgilEditor = React.createClass({
     if (state.fileBody != null && !state.fileDirty) {
       this.codeEditor.setValue(state.fileBody);
     }
-    console.log("setting compiler output: " + state.compilerOutput);
     this.setState({compilerOutput: state.compilerOutput});
   },
 
@@ -72,7 +71,6 @@ var VirgilEditor = React.createClass({
   },
 
   handleCodeChanged: function() {
-    console.log("VirgilEditor.handleCodeChanged");
     this.executeAction(AppActions.codeChanged, this.codeEditor.getValue());
   },
 
@@ -82,12 +80,6 @@ var VirgilEditor = React.createClass({
       e.preventDefault();
       this.executeAction(AppActions.compile);
     }
-  },
-
-  setCompilerOutput: function(text) {
-    var state = this.state;
-    state.compilerOutput = text;
-    this.setState(state);
   },
 
   handleSave: function() {

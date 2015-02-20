@@ -1,6 +1,7 @@
 module.exports = {
   reloadCard: function(context, duration, done) {
     context.dispatch("CardPlayerReloadCard", {duration: duration});
+    context.dispatch("AppCardReloaded");
     done();
   },
 

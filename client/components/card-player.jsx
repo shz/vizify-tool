@@ -4,6 +4,7 @@ var update = React.addons.update
   , Scrubber = require('./scrubber.jsx')
   , CardPlayerActions = require('../actions/card-player-actions')
   , CardPlayerStateStore = require('../stores/card-player-state-store')
+  , AppStateStore = require('../stores/app-state-store')
   ;
 
 var CardPlayerComponent = React.createClass({
@@ -11,7 +12,8 @@ var CardPlayerComponent = React.createClass({
 
   statics: {
     storeListeners: {
-      onPlayerStateStoreUpdate: CardPlayerStateStore
+      onPlayerStateStoreUpdate: CardPlayerStateStore,
+      onAppStateStoreUpdate: AppStateStore
     }
   },
 
@@ -31,6 +33,24 @@ var CardPlayerComponent = React.createClass({
         }
       }
     return state;
+  },
+
+  onPlayerStateStoreUpdate: function() {
+    this.updateState({$merge: this.getStore(CardPlayerStateStore).getState()});
+  },
+
+  onAppStateStoreUpdate: function() {
+    this.updateState({$merge: this.getStore(CardPlayerStateStore).getState()});
+
+    // if we need to reload then do it
+    var appState = this.getStore(AppStateStore).getState();
+    if (appState.reloadCard) {
+      this.cardFn = window.devenvreload.main;
+      this.refs.vizify.card.reload(this.cardFn, this.props.cardData);
+
+      // duration may have changed so must update it.
+      this.executeAction(CardPlayerActions.reloadCard, this.refs.vizify.card.duration);
+    }
   },
 
   shouldComponentUpdate: function(nextProps, nextState) {
@@ -73,11 +93,6 @@ var CardPlayerComponent = React.createClass({
 
   // Called after card is compiled
   reloadCard: function() {
-    this.cardFn = window.devenvreload.main;
-    this.refs.vizify.card.reload(this.cardFn, this.props.cardData);
-
-    // duration may have changed so must update it.
-    this.executeAction(CardPlayerActions.reloadCard, this.refs.vizify.card.duration);
   },
 
   syncWithCard: function() {
@@ -132,10 +147,6 @@ var CardPlayerComponent = React.createClass({
         </form>
       </div>
     );
-  },
-
-  onPlayerStateStoreUpdate: function() {
-    this.updateState({$merge: this.getStore(CardPlayerStateStore).getState()});
   },
 
   onDataFileChange: function(e) {

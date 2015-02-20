@@ -26,8 +26,6 @@ var VirgilFileList = React.createClass({
   },
 
   render: function() {
-    console.log('selected: ' + this.state.selectedFile);
-    console.log('files: ' + this.state.files);
     return (
       <div className='file-list'>
         <h1>Source Files</h1>

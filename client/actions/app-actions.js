@@ -22,10 +22,5 @@ module.exports = {
   compile: function(context, payload, done) {
     context.dispatch("AppCompile");
     done();
-  },
-
-  reloadCard: function(context, duration, done) {
-    context.dispatch("AppReloadCard", {duration: duration});
-    done();
   }
 };
