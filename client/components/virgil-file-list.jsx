@@ -1,22 +1,37 @@
 var fs = require('fs')
-  , VirgilFileEntry = require('./virgil-file-entry.jsx');
+  , update = React.addons.update
+  , FluxibleMixin = require('fluxible').Mixin
+  , VirgilFileEntry = require('./virgil-file-entry.jsx')
+  , AppActions = require('../actions/app-actions')
+  , AppStateStore = require('../stores/app-state-store')
+  ;
 
 var VirgilFileList = React.createClass({
+  mixins: [FluxibleMixin],
 
   displayName: 'VirgilFileList',
 
+  statics: {
+    storeListeners: {
+      onAppStateStoreUpdate: AppStateStore
+    }
+  },
+
   getInitialState: function() {
-    return {
-      selectedFile: ''
-    };
+    return this.getStore(AppStateStore).getState();
+  },
+
+  onAppStateStoreUpdate: function() {
+    this.setState(update(this.state, {$merge: this.getStore(AppStateStore).getState()}));
   },
 
   render: function() {
     console.log('selected: ' + this.state.selectedFile);
+    console.log('files: ' + this.state.files);
     return (
       <div className='file-list'>
         <h1>Source Files</h1>
-        {this.props.files.map(function(f) {
+        {this.state.files.map(function(f) {
           var selected = (this.state.selectedFile == f.name);
           return (
             <VirgilFileEntry onClick={this.handleFileSelect} key={f.name} name={f.name} selected={selected}/>
@@ -27,10 +42,7 @@ var VirgilFileList = React.createClass({
   },
 
   handleFileSelect: function(file) {
-    this.setState({selectedFile: file});
-    fs.readFile('/src/' + file, function(err, body) {
-      this.props.onLoadFile(err, file, body);
-    }.bind(this));
+    this.executeAction(AppActions.openFile, file);
   }
 });
 

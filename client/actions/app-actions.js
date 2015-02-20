@@ -1,4 +1,9 @@
 module.exports = {
+  loadFileList: function(context, payload, done) {
+    context.dispatch("AppLoadFileList");
+    done();
+  },
+
   openFile: function(context, name, done) {
     context.dispatch("AppOpenFile", name);
     done();

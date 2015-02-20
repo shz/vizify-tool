@@ -28,6 +28,12 @@ var VirgilEditor = React.createClass({
   },
 
   onAppStateStoreUpdate: function() {
+    var state = this.getStore(AppStateStore).getState();
+
+    // file was just opened so set editor value to its contents
+    if (state.fileBody != null && !state.fileDirty) {
+      this.codeEditor.setValue(state.fileBody);
+    }
   },
 
   componentDidMount: function() {
@@ -46,16 +52,7 @@ var VirgilEditor = React.createClass({
     this.codeEditor = CodeMirror(parent, options);
     this.codeEditor.on('change', this.handleCodeChanged);
 
-    $.ajax({
-      url: '/src',
-      dataType: 'json',
-      success: function(data) {
-        this.setState({files: data});
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
-    });
+    this.executeAction(AppActions.loadFileList);
   },
 
   componentWillUnmount: function() {
@@ -77,15 +74,16 @@ var VirgilEditor = React.createClass({
   },
 
   handleCodeChanged: function() {
+    console.log("VirgilEditor.handleCodeChanged");
     this.executeAction(AppActions.codeChanged);
-
-    if (this.idleTimer) {
-      clearTimeout(this.idleTimer);
-    }
-    this.idleTimer = setTimeout(function() {
-      console.log('auto compile');
-      this.handleCompile();
-    }.bind(this), 500);
+    //
+    //if (this.idleTimer) {
+    //  clearTimeout(this.idleTimer);
+    //}
+    //this.idleTimer = setTimeout(function() {
+    //  console.log('auto compile');
+    //  this.handleCompile();
+    //}.bind(this), 500);
   },
 
   // Ctrl-Enter == compile
@@ -94,13 +92,6 @@ var VirgilEditor = React.createClass({
       e.preventDefault();
       this.handleCompile();
     }
-  },
-
-  handleLoadFile: function(err, filename, body) {
-    this.executeAction(AppActions.openFile, filename);
-
-    this.setState({files: this.state.files, selectedFile: filename});
-    this.codeEditor.setValue(body);
   },
 
   setCompilerOutput: function(text) {
