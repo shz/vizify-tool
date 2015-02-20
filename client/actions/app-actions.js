@@ -15,7 +15,7 @@ module.exports = {
   },
 
   codeChanged: function(context, payload, done) {
-    context.dispatch("AppCodeChanged");
+    context.dispatch("AppCodeChanged", payload);
     done();
   },
 
@@ -25,7 +25,7 @@ module.exports = {
   },
 
   reloadCard: function(context, duration, done) {
-    context.dispatch("CardPlayerReloadCard", {duration: duration});
+    context.dispatch("AppReloadCard", {duration: duration});
     done();
   }
 };
