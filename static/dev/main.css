@@ -102,6 +102,13 @@ button.save {
     position: absolute;
     left: 10px;
     top: 480px;
+    background-color: #ccdeff;
+    color: #000;
+}
+
+button.save.disabled {
+    background-color: #ddd;
+    color: #fff;
 }
 
 .datasource {

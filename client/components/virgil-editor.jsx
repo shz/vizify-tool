@@ -1,4 +1,5 @@
-var fs = require('fs')
+var update = React.addons.update
+  , fs = require('fs')
   , virgil = require('virgil')
   , VirgilFileList = require('./virgil-file-list.jsx')
   , FluxibleMixin = require('fluxible').Mixin
@@ -19,8 +20,13 @@ var VirgilEditor = React.createClass({
 
   getInitialState: function() {
     return {
-      compilerOutput: 'Ready...'
+      compilerOutput: 'Ready...',
+      fileDirty: false
     };
+  },
+
+  updateState: function(descriptor) {
+    this.setState(update(this.state, descriptor));
   },
 
   onAppStateStoreUpdate: function() {
@@ -28,9 +34,13 @@ var VirgilEditor = React.createClass({
 
     // file was just opened so set editor value to its contents
     if (state.fileBody != null && !state.fileDirty) {
+      this.fileLoading = true;
       this.codeEditor.setValue(state.fileBody);
     }
-    this.setState({compilerOutput: state.compilerOutput});
+    this.updateState({$merge: {
+      compilerOutput: state.compilerOutput,
+      fileDirty: state.fileDirty
+    }});
   },
 
   componentDidMount: function() {
@@ -58,6 +68,12 @@ var VirgilEditor = React.createClass({
   },
 
   render: function() {
+    var cx = React.addons.classSet;
+    var classes = cx({
+      'save': true,
+      'disabled': !this.state.fileDirty
+    });
+
     return (
       <div id="virgil-editor">
         <VirgilFileList/>
@@ -65,13 +81,17 @@ var VirgilEditor = React.createClass({
         <pre id="virgil-console">
             {this.state.compilerOutput}
         </pre>
-        <button className="save" onClick={this.handleSave}>Save</button>
+        <button className={classes} onClick={this.handleSave}>Save</button>
       </div>
     );
   },
 
   handleCodeChanged: function() {
-    this.executeAction(AppActions.codeChanged, this.codeEditor.getValue());
+    // Don't trigger a change event on first load
+    if (!this.fileLoading) {
+      this.executeAction(AppActions.codeChanged, this.codeEditor.getValue());
+    }
+    this.fileLoading = false;
   },
 
   // Ctrl-Enter == compile
