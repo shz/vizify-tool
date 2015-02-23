@@ -2,14 +2,22 @@ var fs = require('fs');
 
 var VirgilFileEntry = React.createClass({
 
-  handleClick: function(e) {
-    alert('file click: ' + e.target.innerHTML);
-  },
+  displayName: 'VirgilFileEntry',
 
   render: function() {
+    var cx = React.addons.classSet;
+    var classes = cx({
+      'file-entry': true,
+      'selected': this.props.selected
+    });
+
     return (
-      <label onClick={this.handleClick} className='file-entry'>{this.props.name}</label>
+      <label ref="label" onClick={this.handleClick} className={classes}>{this.props.name}</label>
     );
+  },
+
+  handleClick: function() {
+    this.props.onClick(this.props.name);
   }
 });
 

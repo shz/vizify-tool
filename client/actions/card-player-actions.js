@@ -1,4 +1,10 @@
 module.exports = {
+  reloadCard: function(context, duration, done) {
+    context.dispatch("CardPlayerReloadCard", {duration: duration});
+    context.dispatch("AppCardReloaded");
+    done();
+  },
+
   togglePlayPause: function(context, payload, done) {
     context.dispatch("CardPlayerTogglePlayPause", {});
     done();

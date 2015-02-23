@@ -1,18 +1,19 @@
-var update = React.addons.update;
-var FluxibleMixin = require('fluxible').Mixin;
-
-var Vizify = window.vizify.react.VizifyComponent;
-var Scrubber = require('./scrubber.jsx');
-
-var CardPlayerActions = require('../actions/card-player-actions');
-var CardPlayerStateStore = require('../stores/card-player-state-store');
+var update = React.addons.update
+  , FluxibleMixin = require('fluxible').Mixin
+  , Vizify = window.vizify.react.VizifyComponent
+  , Scrubber = require('./scrubber.jsx')
+  , CardPlayerActions = require('../actions/card-player-actions')
+  , CardPlayerStateStore = require('../stores/card-player-state-store')
+  , AppStateStore = require('../stores/app-state-store')
+  ;
 
 var CardPlayerComponent = React.createClass({
   mixins: [FluxibleMixin],
 
   statics: {
     storeListeners: {
-      onPlayerStateStoreUpdate: CardPlayerStateStore
+      onPlayerStateStoreUpdate: CardPlayerStateStore,
+      onAppStateStoreUpdate: AppStateStore
     }
   },
 
@@ -32,6 +33,24 @@ var CardPlayerComponent = React.createClass({
         }
       }
     return state;
+  },
+
+  onPlayerStateStoreUpdate: function() {
+    this.updateState({$merge: this.getStore(CardPlayerStateStore).getState()});
+  },
+
+  onAppStateStoreUpdate: function() {
+    this.updateState({$merge: this.getStore(CardPlayerStateStore).getState()});
+
+    // if we need to reload then do it
+    var appState = this.getStore(AppStateStore).getState();
+    if (appState.reloadCard) {
+      this.cardFn = window.devenvreload.main;
+      this.refs.vizify.card.reload(this.cardFn, this.props.cardData);
+
+      // duration may have changed so must update it.
+      this.executeAction(CardPlayerActions.reloadCard, this.refs.vizify.card.duration);
+    }
   },
 
   shouldComponentUpdate: function(nextProps, nextState) {
@@ -72,6 +91,10 @@ var CardPlayerComponent = React.createClass({
     }
   },
 
+  // Called after card is compiled
+  reloadCard: function() {
+  },
+
   syncWithCard: function() {
     var card = this.refs.vizify.card;
     var sync = (function() {
@@ -91,22 +114,22 @@ var CardPlayerComponent = React.createClass({
     }
 
     return (
-      <div>
-        <div id="cardcontainer" style={{width: this.props.width, height: this.props.height}}>
+      <div id="card-player">
+        <div id="card-container" style={{width: this.props.width, height: this.props.height}}>
           {card}
         </div>
-        <form id="holder">
+        <form id="card-controls">
           <Scrubber duration={this.state.duration} time={this.state.time} />
           <button id="playpause" onClick={this.togglePause}>
             {this.state.isEnded ? "Replay" :
               (this.state.isPaused ? "Play" : "Pause")}
           </button>
+          <input id="savetimestamp" type="submit" value="Save Timestamp" />
 
-          Current timestamp: {this.state.time} / {this.state.duration}
           <input type="hidden" name="t" value={this.state.time} readOnly />
 
-          <div id="uselocalfile">
-            <label id="uselocalfile">Test Data File:
+          <div id="usedatafile">
+            <label>Test Data File:
               <select name="datafile" id="datafile" value={this.state.dataFile} onChange={this.onDataFileChange}>
                 <option value="none">None</option>
                 {this.props.testDataFiles.map(function(file) {
@@ -115,17 +138,15 @@ var CardPlayerComponent = React.createClass({
               </select>
             </label>
           </div>
-
-          <p></p>
-
-          <input type="submit" value="Save" />
+          <p className="datasource">
+            Datasource: <a target="_blank" href={this.props.dataSource} title={this.props.dataSource}>here</a>
+          </p>
+          <p>
+            <a href="/production">Production preview</a>
+          </p>
         </form>
       </div>
     );
-  },
-
-  onPlayerStateStoreUpdate: function() {
-    this.updateState({$merge: this.getStore(CardPlayerStateStore).getState()});
   },
 
   onDataFileChange: function(e) {

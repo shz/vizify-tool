@@ -1,10 +1,32 @@
-var FluxibleMixin = require('fluxible').Mixin;
-var CardPlayerActions = require('../actions/card-player-actions');
+var update = React.addons.update
+  , FluxibleMixin = require('fluxible').Mixin
+  , CardPlayerActions = require('../actions/card-player-actions')
+  , CardPlayerStateStore = require('../stores/card-player-state-store')
+  ;
 
 var ScrubberComponent = module.exports = React.createClass({
   mixins: [FluxibleMixin],
 
+  statics: {
+    storeListeners: {
+      onPlayerStateStoreUpdate: CardPlayerStateStore
+    }
+  },
+
   displayName: "Scrubber",
+
+  getInitialState: function() {
+    var playerState = this.getStore(CardPlayerStateStore).getState();
+    return update({}, {$merge: playerState});
+  },
+
+  shouldComponentUpdate: function(nextProps, nextState) {
+    return nextState !== this.state;
+  },
+
+  updateState: function(descriptor) {
+    this.setState(update(this.state, descriptor));
+  },
 
   componentDidMount: function() {
     window.document.addEventListener("keydown", this.keyDown);
@@ -17,7 +39,6 @@ var ScrubberComponent = module.exports = React.createClass({
         self.scrub(e.absolute.x);
       }
     });
-
   },
 
   componentWillUnmount: function() {
@@ -26,10 +47,11 @@ var ScrubberComponent = module.exports = React.createClass({
   },
 
   render: function() {
-    var completionRate = this.props.duration ? (this.props.time / this.props.duration) : 0;
+    var completionRate = this.state.duration ? (this.state.time / this.state.duration) : 0;
     var scale = 'scale(' + completionRate + ', 1)';
     return (
       <div id="scrubber">
+        <span id="timestamp">Timestamp: {this.state.time} / {this.state.duration}</span>
         <div style={{
           transform: scale,
           WebkitTransform: scale,
@@ -39,6 +61,10 @@ var ScrubberComponent = module.exports = React.createClass({
         </div>
       </div>
     );
+  },
+
+  onPlayerStateStoreUpdate: function() {
+    this.updateState({$merge: this.getStore(CardPlayerStateStore).getState()});
   },
 
   scrub: function(clientX) {
@@ -62,13 +88,8 @@ var ScrubberComponent = module.exports = React.createClass({
   },
 
   keyDown: function(e) {
-    if (e.keyCode === 32) {
+    if (e.ctrlKey && e.keyCode === 32) {
       this.executeAction(CardPlayerActions.togglePlayPause);
-    } else if (e.keyCode === 39) {
-      this.executeAction(CardPlayerActions.seekToTime, this.props.time + 16);
-    } else if (e.keyCode === 37) {
-      this.executeAction(CardPlayerActions.seekToTime, this.props.time - 16);
     }
   }
-
 });

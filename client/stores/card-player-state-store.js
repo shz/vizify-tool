@@ -11,10 +11,22 @@ var CardPlayerStateStore = createStore({
   },
 
   handlers: {
+    CardPlayerReloadCard: 'handleReloadCard',
     CardPlayerTogglePlayPause: 'handleTogglePlayPause',
     CardPlayerUpdateFrame: 'handleUpdateFrame',
     CardPlayerSeek: 'handleSeek',
     CardPlayerSeekToTime: 'handleSeekToTime'
+  },
+
+  handleReloadCard: function(payload) {
+    this.playerState.duration = payload.duration;
+
+    if (this.playerState.time > this.playerState.duration || this.playerState.isEnded ) {
+      this.playerState.time = this.playerState.duration;
+      this.playerState.isEnded = true;
+    }
+
+    this.emitChange();
   },
 
   handleTogglePlayPause: function() {

@@ -1,16 +1,19 @@
 <!doctype html>
 <html>
   <head>
+    <link rel="stylesheet" href="/dev/codemirror.css">
     <link rel="stylesheet" href="/dev/main.css">
   </head>
   <body>
     <script src="/dev/jquery.min.js"></script>
+    <script src="/dev/codemirror.js"></script>
     <script src="/dev/vztouch.js"></script>
     <script src="/dev/react.js"></script>
     <script src="vizify.js"></script>
     <script src="card.js"></script>
     <script src="show.js"></script>
     <div id="app-opts" data-payload="{{opts}}"></div>
+    <script src="/dev/cm-mode-javascript.js"></script>
     <script>
       (function () {
         var data = JSON.parse(document.getElementById('app-opts').dataset.payload);
