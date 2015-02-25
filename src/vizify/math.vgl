@@ -1,8 +1,13 @@
-export function pi : float {
+# This is a candidate for future movement into the core Virgil language
+# as a "global constant".
+export function pi: float {
   return 3.1415926535897932
 }
 
-export function vglmax(x1 : float, x2 : float) : float {
+#
+# Floating-point and int flavors of max()/min()
+#
+export function maxf(x1: float, x2: float) : float {
   if (x1 < x2) {
     return x2
   }else{
@@ -10,24 +15,7 @@ export function vglmax(x1 : float, x2 : float) : float {
   }
 }
 
-export function vglmin(x1 : float, x2 : float) : float {
-  if (x1 < x2) {
-    return x1
-  }else{
-    return x2
-  }
-}
-
-
-export function vglmaxInt(x1 : int, x2 : int) : int {
-  if (x1 < x2) {
-    return x2
-  }else{
-    return x1
-  }
-}
-
-export function vglminInt(x1 : int, x2 : int) : int {
+export function minf(x1: float, x2: float) : float {
   if (x1 < x2) {
     return x1
   }else{
@@ -36,16 +24,18 @@ export function vglminInt(x1 : int, x2 : int) : int {
 }
 
 
-export method roundAsFloat(x : float) : float {
-  return x.round().asFloat()
+export function maxi(x1: int, x2: int) : int {
+  if (x1 < x2) {
+    return x2
+  }else{
+    return x1
+  }
 }
 
-
-export method vglabs(x : float) : float {
-  return (x < 0) ? (0f-x) : x
-}
-
-# Rounding to a particular precision -- e.g. (3.16).round(0.1) => 3.2
-export method roundToPrecision(input : float, resolution : float) : float {
-  return (    ((input * (1f/resolution) + 0.5).floor().asFloat())  / (1.0f/resolution)    )
+export function mini(x1: int, x2: int) : int {
+  if (x1 < x2) {
+    return x1
+  }else{
+    return x2
+  }
 }

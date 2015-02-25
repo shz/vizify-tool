@@ -1,6 +1,11 @@
 import canvas
 
-export method fillTextAligned(c : Canvas, text: str, x: float, y: float, aligntype: str) {
+# Convenience wrapper around Canvas::fillText
+# This convenience supports left/center/right alignment.
+# If aligntype=="L", the x,y point specifies the leftmost point in the rendering.
+# If aligntype=="R", the x,y point specifies the rightmost point in the rendering.
+# If aligntype=="C", the x,y point specifies the center point in the rendering.
+export method fillTextAligned(c: Canvas, text: str, x: float, y: float, aligntype: str) {
   let wid = c.measureTextWidth(text)
   mut theX = x
   if (aligntype == "R") {
@@ -12,6 +17,8 @@ export method fillTextAligned(c : Canvas, text: str, x: float, y: float, alignty
   c.fillText(text, theX, y)
 }
 
+# Returns the given input string after dropping all white space at the start of the string.
+# The only whitespace supported at this time is the space character.
 export method trimStart(s:str) : str {
   mut result = ""
   mut boolStillTrimming = true
@@ -28,6 +35,8 @@ export method trimStart(s:str) : str {
   return result
 }
 
+# Returns the given input string after dropping all white space at the end of the string.
+# The only whitespace supported at this time is the space character.
 export method trimEnd(s:str) : str {
   mut result = ""
   mut boolStillTrimming = true
@@ -45,11 +54,15 @@ export method trimEnd(s:str) : str {
   return result
 }
 
+# Returns the given input string after dropping all white space at both the start and the end of the string.
+# The only whitespace supported at this time is the space character.
 export method trim(s:str) : str {
   return s.trimStart().trimEnd()
 }
 
-export method join(strset : list<str>, delim : str) : str {
+# Returns the result of concatenating the given list of strings, using the given
+# delimiter as a separator between each pair in the concatenation.
+export method join(strset: list<str>, delim: str) : str {
   mut result = ""
   for i = 0 upto (strset.length-1) {
     result = result + strset[i] + delim
@@ -58,12 +71,11 @@ export method join(strset : list<str>, delim : str) : str {
   return result
 }
 
-
 # The extract(startIndex, count) method returns a list containing the selected elements from a given list.
 # If the count is 0, the result is an empty list.
-# If the count is -1, the semantics are "return the entire sublist starting from given start index to the END OF THE LIST.
-export method extract(haystack : list<str>, start:int, count:int) : list<str> {
-  mut result : list<str> = []
+# If the count is -1, the semantics are "return the entire sublist starting from given start index to the END OF THE LIST."
+export method extract(haystack: list<str>, start:int, count:int) : list<str> {
+  mut result: list<str> = []
   mut numToExtract = count
   if (count == 0) {
     return result
@@ -77,9 +89,9 @@ export method extract(haystack : list<str>, start:int, count:int) : list<str> {
   return result
 }
 
-export method tokenizeByWhiteSpace(haystackIn : str) : list<str> {
+export method tokenizeByWhiteSpace(haystackIn: str) : list<str> {
   let haystack = haystackIn.trim()
-  let result : list<str> = []
+  let result: list<str> = []
   mut curAccum = ""
   mut inWhiteSpace = false
   for i = 0 upto haystack.length {
@@ -100,9 +112,9 @@ export method tokenizeByWhiteSpace(haystackIn : str) : list<str> {
 }
 
 export struct LineLayoutSpec {
-  text : str = ""
-  left : int = 0
-  width : int = 0
+  text: str = ""
+  left: int = 0
+  width: int = 0
 }
 
 export struct TextLayoutParagraphConfig {
@@ -116,7 +128,7 @@ export struct ParagraphLayoutSpec {
   fontname: str = ""
   size: int = 0
   # metrics: m,
-  lineHeight : float = 0f
+  lineHeight: float = 0f
   contentHeight: float = 0f
   verticalOffset: float = 0f
   lines: list<LineLayoutSpec> = []
@@ -124,28 +136,28 @@ export struct ParagraphLayoutSpec {
   h: int = 0
 }
 
-export method layoutParagraph(c : Canvas, text: str, fontname: str, width:float, height:float, settings: TextLayoutParagraphConfig) : ParagraphLayoutSpec {
+export method layoutParagraph(c: Canvas, text: str, fontname: str, width:float, height:float, settings: TextLayoutParagraphConfig) : ParagraphLayoutSpec {
 
   c.setFont(fontname, settings.fontSize)
   let fontnameToUse = fontname
   # settings = makeLayoutSettings(settings)
 
   # In the future we will support splitting the text into paragraphs based on \r\n delimiters.
-  let linesIn : list<str> = [ text ]
-  let linesOut : list<list<str>> = []
+  let linesIn: list<str> = [ text ]
+  let linesOut: list<list<str>> = []
 
   for i=0 upto linesIn.length {
 
     # Consider this line: "And this shall be the most interesting thing.  And this shall be."
     # The result of the match will be: ["And ", "this ", "shall ", "be ", "the ", "most ", "interesting ", "thing.  ", "And ", "this ", "shall ", "be.", ""]
     # After the filtering, the result will be the same EXCEPT that empty string at the very end will be gone.
-    mut chunks : list<str> = linesIn[i].tokenizeByWhiteSpace()       #match(/\S*\s*/g).filter(function(s) { return s.length })
-    let line : list<str> = []
+    mut chunks: list<str> = linesIn[i].tokenizeByWhiteSpace()       #match(/\S*\s*/g).filter(function(s) { return s.length })
+    let line: list<str> = []
 
     # Find out how many words to chomp
     while (chunks.length) {
-      mut max : int = chunks.length
-      mut min : int = 1
+      mut max: int = chunks.length
+      mut min: int = 1
       mut prevMax = 99999
       mut prevMin = 0
       while (true) {
@@ -172,7 +184,7 @@ export method layoutParagraph(c : Canvas, text: str, fontname: str, width:float,
   }
 
   # Flatten lines
-  let resultA : list<str> = []
+  let resultA: list<str> = []
   for ii=0 upto linesOut.length {
     for jj=0 upto linesOut[ii].length {
       resultA.push(linesOut[ii][jj])
@@ -182,7 +194,7 @@ export method layoutParagraph(c : Canvas, text: str, fontname: str, width:float,
   # Calculate line metrics
   mut maxWidth = 0
 
-  let resultB : list<LineLayoutSpec> = []
+  let resultB: list<LineLayoutSpec> = []
 
   for idxLine = 0 upto resultA.length {
     let line = resultA[idxLine]
@@ -194,7 +206,7 @@ export method layoutParagraph(c : Canvas, text: str, fontname: str, width:float,
     }
 
     # Adjust for text alignment
-    mut xleft : int = 0
+    mut xleft: int = 0
     if (settings.textAlign == "center") {
       xleft = ((width - w) / 2f).round()
     }
@@ -239,7 +251,7 @@ export method layoutParagraph(c : Canvas, text: str, fontname: str, width:float,
 }
 
 
-export method fillFittedText(c : Canvas, spec: ParagraphLayoutSpec, x: float, y: float) {
+export method fillFittedText(c: Canvas, spec: ParagraphLayoutSpec, x: float, y: float) {
   c.setFont(spec.fontname, spec.size)
   mut yCur = y + spec.verticalOffset + (spec.size.asFloat()*0.7)
   for i = 0 upto spec.lines.length {
