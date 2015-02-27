@@ -49,7 +49,7 @@ var CardPlayerComponent = React.createClass({
       this.refs.vizify.card.reload(this.cardFn, this.props.cardData);
 
       // duration may have changed so must update it.
-      this.executeAction(CardPlayerActions.reloadCard, this.refs.vizify.card.duration);
+      this.executeAction(CardPlayerActions.reloadCard, {duration: this.refs.vizify.card.duration});
     }
   },
 
@@ -101,7 +101,7 @@ var CardPlayerComponent = React.createClass({
       if (this.state.isPaused) {
         return;
       }
-      this.executeAction(CardPlayerActions.updateFrame, card.getTime());
+      this.executeAction(CardPlayerActions.updateFrame, {t: card.getTime()});
       requestAnimationFrame(sync);
     }).bind(this);
     requestAnimationFrame(sync);

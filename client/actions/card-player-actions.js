@@ -1,6 +1,6 @@
 module.exports = {
-  reloadCard: function(context, duration, done) {
-    context.dispatch("CardPlayerReloadCard", {duration: duration});
+  reloadCard: function(context, payload, done) {
+    context.dispatch("CardPlayerReloadCard", {duration: payload.duration});
     context.dispatch("AppCardReloaded");
     done();
   },
@@ -10,13 +10,13 @@ module.exports = {
     done();
   },
 
-  updateFrame: function(context, t, done) {
-    context.dispatch("CardPlayerUpdateFrame", {time: t});
+  updateFrame: function(context, payload, done) {
+    context.dispatch("CardPlayerUpdateFrame", {time: payload.t});
     done();
   },
 
-  seek: function(context, position, done) {
-    context.dispatch("CardPlayerSeek", {position: position});
+  seek: function(context, payload, done) {
+    context.dispatch("CardPlayerSeek", {position: payload.completionRate});
     done();
   },
 
