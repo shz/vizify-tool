@@ -71,7 +71,7 @@ var ScrubberComponent = module.exports = React.createClass({
     var scrubberPos = this.scrubberPos();
     var railOriginX = scrubberPos.x;
     var completionRate = Math.max(0, Math.min(1, (clientX - railOriginX) / scrubberPos.w));
-    this.executeAction(CardPlayerActions.seek, completionRate);
+    this.executeAction(CardPlayerActions.seek, {completionRate: completionRate});
   },
 
   scrubberPos: function() {
