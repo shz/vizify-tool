@@ -1,0 +1,46 @@
+import vizify.core
+import vizify.math
+import vizify.clock
+import vizify.canvas
+import vizify.animation
+import vizify.tweening
+import vizify.color
+import vizify.geometry
+import vizify.text
+
+import layout
+import data
+
+function renderer(rc : RenderContext<Data, Layout>) {
+  let data = rc.data
+  let ctx = rc.c
+  let circleRadius = rc.layout.radius
+  let center = rc.layout.center
+
+  # ctx.fillRect(0f,0f, 99999f, 99999f)
+
+  rc.delay(1000).apply(lambda(rc) {
+    ctx.save()
+    ctx.setFillColor(data.colors[data.colorIndex])
+    ctx.beginPath()
+    ctx.arc(center.x, center.y, circleRadius, 0f, 2f * pi(), false)
+    ctx.fill()
+    ctx.restore()
+  })
+
+  ctx.setFillColor(data.colors[1])
+  ctx.fillFittedText(rc.layout.messageFormatted, 0f, 0f)
+}
+
+export function main(json : str) : CardConfig<Data, Layout> {
+  let colors = [rgb(0,0,0), rgb(255, 183, 50), rgb(0, 255, 0), rgb(0, 0, 255)]
+  let d = new Data {
+    colors = colors
+  }
+  return new CardConfig<Data, Layout> {
+    data = d
+    performLayout = layout
+    renderer = renderer
+    duration = 30000
+  }
+}

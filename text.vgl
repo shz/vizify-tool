@@ -1,80 +1,57 @@
-import canvas
+import string
 
-# Convenience wrapper around Canvas::fillText
-# This convenience supports left/center/right alignment.
-# If aligntype=="L", the x,y point specifies the leftmost point in the rendering.
-# If aligntype=="R", the x,y point specifies the rightmost point in the rendering.
-# If aligntype=="C", the x,y point specifies the center point in the rendering.
-export method fillTextAligned(c: Canvas, text: str, x: float, y: float, aligntype: str) {
-  let wid = c.measureTextWidth(text)
-  mut theX = x
-  if (aligntype == "R") {
-    theX = x - wid
+export extern vizify {
+  struct TextLayoutEngine {
   }
-  if (aligntype == "C") {
-    theX = x - wid/2f
+
+  # A vizapp uses this to request a desired font
+  struct Font {
+    name: str  # Default null
+    family: str # ["sans", "serif", "monospace"] Default: "sans"
+    weight: int   # Default 300
+    italic: bool  # Default false
+    condensed: bool  # Default false
   }
-  c.fillText(text, theX, y)
+
+  # Don't construct objects of this type!
+  # Use getFontMetrics() to obtain a struct of this type.
+  struct FontMetrics {
+    size: int
+    xheight: float 
+    cap: float 
+    ascender: float 
+    descender: float 
+  }
+
+  method measureTextWidth (tutil: TextLayoutEngine, text: str, font: Font, pxFontSize: int) : float
+  method getFontMetrics (tutil: TextLayoutEngine, font: Font, pxFontSize: int) : FontMetrics
+
+  struct LineLayout {
+    text: str
+    left: int
+    width: int
+    lineHeight: float
+  }
+
+  struct TextLayout {
+    font: Font
+    size: int
+    contentHeight: float
+    verticalOffset: float
+    lines: list<LineLayout>
+    width: int
+    height: int
+  }
+
 }
 
-# Returns the given input string after dropping all white space at the start of the string.
-# The only whitespace supported at this time is the space character.
-export method trimStart(s:str) : str {
-  mut result = ""
-  mut boolStillTrimming = true
-  for i = 0 upto s.length {
-    if (boolStillTrimming) {
-      if (s.at(i) != " ") {
-        result = result + s.at(i)
-        boolStillTrimming = false
-      }
-    }else{
-      result = result + s.at(i)
-    }
-  }
-  return result
-}
-
-# Returns the given input string after dropping all white space at the end of the string.
-# The only whitespace supported at this time is the space character.
-export method trimEnd(s:str) : str {
-  mut result = ""
-  mut boolStillTrimming = true
-  for i = (s.length - 1) downto -1 {
-    if (boolStillTrimming) {
-      if (s.at(i) != " ") {
-        result = s.at(i) + result
-        boolStillTrimming = false
-      }
-    }
-    else{
-      result = s.at(i) + result
-    }
-  }
-  return result
-}
-
-# Returns the given input string after dropping all white space at both the start and the end of the string.
-# The only whitespace supported at this time is the space character.
-export method trim(s:str) : str {
-  return s.trimStart().trimEnd()
-}
-
-# Returns the result of concatenating the given list of strings, using the given
-# delimiter as a separator between each pair in the concatenation.
-export method join(strset: list<str>, delim: str) : str {
-  mut result = ""
-  for i = 0 upto (strset.length-1) {
-    result = result + strset[i] + delim
-  }
-  result = result + strset[strset.length-1]
-  return result
-}
-
+#
+# Internal use only!  Only for the paragraph-processing method shown below!
 # The extract(startIndex, count) method returns a list containing the selected elements from a given list.
 # If the count is 0, the result is an empty list.
 # If the count is -1, the semantics are "return the entire sublist starting from given start index to the END OF THE LIST."
-export method extract(haystack: list<str>, start:int, count:int) : list<str> {
+#
+method extract(haystack: list<str>, start:int, count:int) : list<str> {
   mut result: list<str> = []
   mut numToExtract = count
   if (count == 0) {
@@ -89,7 +66,10 @@ export method extract(haystack: list<str>, start:int, count:int) : list<str> {
   return result
 }
 
-export method tokenizeByWhiteSpace(haystackIn: str) : list<str> {
+#
+# Internal use only!  Only for the paragraph-processing method shown below!
+#
+method tokenizeByWhiteSpace(haystackIn: str) : list<str> {
   let haystack = haystackIn.trim()
   let result: list<str> = []
   mut curAccum = ""
@@ -111,36 +91,23 @@ export method tokenizeByWhiteSpace(haystackIn: str) : list<str> {
   return result
 }
 
-export struct LineLayoutSpec {
-  text: str = ""
-  left: int = 0
-  width: int = 0
-}
-
-export struct TextLayoutParagraphConfig {
+export struct ParagraphConfig {
+ width: float = 100f
+ height: float = 100f
+ font: Font = new Font
  fontSize: int = 10
  lineHeight: float = 1.32
  textAlign: str = "left"
  verticalAlign: str = "top"
 }
 
-export struct ParagraphLayoutSpec {
-  fontname: str = ""
-  size: int = 0
-  # metrics: m,
-  lineHeight: float = 0f
-  contentHeight: float = 0f
-  verticalOffset: float = 0f
-  lines: list<LineLayoutSpec> = []
-  w: int = 0
-  h: int = 0
-}
-
-export method layoutParagraph(c: Canvas, text: str, fontname: str, width:float, height:float, settings: TextLayoutParagraphConfig) : ParagraphLayoutSpec {
-
-  c.setFont(fontname, settings.fontSize)
-  let fontnameToUse = fontname
-  # settings = makeLayoutSettings(settings)
+#
+# TextLayoutEngine#paragraph
+#
+export method paragraph (tutil: TextLayoutEngine, text: str, settings: ParagraphConfig) : TextLayout {
+  let width = settings.width
+  let height = settings.height
+  let font = settings.font
 
   # In the future we will support splitting the text into paragraphs based on \r\n delimiters.
   let linesIn: list<str> = [ text ]
@@ -165,7 +132,7 @@ export method layoutParagraph(c: Canvas, text: str, fontname: str, width:float, 
         prevMin = min
         let cur = (min.asFloat() + (max - min).asFloat()/2f).round()
         let thisTest = chunks.extract(0, cur).join("").trim()
-        let mwidth = c.measureTextWidth(thisTest)
+        let mwidth = tutil.measureTextWidth(thisTest, font, settings.fontSize)
         if (mwidth > width) {
           max = cur
         } else {
@@ -194,13 +161,17 @@ export method layoutParagraph(c: Canvas, text: str, fontname: str, width:float, 
   # Calculate line metrics
   mut maxWidth = 0
 
-  let resultB: list<LineLayoutSpec> = []
+  let resultB: list<LineLayout> = []
+
+  # Get metrics for this font/size
+  # var m = metrics.get(font.family, font.style, settings.fontSize)
+  let lineHeightCalc = settings.fontSize.asFloat() * 1.07 * settings.lineHeight
 
   for idxLine = 0 upto resultA.length {
     let line = resultA[idxLine]
 
     # Determine line width
-    let w = c.measureTextWidth(line)
+    let w = tutil.measureTextWidth(line, font, settings.fontSize)
     if (w > maxWidth) {
       maxWidth = w
     }
@@ -214,17 +185,13 @@ export method layoutParagraph(c: Canvas, text: str, fontname: str, width:float, 
       xleft = (width - w).round()
     }
 
-    resultB.push(new LineLayoutSpec {
+    resultB.push(new LineLayout {
       text = line
       left = xleft
+      lineHeight = lineHeightCalc
       width = w.round()
     })
-
   }
-
-  # Get metrics for this font/size
-  # var m = metrics.get(font.family, font.style, settings.fontSize)
-  let lineHeightCalc = settings.fontSize.asFloat() * 1.07 * settings.lineHeight
 
   # Adjust vertical offset to fit in space
   mut verticalOffsetCalc = 0
@@ -238,24 +205,13 @@ export method layoutParagraph(c: Canvas, text: str, fontname: str, width:float, 
     }
   }
 
-  return new ParagraphLayoutSpec {
-    fontname = fontnameToUse
-    size = settings.fontSize
+  return new TextLayout {
+    font = font
     contentHeight = contentHeightCalc
-    lineHeight = lineHeightCalc
     verticalOffset = verticalOffsetCalc.asFloat()
+    size = settings.fontSize
     lines = resultB
-    w = width.round()
-    h = height.round()
-  }
-}
-
-
-export method fillFittedText(c: Canvas, spec: ParagraphLayoutSpec, x: float, y: float) {
-  c.setFont(spec.fontname, spec.size)
-  mut yCur = y + spec.verticalOffset + (spec.size.asFloat()*0.7)
-  for i = 0 upto spec.lines.length {
-    c.fillText(spec.lines[i].text, (x + spec.lines[i].left.asFloat()), yCur)
-    yCur = yCur + spec.lineHeight
+    width = width.round()
+    height = height.round()
   }
 }

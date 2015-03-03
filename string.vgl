@@ -1,0 +1,12 @@
+
+
+# Returns the result of concatenating the given list of strings, using the given
+# delimiter as a separator between each pair in the concatenation.
+export method join(strset: list<str>, delim: str) : str {
+  mut result = ""
+  for i = 0 upto (strset.length-1) {
+    result = result + strset[i] + delim
+  }
+  result = result + strset[strset.length-1]
+  return result
+}

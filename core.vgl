@@ -1,5 +1,6 @@
 import canvas
 import geometry
+import text
 
 # In this file, the only types you, as a Viz developer, should ever interact with are:
 # > RenderContext
@@ -60,7 +61,7 @@ export extern vizify {
     duration: int
     renderer: func<RenderContext<'T, 'L>, void>
     images: list<str>
-    performLayout: func<Size, 'T, 'L>
+    performLayout: func<Size, TextLayoutEngine, 'T, 'L>
   }
 
 }

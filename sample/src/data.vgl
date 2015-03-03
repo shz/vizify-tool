@@ -1,0 +1,6 @@
+import vizify.color
+
+export struct Data {
+  colorIndex: int = 0
+  colors: list<Color> = null
+}
