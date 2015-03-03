@@ -45,8 +45,10 @@ function returnOne(d: int) : float {
 export method tween(rc1: RenderContext<'T,'L>, shapeZeroToOne: func<int, float>, shapeOneToZero: func<int, float>) : Animation<'T,'L> {
   return new Animation<'T,'L> {
     rc = rc1
-    i = (shapeZeroToOne == null) ? returnOne : shapeZeroToOne
-    o = (shapeOneToZero == null) ? returnOne : shapeOneToZero
+#    i = shapeZeroToOne
+#    o = shapeOneToZero
+   i = (shapeZeroToOne == null) ? returnOne : shapeZeroToOne
+   o = (shapeOneToZero == null) ? returnOne : shapeOneToZero
   }
 }
 
