@@ -1,4 +1,3 @@
-
 {
   "node": true,
   "browser": true,
@@ -23,6 +22,9 @@
   "-W086": true,
   "asi": true,
   "eqnull": true,
-  "laxcomma": true
+  "laxcomma": true,
+  "globals": {
+    "$": false
+  }
 }
 
