@@ -1,4 +1,5 @@
 import color
+import text
 
 export extern vizify {
   
@@ -17,12 +18,12 @@ export extern vizify {
   # of generated primitives.
   # These are all subject to the save/restore stack.
   #
-  method setFillColor (c:Canvas, val:Color)
-  method setStrokeColor (c:Canvas, val:Color)
-  method setGlobalAlpha (c:Canvas, val:float)
-  method setLineWidth (c:Canvas, val:float)
-  method setLineDash(c:Canvas, dashspec: list<int>)
-  method setFont (c:Canvas, fontFam:str, pxSize: int)
+  method setFillColor (c: Canvas, val: Color)
+  method setStrokeColor (c: Canvas, val: Color)
+  method setGlobalAlpha (c: Canvas, val: float)
+  method setLineWidth (c: Canvas, val: float)
+  method setLineDash(c: Canvas, dashspec: list<int>)
+  method setFont (c: Canvas, font: Font, pxSize: int)
 
   # The mask mode can be used to restrict subsequent rendering actions to only
   # certain pixels on the canvas, based on whether that destination pixel is or isn't
@@ -32,17 +33,17 @@ export extern vizify {
   #   "mask" (only the already-painted portion of the canvas will be writeable)
   #   "reverse-mask" (only the not-yet-painted portion of the canvas will be writeable)
   # This attribute is also subject to the save/restore stack.
-  method setGlobalMaskMode(c:Canvas, mode:str)
-  method clearGlobalMask(c:Canvas)   #NYI
+  method setGlobalMaskMode(c: Canvas, mode: str)
+  method clearGlobalMask(c: Canvas)   #NYI
 
   #
   # ACCUMULATIVE TRANSFORMATIONS -- each use of one of these methods
   # has an accumulative effect on the current 2D transformation matrix.
   # Note that the transf matrix is subject to save/restore stack.
   #
-  method translate(c: Canvas, x:float, y:float)
-  method scale(c: Canvas, x:float, y:float)
-  method rotate(c: Canvas, angleInRadians:float)
+  method translate(c: Canvas, x: float, y: float)
+  method scale(c: Canvas, x: float, y: float)
+  method rotate(c: Canvas, angleInRadians: float)
 
   #
   # CLIP REGION
@@ -61,8 +62,8 @@ export extern vizify {
   # Keep in mind: your specification of the clip region is subjected to
   # the current 2D transformation matrix.
   #
-  method startClip(c: Canvas, x:float, y:float, w:float, h:float)
-  method endClip(c: Canvas)
+  method startClip(c: Canvas, x: float, y: float, w: float, h: float)
+  method endClip(c: Canvas)  #NYI
 
   #
   # ATTRIBUTE-STATE STACK CONTROL
@@ -81,7 +82,7 @@ export extern vizify {
   # Most 2D primitives are generated via a multi-step process (see below).
   #
   # The only methods that generate a primitive via a single call are these:
-  method fillRect(c: Canvas, x:float, y:float, w:float, h:float)
+  method fillRect(c: Canvas, x: float, y: float, w: float, h: float)
   method fillText(c: Canvas, text: str, x: float, y: float)
   method drawImage(c: Canvas, img: str, x: float, y: float)
   method drawImageSized(c: Canvas, img: str, x: float, y: float, w: float, h: float)
@@ -91,10 +92,10 @@ export extern vizify {
   method beginPath(c: Canvas)
 
   # You then accumulate a path via calls to any of these:
-  method arc(c: Canvas, xOrb:float, yOrb:float, radius:float, angleStart:float, angleEnd:float, counterClockwise:bool)
+  method arc(c: Canvas, xOrb: float, yOrb: float, radius: float, angleStart: float, angleEnd: float, counterClockwise:bool)
   method rect(c: Canvas, x: float, y: float, w: float, h: float)
-  method bezierCurveTo(c: Canvas, x1:float, y1:float, x2:float, y2:float, x3:float, y3:float)
-  method quadraticCurveTo(c: Canvas, x1:float, y1:float, x2:float, y2:float)
+  method bezierCurveTo(c: Canvas, x1: float, y1: float, x2: float, y2: float, x3: float, y3: float)
+  method quadraticCurveTo(c: Canvas, x1: float, y1: float, x2: float, y2: float)
   method moveTo(c: Canvas, x: float, y: float)
   method lineTo(c: Canvas, x: float, y: float)
 
@@ -109,6 +110,9 @@ export extern vizify {
   method stroke(c: Canvas)
   method fill(c: Canvas)
 
+  # Laid-out text
+  method drawTextLayout(c: Canvas, spec: TextLayout, x: float, y: float)
+
   #
   # COMPUTATION/INQUIRY
   #
@@ -118,9 +122,33 @@ export extern vizify {
   # Allows inquiry of the current global-alpha floating-point number.
   # This is useful since the alpha is not accumulative, but accumulation
   # can be achieved by inquiring and then modifying the global alpha.
-  method getGlobalAlpha (c:Canvas) : float
+  method getGlobalAlpha (c: Canvas) : float
   
   # This method's computation is based on the current value of the
   # font attribute (both the font family and the pixel-based font size).
   method measureTextWidth(c: Canvas, text: str) : float
+
+
 }
+
+#
+# Canvas#fillTextAligned
+#
+# Convenience wrapper around Canvas::fillText
+# This convenience supports left/center/right alignment.
+# If aligntype=="left", the x,y point specifies the leftmost point in the rendering.
+# If aligntype=="right", the x,y point specifies the rightmost point in the rendering.
+# If aligntype=="center", the x,y point specifies the center point in the rendering.
+#
+export method fillTextAligned(c: Canvas, text: str, x: float, y: float, aligntype: str) {
+  let wid = c.measureTextWidth(text)
+  mut theX = x
+  if (aligntype == "right") {
+    theX = x - wid
+  }
+  if (aligntype == "center") {
+    theX = x - wid/2f
+  }
+  c.fillText(text, theX, y)
+}
+
