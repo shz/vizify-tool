@@ -115,7 +115,7 @@ var CardPlayerComponent = React.createClass({
 
     return (
       <div id="card-player">
-        <div id="card-container" style={{width: this.props.width, height: this.props.height}}>
+        <div id="card-container">
           {card}
         </div>
         <form id="card-controls">
