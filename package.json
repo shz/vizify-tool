@@ -61,7 +61,7 @@
     "sugar": "^1.4.1",
     "tmp": "0.0.24",
     "virgil": "^0.9.67",
-    "vizify-javascript": "^1.3.0"
+    "vizify-javascript": "^2.1.6"
   },
   "devDependencies": {
     "browserify": "~8.1.1",
