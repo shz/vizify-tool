@@ -1,22 +1,42 @@
-import vizify.env
+import vizify.core
+import vizify.geometry
+import vizify.text
+import vizify.json
+
+# Other useful libs, not used in this example.
 import vizify.math
-import vizify.clock
-import vizify.canvas
 import vizify.animation
-import vizify.easing
+import vizify.tweening
 import vizify.color
 
+
 struct Data {
+  # Store your app data here.
 }
 
-function renderer(rc: RenderContext<Data>) {
+struct Layout {
+  # Store your layout here.
 }
 
-export function main(json: str) : CardConfig<Data> {
+function renderer(rc: RenderContext<Data, Layout>) {
+  # Now that you have layout and data, combine them to draw your beautiful visualizations.
+}
+
+function performLayout(canvasSize:Size, t:TextLayoutEngine, d:Data) : Layout {
+  # Compute your layout data here based on the data and canvas size.
+  # This will get called once in the beginning and whenever canvas size changes.
+  return new Layout
+}
+
+export function main(json: str) : CardConfig<Data, Layout> {
   let d = new Data
-  return new CardConfig<Data> {
+  # Fill in your data object.
+  # d.someData = json.get("someData").asStr()
+
+  return new CardConfig<Data, Layout> {
     data = d
     renderer = renderer
+    performLayout = performLayout
     duration = 1000
   }
 }
