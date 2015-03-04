@@ -64,16 +64,17 @@
     "vizify-javascript": "^2.1.6"
   },
   "devDependencies": {
+    "aliasify": "^1.5.1",
     "browserify": "~8.1.1",
     "fluxible": "~0.2.0",
     "istanbul": "^0.3.2",
     "jshint": "^2.5.6",
     "mock-fs": "^2.3.2",
+    "precommit-hook": "~1.0.7",
     "react": "~0.12.2",
     "reactify": "~1.0.0",
     "stream-buffers": "~1.1.0",
     "supervisor": "^0.6.0",
-    "whiskey": "^0.8.4",
-    "aliasify": "^1.5.1"
+    "whiskey": "^0.8.4"
   }
 }
