@@ -4,7 +4,7 @@
 cd "$(dirname $0)/../"
 
 mkdir -p release
-node_modules/.bin/browserify -t reactify ./client/boot.jsx -s boot -o release/show.js
+node_modules/.bin/browserify -t reactify ./client/boot.jsx -g aliasify -s boot -o release/show.js
 
 success=$?
 

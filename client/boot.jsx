@@ -4,8 +4,8 @@ var FluxibleApp = require('fluxible');
 var app = new FluxibleApp({
   appComponent: React.createFactory(require('./components/app.jsx'))
 });
+app.registerStore(require('./stores/app-state-store'));
 app.registerStore(require('./stores/card-player-state-store'));
-
 
 module.exports = function(opts) {
   var query = {};

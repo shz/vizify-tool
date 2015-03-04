@@ -9,10 +9,10 @@ import vizify.color
 struct Data {
 }
 
-function renderer(rc : RenderContext<Data>) {
+function renderer(rc: RenderContext<Data>) {
 }
 
-export function main(json : str) : CardConfig<Data> {
+export function main(json: str) : CardConfig<Data> {
   let d = new Data
   return new CardConfig<Data> {
     data = d
