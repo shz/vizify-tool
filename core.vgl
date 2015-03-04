@@ -1,0 +1,67 @@
+import canvas
+import geometry
+import text
+
+# In this file, the only types you, as a Viz developer, should ever interact with are:
+# > RenderContext
+# > Clock
+# > CardConfig
+#
+# The main purpose of your Viz's main() function is to return an instantiation
+# of the CardConfig type.  Example:
+#
+#  return new CardConfig<MyVizAppDataRecord> {
+#    duration = durationOfMovie
+#    data = instanceOfMyVizAppDataRecord
+#    renderer = myRenderFunction
+#    images = listOfImageURLs
+#  }
+#
+
+export extern vizify {
+
+  struct Clock {
+    fromStart: int # ms from clock start
+    fromEnd: int   # ms from clock end
+    percent: float # % through clock
+    duration: int  # ms total duration
+  }
+
+  struct Config {
+    start: int
+    end: int
+    duration: int
+    operations: list<func<Canvas, Clock, void>>     # previously called "stack"
+  }
+
+  # Do not attempt to instantiate, it won't compile
+  struct RenderContext<'T, 'L> {
+    clock: Clock
+    config: Config
+    c: Canvas
+    data: 'T
+    layout: 'L
+  }
+
+  method fork(rc: RenderContext<'T, 'L>) : RenderContext<'T, 'L>
+  method setRegion(rc: RenderContext<'T, 'L>, name: str, rect: Rect)
+
+  # Do not attempt to instantiate, it won't compile
+  struct Card {
+    width: int
+    height: int
+    duration: int
+    renderer: func<Clock, void>
+  }
+  method addImage(c: Card, name: str, location: str)
+  method addFont(c: Card, name: str, location: str)
+
+  struct CardConfig<'T, 'L> {
+    data: 'T
+    duration: int
+    renderer: func<RenderContext<'T, 'L>, void>
+    images: list<str>
+    performLayout: func<Size, TextLayoutEngine, 'T, 'L>
+  }
+
+}

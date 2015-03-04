@@ -1,87 +1,143 @@
-import env
-import clock
+import core
 import canvas
-import easing
+import tweening
 
+#
+# An Animation object specifies the dynamic motion of a single floating-point number
+# as it travels from 0f to 1f, holds at 1f, and then travels from 1f back to 0f,
+# over the duration of a RenderContext's clock timespan.
+#
+# The "i" and "o" functions determine the exact duration and shape of the 0f->1f and 1f->0f dynamics.
+#
+# The methods on this object allow the use of that floating-point number to
+# apply some geometric or appearance-level transformation to a subsequently specified
+# set of 2D primitives.
+#
+# Animation objects are created by invoking the RenderContext#tween method.
+#
 export struct Animation<'T, 'L> {
-  rc : RenderContext<'T, 'L> = null
-  i : func<int, float> = null
-  o : func<int, float> = null
-  durHoldAtZeroStart : int = 0
+  rc: RenderContext<'T, 'L> = null
+  i: func<int, float> = null
+  o: func<int, float> = null
 }
 
-export method perform(a : Animation<'T, 'L>, action : func<Canvas, float, void>) : RenderContext<'T, 'L> {
+#
+# RenderContext#tween is the sole technique for creating an Animation object.
+# Use the parameters to divide the render context's clock timespan into 3 portions
+# (0>1, hold at 1, 1>0) and to control the duration and shape of the 0>1 and 1>0 portions.
+#
+# Example: if you want the 0>1 portion to last 100ms and have a straight-line shape,
+# pass linear(100) as the shapeZeroToOne parameter.
+#
+# You can eliminate the start or end portions by sending null to the relevant shape parameter.
+#
+# Hint: use the hold() function to generate a shape that includes a delay.  For example,
+# if you want the start of the timespan to have this shape:
+#    1) Hold at 0 for 100ms
+#    2) Then do a linear rise to 1 for 250ms
+# then send this expression as the shapeZeroToOne:
+#    hold(100, linear(250))
+#
+function returnOne(d: int) : float {
+  return 1f
+}
+
+export method tween(rc1: RenderContext<'T,'L>, shapeZeroToOne: func<int, float>, shapeOneToZero: func<int, float>) : Animation<'T,'L> {
+  return new Animation<'T,'L> {
+    rc = rc1
+#    i = shapeZeroToOne
+#    o = shapeOneToZero
+   i = (shapeZeroToOne == null) ? returnOne : shapeZeroToOne
+   o = (shapeOneToZero == null) ? returnOne : shapeOneToZero
+  }
+}
+
+#
+# Creates a tweening function suitable for passing to the RenderContext::tween method,
+# by manipulating a given tweening function to implement a hold-at-zero at one of the
+# sides of the timespan.
+#
+# If the result of hold() is passed as the "shapeZeroToOne" param to tween(), then the hold-at-zero
+# will occur at the start of the timespan.
+#
+# If the result of hold() is passed as the "shapeOneToZero" param to tween(), then the hold-at-zero
+# will occur at the end of the timespan.
+#
+# See example in the documentation for RenderContext#tween above.
+#
+export function hold(dur: int, f: func<int, float>) : func<int, float> {
+  return lambda(t: int) : float {
+    if t <= dur {
+      return 0f
+    } else {
+      return f(t - dur)
+    }
+  }
+}
+
+#
+# The Animation#perform method is never called directly by a viz application.
+# Rather, it is used to generate "animation methods":
+# methods that use an incoming tween-generated floating-point number
+# to control an attribute in the canvas context.
+#
+# For examples of animation methods, see below.
+#
+export method perform(a: Animation<'T, 'L>, action: func<Canvas, float, void>) : RenderContext<'T, 'L> {
   let root = a.rc.fork()
-  root.config.operations.push(lambda(ctx : Canvas, clock : Clock) {
-    let v = (clock.fromStart <= a.durHoldAtZeroStart) ? 0f : (a.i(clock.fromStart-a.durHoldAtZeroStart) - (1f - a.o(clock.fromEnd)))
+  root.config.operations.push(lambda(ctx: Canvas, clock: Clock) {
+    let v = a.i(clock.fromStart) - (1f - a.o(clock.fromEnd))
     action(root.c, v)
   })
   return root
 }
 
-export method tween(renderc : RenderContext<'T, 'L>,
-                    inf : func<int, float>,
-                    outf : func<int, float>) : Animation<'T, 'L> {
-  return new Animation<'T, 'L> {
-    rc = renderc
-    i = inf
-    o = outf
-    durHoldAtZeroStart = 0
-  }
-}
-
-export method linear(rc : RenderContext<'T, 'L>, i : int, o : int) : Animation<'T, 'L> {
-  return rc.tween(linear(i), linear(o))
-}
 
 
 
+# SAMPLE IMPLEMENTATIONS OF ANIMATION METHODS
 
-# Sample implementations of animation methods
-
-export method fade(a : Animation<'T, 'L>) : RenderContext<'T, 'L> {
-  return a.perform(lambda(c : Canvas, v : float) {
+export method fade(a: Animation<'T, 'L>) : RenderContext<'T, 'L> {
+  return a.perform(lambda(c: Canvas, v: float) {
     c.setGlobalAlpha(v)
   })
 }
 
-export method fadeFromTo(a : Animation<'T, 'L>, from:float, to:float) : RenderContext<'T, 'L> {
-  return a.perform(lambda(c : Canvas, v : float) {
+export method alpha(a: Animation<'T, 'L>, from:float, to:float) : RenderContext<'T, 'L> {
+  return a.perform(lambda(c: Canvas, v: float) {
     c.setGlobalAlpha(from + (to-from)*v)
   })
 }
 
-export method translate(a : Animation<'T, 'L>, xMax : float, yMax : float) : RenderContext<'T, 'L> {
-  return a.perform(lambda(c : Canvas, v : float) {
+export method translate(a: Animation<'T, 'L>, xMax: float, yMax: float) : RenderContext<'T, 'L> {
+  return a.perform(lambda(c: Canvas, v: float) {
     c.translate(v*xMax, v*yMax)
   })
 }
 
-export method rotate(a : Animation<'T, 'L>, angleMax : float) : RenderContext<'T, 'L> {
-  return a.perform(lambda(c : Canvas, v : float) {
+#
+# Uses the incoming floating-point number to apply rotation to the current canvas context.
+# Interpolates the rotation from 0 degrees radian to angleMax degrees radian.
+# Examples:
+#  If the incoming float is 0f, no rotation will be applied.
+#  If the incoming float is 0.5f, the applied rotation will be angleMax/2f radians.
+#
+export method rotate(a: Animation<'T, 'L>, angleMax: float) : RenderContext<'T, 'L> {
+  return a.perform(lambda(c: Canvas, v: float) {
     c.rotate(v*angleMax)
   })
 }
 
-# Scales X from 0 to xMax
-# Scales Y from 0 to yMax
-export method scale(a : Animation<'T, 'L>, xMax : float, yMax : float) : RenderContext<'T, 'L> {
-  return a.perform(lambda(c : Canvas, v : float) {
-    c.scale(v*xMax, v*yMax)
-  })
-}
-
-# Scales X across given from/to range
-export method scaleX(a : Animation<'T, 'L>, from:float, to:float) : RenderContext<'T, 'L> {
-  return a.perform(lambda(c : Canvas, v : float) {
-    c.scale( (from + (to-from)*v), 1f )
-  })
-}
-
-# Scales Y across given from/to range
-export method scaleY(a : Animation<'T, 'L>, from:float, to:float) : RenderContext<'T, 'L> {
-  return a.perform(lambda(c : Canvas, v : float) {
-    c.scale( 1f, (from + (to-from)*v) )
+#
+# Uses the incoming floating-point number to apply both X and Y scale factor to the current canvas context.
+# Interpolates the X scale from xmin to 1f, and interpolates the Y scale from ymin to 1f.
+# Examples:
+#  If the incoming float is 0f, the applied X scale factor will be xmin.
+#  If the incoming float is 0.5f, the applied X scale factor will be (xmin+1f)/2f.
+#
+export method scaleFrom(a: Animation<'T, 'L>, xmin: float, ymin: float) : RenderContext<'T, 'L> {
+  return a.perform(lambda(c: Canvas, v: float) {
+    c.scale(xmin + (v * (1f - xmin)), ymin + (v * (1f - ymin)))
   })
 }
 
@@ -90,20 +146,20 @@ export method scaleY(a : Animation<'T, 'L>, from:float, to:float) : RenderContex
 
 # Clock-context manipulation
 
-export method delay(rc : RenderContext<'T, 'L>, amount : int) : RenderContext<'T, 'L> {
+export method delay(rc: RenderContext<'T, 'L>, amount: int) : RenderContext<'T, 'L> {
   let root = rc.fork()
   root.config.start = amount
   return root
 }
 
-export method duration(rc : RenderContext<'T, 'L>, amount : int) : RenderContext<'T, 'L> {
+export method duration(rc: RenderContext<'T, 'L>, amount: int) : RenderContext<'T, 'L> {
   let root = rc.fork()
   root.config.duration = amount
   root.config.end = -1
   return root
 }
 
-export method until(rc : RenderContext<'T, 'L>, amount : int) : RenderContext<'T, 'L> {
+export method until(rc: RenderContext<'T, 'L>, amount: int) : RenderContext<'T, 'L> {
   let root = rc.fork()
   root.config.duration = -1
   root.config.end = amount
@@ -114,7 +170,7 @@ export method until(rc : RenderContext<'T, 'L>, amount : int) : RenderContext<'T
 
 
 
-export method apply(rc : RenderContext<'T, 'L>, f : func<RenderContext<'T, 'L>, void>) {
+export method apply(rc: RenderContext<'T, 'L>, f: func<RenderContext<'T, 'L>, void>) {
   # Sanity check on duration
   if rc.config.end > 0 && rc.config.duration > -1 {
     # TODO: throw new Error('This chain has both an end time and a duration, which is invalid')
@@ -152,5 +208,4 @@ export method apply(rc : RenderContext<'T, 'L>, f : func<RenderContext<'T, 'L>, 
 
   # Undo the effects of the operation stack
   rc.c.restore()
-
 }

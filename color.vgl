@@ -2,14 +2,14 @@ import math
 
 export extern vizify {
   struct Color {
-    r : float
-    g : float
-    b : float
-    a : float
+    r: float
+    g: float
+    b: float
+    a: float
   }
 }
 
-export function rgb(ir : int, ig : int, ib : int) : Color {
+export function rgb(ir: int, ig: int, ib: int) : Color {
   let c = new Color {
     r = ir.asFloat() / 255.0
     g = ig.asFloat() / 255.0
@@ -18,7 +18,7 @@ export function rgb(ir : int, ig : int, ib : int) : Color {
   return c
 }
 
-export function rgba(ir : int, ig : int, ib : int, ia : float) : Color {
+export function rgba(ir: int, ig: int, ib: int, ia: float) : Color {
   let c = new Color {
     r = ir.asFloat() / 255.0
     g = ig.asFloat() / 255.0
@@ -28,17 +28,7 @@ export function rgba(ir : int, ig : int, ib : int, ia : float) : Color {
   return c
 }
 
-export function blackish(ia : float) : Color {
-  let c = new Color {
-    r = 0f
-    g = 0f
-    b = 0f
-    a = ia
-  }
-  return c
-}
-
-export function interpolate(c1 : Color, c2 : Color, p : float) : Color {
+export function interpolate(c1: Color, c2: Color, p: float) : Color {
   return new Color {
     r = c1.r + p * (c2.r - c1.r)
     g = c1.g + p * (c2.g - c1.g)
