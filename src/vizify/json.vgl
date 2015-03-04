@@ -1,20 +1,14 @@
 export extern vizify {
 
-  struct JSON {
-    # This one externed property's datatype is probably incorrect, but no problem ...
-    # its only purpose is to allow the virgil-resident caller to determine if the
-    # node has a null value and thus avoid calling one of get()/as() functions and
-    # facing an exception.  This won't be nec as soon as virgil supports try/catch.
-    value : str
-  }
+  struct JSON {}
 
-  method asStr(j : JSON) : str
-  method asInt(j : JSON) : int
-  method asFloat(j : JSON) : float
-  method asBool(j : JSON) : bool
-  method asList(j : JSON) : list<JSON>
-  method isNull(j : JSON) : bool
-  method get(j : JSON, key : str) : JSON
+  method asStr(j: JSON) : str
+  method asInt(j: JSON) : int
+  method asFloat(j: JSON) : float
+  method asBool(j: JSON) : bool
+  method asList(j: JSON) : list<JSON>
+  method isNull(j: JSON) : bool
+  method get(j: JSON, key: str) : JSON
 
-  function parseJSON(json : str) : JSON
+  function parseJSON(json: str) : JSON
 }

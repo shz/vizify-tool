@@ -1,7 +1,0 @@
-export extern vizify {
-  struct Clock {
-    fromStart : int # ms from clock start
-    fromEnd : int   # ms from clock end
-    percent : float # % through clock
-  }
-}

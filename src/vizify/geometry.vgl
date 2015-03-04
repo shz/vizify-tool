@@ -13,7 +13,7 @@ export struct Rect {
   size: Size = null
 }
 
-export method containsPoint(rect:Rect, point:Point): bool {
+export method containsPoint(rect:Rect, point:Point) : bool {
   if rect.origin.x <= point.x && rect.origin.y <= point.y && \
     point.x <= (rect.origin.x + rect.size.width) && point.y <= (rect.origin.y + rect.size.height) {
     return true
@@ -22,7 +22,7 @@ export method containsPoint(rect:Rect, point:Point): bool {
   }
 }
 
-export function makeRect(x:float, y:float, w:float, h:float): Rect {
+export function makeRect(x:float, y:float, w:float, h:float) : Rect {
   return new Rect {
     origin = new Point {
       x = x
