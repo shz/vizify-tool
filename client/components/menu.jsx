@@ -30,8 +30,11 @@ var MenuComponent = module.exports = React.createClass({
   },
 
   render: function() {
+    var cx = React.addons.classSet;
+    var classes = cx({'ide-enabled': this.state.ideEnabled});
+
     return (
-      <div id="menu">
+      <div id="menu" className={classes}>
         <img src="/dev/vizify.png" alt="Vizify" />
         <a href="#" onClick={this.handleIDEClick}>IDE</a>
         <a href="/production" target="_blank">Production Preview</a>

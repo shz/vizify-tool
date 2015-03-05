@@ -28,14 +28,17 @@
     display block
 
     #playpause
-      transition background 0.2s
+      box-sizing border-box
+      padding 1px 0 0 1px
+      transition all 0.2s
       display inline-block
       -webkit-appearance none
       -moz-appearance none
       width 32px
       height 32px
       border none
-      color white
+      color ui-blue
+      border 2px solid ui-blue
       text-align center
       outline none
       font-size 20px
@@ -43,14 +46,16 @@
       vertical-align top
       margin-right 4px
       cursor pointer
-      background-color ui-blue
+      background-color white
       border-radius 2px
 
       &:active
         transition none
-        background-color ui-blue-active
+        color ui-blue-active
+        border-color ui-blue-active
 
     #scrubber
+      opacity 0.4
       display inline-block
       background-color purple-dark
       position relative

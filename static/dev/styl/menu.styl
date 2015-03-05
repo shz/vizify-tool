@@ -1,4 +1,5 @@
 #menu
+  transition all 0.3s
   position fixed
   left 0
   top 0
@@ -6,8 +7,9 @@
   height 100%
   text-align center
   background-color white
-  background-image radial-gradient(2000px at 1000px 280%, purple-dark 0%, transparent 100%)
+  background-image radial-gradient(2000px at 1000px 280%, green 0%, transparent 100%)
   border-right 1px solid #CCC
+  z-index 1000
 
   img
     width 128px
@@ -17,7 +19,7 @@
     display block
     width auto
     margin 1em
-    color grey
+    color #333
     text-decoration none
     text-align left
 
@@ -25,3 +27,24 @@
       transition none
     &:hover, &:active
       color purple-dark
+
+#menu.ide-enabled
+  width 100%
+  height 40px
+  overflow hidden
+  border none
+  border-bottom 1px solid #CCC
+  background-color green
+  background-image radial-gradient(2000px at -1000px 300px, purple-dark 0%, transparent 100%)
+  text-align left
+  opacity 0.9
+
+  img
+    width 64px
+    float left
+    margin -10px 20px 0 10px
+  a
+    display inline-block
+    vertical-align top
+    margin-top 12px
+    color white
