@@ -1,4 +1,5 @@
 import vizify.core
+import vizify.canvas
 import vizify.geometry
 import vizify.text
 import vizify.json
