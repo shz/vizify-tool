@@ -15,7 +15,8 @@ var AppStateStore = createStore({
       fileDirty: false,
       selectedFile: null,
       reloadCard: false,
-      compilerOutput: 'Ready...'
+      compilerOutput: 'Ready...',
+      ideEnabled: false
     };
   },
 
@@ -139,6 +140,11 @@ var AppStateStore = createStore({
         throw(e);
       }
     }.bind(this));
+  },
+
+  toggleIDE: function() {
+    this.appState.ideEnabled = !this.appState.ideEnabled;
+    this.emitChange();
   },
 
   handleCardReloaded: function() {

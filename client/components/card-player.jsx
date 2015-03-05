@@ -115,36 +115,36 @@ var CardPlayerComponent = React.createClass({
 
     return (
       <div id="card-player">
-        <div id="card-container">
-          {card}
-        </div>
-        <form id="card-controls">
-          <Scrubber duration={this.state.duration} time={this.state.time} />
-          <button id="playpause" onClick={this.togglePause}>
-            {this.state.isEnded ? "Replay" :
-              (this.state.isPaused ? "Play" : "Pause")}
-          </button>
-          <input id="savetimestamp" type="submit" value="Save Timestamp" />
+        <div className="wrapper">
+          <div id="card-container">
+            {card}
+            <form id="card-controls">
+              <button id="playpause" onClick={this.togglePause}>
+                {this.state.isEnded ? "►" :
+                  (this.state.isPaused ? "►" : "❙❙")}
+              </button>
+              <Scrubber duration={this.state.duration} time={this.state.time} />
 
-          <input type="hidden" name="t" value={this.state.time} readOnly />
+              <input id="savetimestamp" type="submit" value="Save Timestamp" />
 
-          <div id="usedatafile">
-            <label>Test Data File:
-              <select name="datafile" id="datafile" value={this.state.dataFile} onChange={this.onDataFileChange}>
-                <option value="none">None</option>
-                {this.props.testDataFiles.map(function(file) {
-                  return <option value={file.name}>{file.name}</option>
-                })}
-              </select>
-            </label>
+              <input type="hidden" name="t" value={this.state.time} readOnly />
+
+              <div id="usedatafile">
+                <label>Test Data File:
+                  <select name="datafile" id="datafile" value={this.state.dataFile} onChange={this.onDataFileChange}>
+                    <option value="none">None</option>
+                    {this.props.testDataFiles.map(function(file) {
+                      return <option value={file.name}>{file.name}</option>
+                    })}
+                  </select>
+                </label>
+              </div>
+              <p className="datasource">
+                Datasource: <a target="_blank" href={this.props.dataSource} title={this.props.dataSource}>here</a>
+              </p>
+            </form>
           </div>
-          <p className="datasource">
-            Datasource: <a target="_blank" href={this.props.dataSource} title={this.props.dataSource}>here</a>
-          </p>
-          <p>
-            <a href="/production">Production preview</a>
-          </p>
-        </form>
+        </div>
       </div>
     );
   },

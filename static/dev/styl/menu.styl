@@ -1,0 +1,27 @@
+#menu
+  position fixed
+  left 0
+  top 0
+  width 200px
+  height 100%
+  text-align center
+  background-color white
+  background-image radial-gradient(2000px at 1000px 280%, purple-dark 0%, transparent 100%)
+  border-right 1px solid #CCC
+
+  img
+    width 128px
+
+  a
+    transition color 0.2s
+    display block
+    width auto
+    margin 1em
+    color grey
+    text-decoration none
+    text-align left
+
+    &:active
+      transition none
+    &:hover, &:active
+      color purple-dark
