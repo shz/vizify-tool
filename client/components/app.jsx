@@ -26,6 +26,7 @@ var AppComponent = module.exports = React.createClass({
 
   render: function() {
     var editor = this.state.ideEnabled ? <VirgilEditor/> : undefined;
+    console.log(this.props);
 
     return (
       <div id="app">

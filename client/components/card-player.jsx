@@ -120,6 +120,7 @@ var CardPlayerComponent = React.createClass({
       <div id="card-player">
         <div className="wrapper">
           <div id="card-container">
+            <h1>{this.props.name}</h1>
             <div className="card-wrapper">{card}</div>
             <form id="card-controls">
               <button id="playpause" onClick={this.togglePause}>
