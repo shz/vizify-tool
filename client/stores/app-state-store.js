@@ -27,7 +27,8 @@ var AppStateStore = createStore({
     AppSave: 'handleSave',
     AppCompile: 'handleCompile',
     AppReloadCard: 'handleReloadCard',
-    AppCardReloaded: 'handleCardReloaded'
+    AppCardReloaded: 'handleCardReloaded',
+    IdeToggled: 'handleIdeToggled'
   },
 
   getState: function() {
@@ -142,7 +143,7 @@ var AppStateStore = createStore({
     }.bind(this));
   },
 
-  toggleIDE: function() {
+  handleIdeToggled: function() {
     this.appState.ideEnabled = !this.appState.ideEnabled;
     this.emitChange();
   },

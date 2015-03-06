@@ -22,5 +22,10 @@ module.exports = {
   compile: function(context, payload, done) {
     context.dispatch("AppCompile");
     done();
+  },
+
+  ideToggled: function(context, payload, done) {
+    context.dispatch("IdeToggled");
+    done();
   }
 };

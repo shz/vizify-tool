@@ -26,7 +26,7 @@ var MenuComponent = module.exports = React.createClass({
   handleIDEClick: function(e) {
     e.preventDefault();
 
-    this.getStore(AppStateStore).toggleIDE();
+    this.executeAction(AppActions.ideToggled);
   },
 
   render: function() {
