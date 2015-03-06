@@ -1,14 +1,13 @@
 var CardPlayer = require('./card-player.jsx')
   , FluxibleMixin = require('fluxible').Mixin
   , VirgilEditor = require('./virgil-editor.jsx')
-  , Menu = require('./menu.jsx')
   , AppStateStore = require('../stores/app-state-store')
   , AppActions = require('../actions/app-actions')
   ;
 
-var AppComponent = module.exports = React.createClass({
+var MenuComponent = module.exports = React.createClass({
   mixins: [FluxibleMixin],
-  displayName: "App",
+  displayName: "Menu",
 
   statics: {
     storeListeners: {
@@ -17,22 +16,28 @@ var AppComponent = module.exports = React.createClass({
   },
 
   getInitialState: function() {
-    return { ideEnabled: false };
+    return this.getStore(AppStateStore).getState();
   },
 
   onAppStateStoreUpdate: function() {
     this.setState(this.getStore(AppStateStore).getState());
   },
 
+  handleIDEClick: function(e) {
+    e.preventDefault();
+
+    this.executeAction(AppActions.ideToggled);
+  },
+
   render: function() {
-    var editor = this.state.ideEnabled ? <VirgilEditor/> : undefined;
-    console.log(this.props);
+    var cx = React.addons.classSet;
+    var classes = cx({'ide-enabled': this.state.ideEnabled});
 
     return (
-      <div id="app">
-        <Menu />
-        {editor}
-        <CardPlayer {...this.props} ref='player'/>
+      <div id="menu" className={classes}>
+        <img src="/dev/vizify.png" alt="Vizify" />
+        <a href="#" onClick={this.handleIDEClick}>Toggle IDE</a>
+        <a href="/production" target="_blank">Production Preview</a>
       </div>
     );
   }

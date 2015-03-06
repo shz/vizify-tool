@@ -6,7 +6,8 @@
   "scripts": {
     "build": "./script/build.sh",
     "test": "./script/test.sh",
-    "lint": "./script/lint.sh"
+    "lint": "./script/lint.sh",
+    "watch": "./script/watch.sh"
   },
   "bin": {
     "vz": "./bin/vz.js"
@@ -75,6 +76,7 @@
     "reactify": "~1.0.0",
     "stream-buffers": "~1.1.0",
     "supervisor": "^0.6.0",
-    "whiskey": "^0.8.4"
+    "whiskey": "^0.8.4",
+    "stylus": "^0.50.0"
   }
 }

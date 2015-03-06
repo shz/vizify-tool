@@ -1,0 +1,28 @@
+ui-blue = #0078FF
+ui-blue-active = #003ABC
+ui-inactive = #E2E2E6
+
+red = #F80E5D
+orange = #FF8B12
+blue = #0078FF
+green = #00CD7A
+purple-light = #6D00F6
+purple-dark = #400090
+
+button
+  transition all 0.2s
+  border 2px solid ui-blue
+  border-radius 2px
+  -webkit-appearance none
+  -moz-appearance none
+  background-color ui-blue
+  font-size 12pt
+  color white
+  cursor pointer
+  padding 4px 10px
+  outline none
+
+  &:active
+    transition none
+    background-color ui-blue-active
+    border-color ui-blue-active

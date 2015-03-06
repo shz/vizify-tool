@@ -15,7 +15,8 @@ var AppStateStore = createStore({
       fileDirty: false,
       selectedFile: null,
       reloadCard: false,
-      compilerOutput: 'Ready...'
+      compilerOutput: 'Ready...',
+      ideEnabled: false
     };
   },
 
@@ -26,7 +27,8 @@ var AppStateStore = createStore({
     AppSave: 'handleSave',
     AppCompile: 'handleCompile',
     AppReloadCard: 'handleReloadCard',
-    AppCardReloaded: 'handleCardReloaded'
+    AppCardReloaded: 'handleCardReloaded',
+    IdeToggled: 'handleIdeToggled'
   },
 
   getState: function() {
@@ -139,6 +141,11 @@ var AppStateStore = createStore({
         throw(e);
       }
     }.bind(this));
+  },
+
+  handleIdeToggled: function() {
+    this.appState.ideEnabled = !this.appState.ideEnabled;
+    this.emitChange();
   },
 
   handleCardReloaded: function() {

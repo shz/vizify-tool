@@ -54,7 +54,8 @@ var VirgilEditor = React.createClass({
       mode: {name: 'javascript', json: false},
       tabSize: 2,
       lineNumbers: true,
-      dragDrop: false
+      dragDrop: false,
+      viewportMargin: Infinity
     };
     this.codeEditor = CodeMirror(parent, options);
     this.codeEditor.on('change', this.handleCodeChanged);
@@ -77,11 +78,11 @@ var VirgilEditor = React.createClass({
     return (
       <div id="virgil-editor">
         <VirgilFileList/>
+        <button className={classes} onClick={this.handleSave}>Save</button>
         <div id="codemirror" ref="codemirror"/>
         <pre id="virgil-console">
             {this.state.compilerOutput}
         </pre>
-        <button className={classes} onClick={this.handleSave}>Save</button>
       </div>
     );
   },

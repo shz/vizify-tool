@@ -1,0 +1,61 @@
+#virgil-editor
+  box-sizing border-box
+  margin-right 620px
+  height 100%
+  // overflow hidden
+  padding-top 40px
+
+  .file-list
+    position absolute
+    top 40px
+    left 0
+    padding 0 20px
+    z-index 101
+    background-color white
+
+    h1
+      font-size 16pt
+
+    label
+      display none
+      cursor pointer
+      color ui-blue
+
+      &:last-child
+        margin-bottom 20px
+      &:hover
+        text-decoration underline
+
+    &:hover
+      label
+        display block
+
+
+
+  #codemirror
+    height calc(100% - 56px)
+    margin-top 56px
+
+    .CodeMirror
+      height 100%
+
+  button.save
+    position absolute
+    top 54px
+    left 200px
+
+#virgil-console
+  box-sizing border-box
+  position fixed
+  bottom 0
+  right 10px
+  width 600px
+  background-color white
+  border 1px solid silver
+  border-bottom none
+  z-index 100
+  margin 0
+  padding 1em
+  max-height 186px
+  overflow auto
+  font-size 10pt

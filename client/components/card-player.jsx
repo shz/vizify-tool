@@ -44,6 +44,7 @@ var CardPlayerComponent = React.createClass({
 
     // if we need to reload then do it
     var appState = this.getStore(AppStateStore).getState();
+    this.setState({ ideEnabled: appState.ideEnabled });
     if (appState.reloadCard) {
       this.cardFn = window.devenvreload.main;
       this.refs.vizify.card.reload(this.cardFn, this.props.cardData);
@@ -75,6 +76,9 @@ var CardPlayerComponent = React.createClass({
 
     // Is this cheating?
     this.getStore(CardPlayerStateStore).playerState.duration = card.duration;
+
+    var errNode = this.refs.errorOption.getDOMNode();
+    errNode.parentElement.removeChild(errNode);
   },
 
   componentDidUpdate: function(prevProps, prevState) {
@@ -113,38 +117,37 @@ var CardPlayerComponent = React.createClass({
       card = <Vizify ref="vizify" {...this.props} card={this.cardFn} data={this.props.cardData} autoplay={!this.state.isPaused}/>;
     }
 
+    var cx = React.addons.classSet;
+    var classes = cx({'ide-enabled': this.state.ideEnabled});
+
     return (
-      <div id="card-player">
-        <div id="card-container">
-          {card}
-        </div>
-        <form id="card-controls">
-          <Scrubber duration={this.state.duration} time={this.state.time} />
-          <button id="playpause" onClick={this.togglePause}>
-            {this.state.isEnded ? "Replay" :
-              (this.state.isPaused ? "Play" : "Pause")}
-          </button>
-          <input id="savetimestamp" type="submit" value="Save Timestamp" />
+      <div id="card-player" className={classes}>
+        <div className="wrapper">
+          <div id="card-container">
+            <h1>{this.props.name}</h1>
+            <div className="card-wrapper">{card}</div>
+            <form id="card-controls">
+              <button id="playpause" onClick={this.togglePause}>
+                {this.state.isEnded ? "►" :
+                  (this.state.isPaused ? "►" : "❙❙")}
+              </button>
+              <Scrubber duration={this.state.duration} time={this.state.time} />
 
-          <input type="hidden" name="t" value={this.state.time} readOnly />
+              <input type="hidden" name="t" value={this.state.time} readOnly />
 
-          <div id="usedatafile">
-            <label>Test Data File:
-              <select name="datafile" id="datafile" value={this.state.dataFile} onChange={this.onDataFileChange}>
-                <option value="none">None</option>
-                {this.props.testDataFiles.map(function(file) {
-                  return <option value={file.name}>{file.name}</option>
-                })}
-              </select>
-            </label>
+              <div id="usedatafile">
+                <select name="datafile" id="datafile" value={this.state.dataFile} onChange={this.onDataFileChange}>
+                  <option value="error" ref="errorOption">Data load error</option>
+                  <option value="none">Default/Live</option>
+                  {this.props.testDataFiles.map(function(file) {
+                    return <option value={file.name}>{file.name}</option>
+                  })}
+                </select>
+                <a href={this.props.dataSource} target="_blank" className="datasource">view</a>
+              </div>
+            </form>
           </div>
-          <p className="datasource">
-            Datasource: <a target="_blank" href={this.props.dataSource} title={this.props.dataSource}>here</a>
-          </p>
-          <p>
-            <a href="/production">Production preview</a>
-          </p>
-        </form>
+        </div>
       </div>
     );
   },
