@@ -1,6 +1,6 @@
 {
   "name": "vizify-tool",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "Command line tool for working with Vizify cards",
   "main": "lib/index.js",
   "scripts": {
@@ -59,6 +59,7 @@
     "node-uuid": "^1.4.2",
     "omnistor": "^2.0.0",
     "shelljs": "^0.3.0",
+    "stylus": "^0.50.0",
     "sugar": "^1.4.1",
     "tmp": "0.0.24",
     "virgil": "^1.0.1",
@@ -76,7 +77,6 @@
     "reactify": "~1.0.0",
     "stream-buffers": "~1.1.0",
     "supervisor": "^0.6.0",
-    "whiskey": "^0.8.4",
-    "stylus": "^0.50.0"
+    "whiskey": "^0.8.4"
   }
 }
