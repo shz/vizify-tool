@@ -134,12 +134,12 @@ var CardPlayerComponent = React.createClass({
               <div id="usedatafile">
                 <select name="datafile" id="datafile" value={this.state.dataFile} onChange={this.onDataFileChange}>
                   <option value="error" ref="errorOption">Data load error</option>
-                  <option value="none">None</option>
+                  <option value="none">Default/Live</option>
                   {this.props.testDataFiles.map(function(file) {
                     return <option value={file.name}>{file.name}</option>
                   })}
                 </select>
-                <a href={this.state.dataSource} target="_blank" className="datasource">view</a>
+                <a href={this.props.dataSource} target="_blank" className="datasource">view</a>
               </div>
             </form>
           </div>

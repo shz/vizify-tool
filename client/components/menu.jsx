@@ -36,7 +36,7 @@ var MenuComponent = module.exports = React.createClass({
     return (
       <div id="menu" className={classes}>
         <img src="/dev/vizify.png" alt="Vizify" />
-        <a href="#" onClick={this.handleIDEClick}>IDE</a>
+        <a href="#" onClick={this.handleIDEClick}>Toggle IDE</a>
         <a href="/production" target="_blank">Production Preview</a>
       </div>
     );
