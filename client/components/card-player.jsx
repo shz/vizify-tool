@@ -44,6 +44,7 @@ var CardPlayerComponent = React.createClass({
 
     // if we need to reload then do it
     var appState = this.getStore(AppStateStore).getState();
+    this.setState({ ideEnabled: appState.ideEnabled });
     if (appState.reloadCard) {
       this.cardFn = window.devenvreload.main;
       this.refs.vizify.card.reload(this.cardFn, this.props.cardData);
@@ -116,8 +117,11 @@ var CardPlayerComponent = React.createClass({
       card = <Vizify ref="vizify" {...this.props} card={this.cardFn} data={this.props.cardData} autoplay={!this.state.isPaused}/>;
     }
 
+    var cx = React.addons.classSet;
+    var classes = cx({'ide-enabled': this.state.ideEnabled});
+
     return (
-      <div id="card-player">
+      <div id="card-player" className={classes}>
         <div className="wrapper">
           <div id="card-container">
             <h1>{this.props.name}</h1>
