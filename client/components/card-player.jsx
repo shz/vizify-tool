@@ -75,6 +75,9 @@ var CardPlayerComponent = React.createClass({
 
     // Is this cheating?
     this.getStore(CardPlayerStateStore).playerState.duration = card.duration;
+
+    var errNode = this.refs.errorOption.getDOMNode();
+    errNode.parentElement.removeChild(errNode);
   },
 
   componentDidUpdate: function(prevProps, prevState) {
@@ -117,7 +120,7 @@ var CardPlayerComponent = React.createClass({
       <div id="card-player">
         <div className="wrapper">
           <div id="card-container">
-            {card}
+            <div className="card-wrapper">{card}</div>
             <form id="card-controls">
               <button id="playpause" onClick={this.togglePause}>
                 {this.state.isEnded ? "►" :
@@ -125,23 +128,18 @@ var CardPlayerComponent = React.createClass({
               </button>
               <Scrubber duration={this.state.duration} time={this.state.time} />
 
-              <input id="savetimestamp" type="submit" value="Save Timestamp" />
-
               <input type="hidden" name="t" value={this.state.time} readOnly />
 
               <div id="usedatafile">
-                <label>Test Data File:
-                  <select name="datafile" id="datafile" value={this.state.dataFile} onChange={this.onDataFileChange}>
-                    <option value="none">None</option>
-                    {this.props.testDataFiles.map(function(file) {
-                      return <option value={file.name}>{file.name}</option>
-                    })}
-                  </select>
-                </label>
+                <select name="datafile" id="datafile" value={this.state.dataFile} onChange={this.onDataFileChange}>
+                  <option value="error" ref="errorOption">Data load error</option>
+                  <option value="none">None</option>
+                  {this.props.testDataFiles.map(function(file) {
+                    return <option value={file.name}>{file.name}</option>
+                  })}
+                </select>
+                <a href={this.state.dataSource} target="_blank" className="datasource">view</a>
               </div>
-              <p className="datasource">
-                Datasource: <a target="_blank" href={this.props.dataSource} title={this.props.dataSource}>here</a>
-              </p>
             </form>
           </div>
         </div>
