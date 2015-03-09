@@ -114,7 +114,7 @@ var CardPlayerComponent = React.createClass({
   render: function() {
     var card;
     if (this.cardFn && this.props.cardData) {
-      card = <Vizify ref="vizify" {...this.props} card={this.cardFn} data={this.props.cardData} autoplay={!this.state.isPaused}/>;
+      card = <Vizify ref="vizify" cardSizingSpec={this.props.size} card={this.cardFn} data={this.props.cardData} autoplay={!this.state.isPaused} />;
     }
 
     var cx = React.addons.classSet;
