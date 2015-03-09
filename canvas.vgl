@@ -13,6 +13,9 @@ export extern vizify {
     height: int
   }
 
+  struct GradientSpec {
+  }
+
   #
   # APPEARANCE ATTRIBUTES: "sticky" states that affect the appearance
   # of generated primitives.
@@ -20,10 +23,20 @@ export extern vizify {
   #
   method setFillColor (c: Canvas, val: Color)
   method setStrokeColor (c: Canvas, val: Color)
+  method setFillGradient(c: Canvas, g: GradientSpec)
+  method setStrokeGradient(c: Canvas, g: GradientSpec)
   method setGlobalAlpha (c: Canvas, val: float)
   method setLineWidth (c: Canvas, val: float)
   method setLineDash(c: Canvas, dashspec: list<int>)
   method setFont (c: Canvas, font: Font, pxSize: int)
+
+  # GRADIENT SPECIFICATION:
+  method createLinearGradient(c: Canvas, 
+     xStart: float, yStart: float, xEnd: float, yEnd: float,
+     colorStart: Color, colorEnd: Color) : GradientSpec
+  method createRadialGradient(c: Canvas, 
+     xCenter: float, yCenter: float, radiusInner: float, radiusOuter: float, 
+     colorInner: Color, colorOuter: Color) : GradientSpec
 
   # The mask mode can be used to restrict subsequent rendering actions to only
   # certain pixels on the canvas, based on whether that destination pixel is or isn't
