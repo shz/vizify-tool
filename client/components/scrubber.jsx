@@ -75,16 +75,9 @@ var ScrubberComponent = module.exports = React.createClass({
   },
 
   scrubberPos: function() {
-    var x = 0;
-    var y = 0;
-    var rail = el = this.getDOMNode();
-    while (el.offsetParent) {
-      x += el.offsetLeft;
-      y += el.offsetTop;
-      el = el.offsetParent;
-    }
-
-    return {x: x, y: y, w: rail.offsetWidth};
+    var el = this.getDOMNode();
+    var rect = el.getBoundingClientRect();
+    return {x: rect.left, y: rect.top, w: el.offsetWidth};
   },
 
   keyDown: function(e) {
