@@ -51,11 +51,11 @@ var VirgilEditor = React.createClass({
     var parent = this.refs.codemirror.getDOMNode();
 
     var options = {
-      mode: {name: 'javascript', json: false},
+      mode: 'vgl',
       tabSize: 2,
       lineNumbers: true,
       dragDrop: false,
-      viewportMargin: Infinity
+      viewportMargin: Infinity,
     };
     this.codeEditor = CodeMirror(parent, options);
     this.codeEditor.on('change', this.handleCodeChanged);
@@ -90,7 +90,12 @@ var VirgilEditor = React.createClass({
   handleCodeChanged: function() {
     // Don't trigger a change event on first load
     if (!this.fileLoading) {
-      this.executeAction(AppActions.codeChanged, this.codeEditor.getValue());
+      if (this.codeChangedTO === undefined) {
+        this.codeChangedTO = setTimeout(function() {
+          this.codeChangedTO = undefined;
+          this.executeAction(AppActions.codeChanged, this.codeEditor.getValue());
+        }.bind(this), 100)
+      }
     }
     this.fileLoading = false;
   },
