@@ -33,9 +33,11 @@ var ScrubberComponent = module.exports = React.createClass({
     var self = this;
     this.removeTouchHandlers = window.vz.touch(this.getDOMNode(), {dragDirection: 'horizontal'}, {
       click: function(e) {
+        console.log('scrubber click: ' + e.absolute.x, e);
         self.scrub(e.absolute.x);
       },
       drag: function(e) {
+        console.log('scrubber drag: ' + e.absolute.x);
         self.scrub(e.absolute.x);
       }
     });
@@ -71,20 +73,14 @@ var ScrubberComponent = module.exports = React.createClass({
     var scrubberPos = this.scrubberPos();
     var railOriginX = scrubberPos.x;
     var completionRate = Math.max(0, Math.min(1, (clientX - railOriginX) / scrubberPos.w));
+    console.log("scrubber scrub: ", railOriginX, completionRate, scrubberPos.w);
     this.executeAction(CardPlayerActions.seek, {completionRate: completionRate});
   },
 
   scrubberPos: function() {
-    var x = 0;
-    var y = 0;
-    var rail = el = this.getDOMNode();
-    while (el.offsetParent) {
-      x += el.offsetLeft;
-      y += el.offsetTop;
-      el = el.offsetParent;
-    }
-
-    return {x: x, y: y, w: rail.offsetWidth};
+    var el = this.getDOMNode();
+    var rect = el.getBoundingClientRect();
+    return {x: rect.left, y: rect.top, w: el.offsetWidth};
   },
 
   keyDown: function(e) {
