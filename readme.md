@@ -47,6 +47,24 @@ root-folder/
 
 #### `card.json`
 
+##### Sizing
+Specify `resizingMode` in the `size` block to control resizing behavior. Used in conjunction with [the React component in vizify-javascript](https://git.corp.yahoo.com/vizify/vizify-javascript/blob/master/lib/react.js).
+
+Valid values are:
+  - `"contain"`: Card will be aspect-fit in the available space.
+  - `"fill"`: Card will stretch to fill available space.
+  - `null`: Card will not get resized.
+
+```javascript
+{
+  "size": {
+    "width": 286,
+    "height": 286,
+    "resizingMode": "contain"
+  }
+}
+```
+
 Check out https://git.corp.yahoo.com/vizify/great-white-virgil/tree/master/card.json
 for an example of how to set up your card json.
 
