@@ -66,9 +66,9 @@ Valid values are:
 ```
 
 Check out https://git.corp.yahoo.com/vizify/great-white-virgil/tree/master/card.json
-for an example of how to set up your card json.
+for an example of how to set up your card.json.
 
-#### Screwdriver
+## Screwdriver
 
 If you want to hook your card up to Screwdriver, you can use this
 V3 `screwdriver.yaml` to have to auto publish on commit:
