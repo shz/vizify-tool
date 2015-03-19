@@ -5,7 +5,7 @@
 // Use like require('../util/require')('index_node')
 
 module.exports = function(mod) {
-  var base = (process.env.NODE_PATH || 'lib').split(':')[0];
+  var base = 'lib';
 
   return require('../../' + base + '/' + mod);
 };
