@@ -1,11 +1,10 @@
 var storage = require('./util/require')('util/storage');
 
-exports.testPut = function(test, assert) {
-  // todo:
-  test.finish();
-};
+//TODO
+describe("storage", function () {
 
-exports.testCheckExisting = function(test, assert) {
-  // todo:
-  test.finish();
-};
+  describe("put", function () {});
+
+  describe("checkExisting", function () {});
+
+});

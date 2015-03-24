@@ -1,47 +1,35 @@
-var async = require('async');
+var chai = require('chai')
+  , expect = chai.expect
+  ;
 var compile = require('./util/require')('compile');
 
 var dir = require('path').join(__dirname, 'util', 'misc', 'harness_test');
-var langs = [];
+var langs = ['javascript'];
 
-var eachLang = function(f, cb) {
-  async.forEach(['javascript'], f, cb);
-};
+describe("compile", function() {
 
-exports.testValid = function(test, assert) {
-  eachLang(function(language, callback) {
-    compile.compileCard({dir: dir, name: 'foo-bar'}, language, function(err, files) {
-      try {
-        assert.ifError(err);
-        assert.isDefined(files);
-        assert.type(files, 'object');
-        assert.equal(true, Object.keys(files).length >= 1);
-      } catch (e) {
-        err = e;
-      }
+  describe(".compileCard()", function() {
 
-      callback(err);
+    langs.forEach(function(lang) {
+      it("should compile cards into " + lang, function(done) {
+        compile.compileCard({dir: dir, name: 'foo-bar'}, lang, function(err, files) {
+          expect(err).to.not.be.ok;
+          expect(files).to.be.an('object');
+          expect(Object.keys(files)).to.have.length.above(0);
+
+          done();
+        });
+      });
+
+      it("should barf compiling missing dir into" + lang, function(done) {
+        compile.compileCard({dir: dir + '/foo', name: 'foo-bar'}, lang, function(err, files) {
+          expect(err).to.be.an.instanceof(Error);
+          expect(files).to.not.be.ok;
+
+          done();
+        });
+      });
     });
-  }, function(err) {
-    if (err)
-      console.log(err.stack);
-    assert.ifError(err);
-    test.finish(err);
+
   });
-};
-
-exports.testMissing = function(test, assert) {
-  eachLang(function(language, callback) {
-    compile.compileCard({dir: dir + '/foo', name: 'foo-bar'}, language, callback);
-  }, function(err) {
-    assert.isDefined(err);
-
-    test.finish();
-  });
-};
-
-exports.testBroken = function(test, assert) {
-  // TODO - Test bad VGL
-
-  test.finish();
-};
+});

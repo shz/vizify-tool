@@ -1,22 +1,26 @@
+var chai = require('chai');
+var expect = chai.expect;
+var assert = chai.assert;
+
 var parseLibs = require('./util/require')('util/parse-libs');
 
-exports.testAll = function(test, assert) {
+describe("parse-libs", function() {
+  it("should return a 1 element array with default lib path ending in 'tool/src', given null input", function() {
+    var libs = parseLibs();
+    assert.equal(libs.length, 1);
+    assert.match(libs[0], /\/src$/);
+  });
 
-  // null input should result in a 1 element array with default lib path ending in 'tool/src'
-  var libs = parseLibs();
-  assert.equal(libs.length, 1);
-  assert.match(libs[0], /\/src$/);
+  it("should have a single path as the first element of the returned array, with default path second", function() {
+    var libs = parseLibs('foo/bar');
+    assert.equal(libs.length, 2);
+    assert.match(libs[0], /foo\/bar$/);
+  });
 
-  // a single path should be first element of returned array w/ default path the second
-  libs = parseLibs('foo/bar');
-  assert.equal(libs.length, 2);
-  assert.match(libs[0], /foo\/bar$/);
-
-  // handle foo/bar:baz/bing case
-  libs = parseLibs('foo/bar:baz/bing');
-  assert.equal(libs.length, 3);
-  assert.match(libs[0], /foo\/bar$/);
-  assert.match(libs[1], /baz\/bing$/);
-
-  test.finish();
-};
+  it("should split paths on colons", function() {
+    var libs = parseLibs('foo/bar:baz/bing');
+    assert.equal(libs.length, 3);
+    assert.match(libs[0], /foo\/bar$/);
+    assert.match(libs[1], /baz\/bing$/);
+  });
+});

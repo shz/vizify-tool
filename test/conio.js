@@ -1,91 +1,87 @@
+var chai = require('chai');
+var expect = chai.expect;
+var assert = chai.assert;
 var streamBuffers = require('stream-buffers');
-var async = require('async');
 var ConsoleIO = require('./util/require')('util/conio');
 
-var istream, ostream, io;
 
-exports.testReadLine = function(test, assert) {
+describe("conio", function() {
+  var istream, ostream, io;
 
-  async.series([
-    // Basic success case
-    function(callback) {
+  beforeEach(function() {
+    istream = new streamBuffers.ReadableStreamBuffer();
+    ostream = new streamBuffers.WritableStreamBuffer();
+    io = new ConsoleIO(istream, ostream);
+  });
+
+  afterEach(function() {
+    istream.destroy();
+    ostream.destroy();
+  });
+
+
+  describe(".readLine()", function() {
+
+    it("should read from inputstream", function(done) {
       istream.put("abcdef\n", 'utf8');
       io.readLine(function(err, read) {
-        assert.equal(read, "abcdef");
-        callback();
+        expect(read).to.equal("abcdef");
+        done();
       });
-    },
+    });
 
-    // Currently does not buffer the rest of the stream for the next call to readLine
-    function(callback) {
+    it("currently does not buffer the rest of the stream for the next call to readLine", function(done) {
       istream.put("abcdef\nthisShouldGetDiscarded", 'utf8');
       io.readLine(function(err, read) {
-        assert.equal(read, "abcdef");
+        expect(read).to.equal("abcdef");
+
         io.readLine(function(err, read) {
-          assert.equal(read, "123456");
-          callback();
+          expect(read).to.equal("123456");
+          done();
         });
+
         istream.put("123456\n", 'utf8');
       });
-    }
-  ], test.finish.bind(test));
+    });
 
-};
+  });
 
-exports.testPrompt = function(test, assert) {
-  async.series([
-    // Basic success case
-    function(callback) {
+  describe(".prompt", function() {
+    it("should print a prompt and read from input", function (done) {
       istream.put("asdf\n");
       io.prompt("hello", "olleh", function (err, input) {
         assert.equal(ostream.getContentsAsString('utf8'), "hello (olleh): ");
         assert.equal(input, "asdf");
-        callback();
+        done();
       });
-    },
+    });
 
-    // No default provided
-    function(callback) {
+    it("should work without a default provided", function(done) {
       istream.put("asdf\n");
       io.prompt("hello", function (err, input) {
         assert.equal(ostream.getContentsAsString('utf8'), "hello: ");
         assert.equal(input, "asdf");
-        callback();
+        done();
       });
-    },
+    });
 
-    // Numeric default
-    function(callback) {
+    it("should call back with a numeric value of a numeric default is provided", function(done) {
       istream.put("888\n");
       io.prompt("hello", 25, function (err, input) {
         assert.equal(ostream.getContentsAsString('utf8'), "hello (25): ");
         assert.equal(input, 888);
-        callback();
+        done();
       });
-    },
+    });
 
-    // Numeric input with string default
-    function(callback) {
+    it("should not call back with a numeric value if a string default is provided", function(done) {
       istream.put("888\n");
       io.prompt("hello", "25", function (err, input) {
         assert.equal(ostream.getContentsAsString('utf8'), "hello (25): ");
         assert.equal(input, "888");
-        callback();
+        done();
       });
-    }
+    });
+  });
 
-  ], test.finish.bind(test));
-};
-
-exports.setUp = function(test) {
-  istream = new streamBuffers.ReadableStreamBuffer();
-  ostream = new streamBuffers.WritableStreamBuffer();
-  io = new ConsoleIO(istream, ostream);
-  test.finish();
-};
-
-exports.tearDown = function(test) {
-  istream.destroy();
-  ostream.destroy();
-  test.finish();
-};
+});

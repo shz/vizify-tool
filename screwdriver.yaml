@@ -7,23 +7,8 @@ shared:
     lint:
       description: "Custom lint using jshint instead of yhint"
       command: "./script/lint.sh"
-
     test:
-      description: "Custom test using Whiskey"
-      command: "./script/test.sh"
-
-  plugins:
-    coverage:
-      enabled: true
-      type: lcov
-      parameters:
-        info_path: artifacts/coverage/lcov.info
-        report_path: artifacts/coverage/lcov-report
-    test_results:
-      type: tap
-      parameters:
-        path: artifacts/test
-
+      script: "screwdriver"
 
 jobs:
   component:

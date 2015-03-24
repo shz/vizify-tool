@@ -5,7 +5,9 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "./script/build.sh",
-    "test": "./script/test.sh",
+    "test": "./node_modules/.bin/mocha --reporter spec",
+    "cover": "./node_modules/.bin/istanbul cover --print detail --dir artifacts -- _mocha --reporter tap",
+    "screwdriver": "./node_modules/.bin/mocha --reporter xunit > ${TEST_RESULTS_DIR}/results.xml && ./node_modules/.bin/istanbul cover --dir ${COVERAGE_DIR} -- _mocha --reporter tap",
     "lint": "./script/lint.sh",
     "watch": "./script/watch.sh"
   },
@@ -68,15 +70,16 @@
   "devDependencies": {
     "aliasify": "^1.5.1",
     "browserify": "~8.1.1",
+    "chai": "~2.1.2",
     "fluxible": "~0.2.0",
     "istanbul": "^0.3.2",
     "jshint": "^2.5.6",
+    "mocha": "~2.2.1",
     "mock-fs": "^2.3.2",
     "precommit-hook": "~1.0.7",
     "react": "~0.12.2",
     "reactify": "~1.0.0",
     "stream-buffers": "~1.1.0",
-    "supervisor": "^0.6.0",
-    "whiskey": "^0.8.4"
+    "supervisor": "^0.6.0"
   }
 }
