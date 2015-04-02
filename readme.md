@@ -71,31 +71,8 @@ for an example of how to set up your card.json.
 ## Screwdriver
 
 If you want to hook your card up to Screwdriver, you can use this
-V3 `screwdriver.yaml` to have to auto publish on commit:
+V3 `screwdriver.yaml` to have it automatically publish on commit:
 
 ```yaml
-platform: nodejs_lib
-shared:
-  notifications:
-    email: cards-dev@yahoo-inc.com
-
-  plugins:
-    coverage:
-      enabled: false
-    test_results:
-      enabled: false
-
-  steps:
-    init:
-      description: "Install vizify-tool"
-      command: "npm install vizify-tool"
-    publish:
-      description: "Publish to Mobstor"
-      command: "yinst restart yca_client_certs; ./node_modules/.bin/vz publish"
-
-jobs:
-  pull-request:
-    profile: [init]
-  component:
-    profile: [init, publish]
+platform: vizify
 ```
