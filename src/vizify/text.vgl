@@ -1,12 +1,13 @@
 import string
 
 export extern vizify {
-  struct TextLayoutEngine {
-  }
-
-  # A vizapp uses this to request a desired font
+  # A viz uses this to request a desired font
   struct Font {
-    name: str  # Default null
+    # Use name to ask for a specific font (e.g. "Proxima Nova Condensed Italic").
+    # If the exact font requested isn't found, the other parameters will
+    # be used to select an appropriate default font present on the system.
+    name: str
+
     family: str # ["sans", "serif", "monospace"] Default: "sans"
     weight: int   # Default 300
     italic: bool  # Default false
@@ -16,15 +17,17 @@ export extern vizify {
   # Don't construct objects of this type!
   # Use getFontMetrics() to obtain a struct of this type.
   struct FontMetrics {
-    size: int
-    xheight: float 
-    cap: float 
-    ascender: float 
-    descender: float 
+    xheight: float
+    cap: float
+    ascender: float
+    descender: float
   }
 
-  method measureTextWidth (tutil: TextLayoutEngine, text: str, font: Font, pxFontSize: int) : float
-  method getFontMetrics (tutil: TextLayoutEngine, font: Font, pxFontSize: int) : FontMetrics
+  # A TextLayoutEngine is provided to your performLayout() function,
+  # and can be used to lay out text.
+  struct TextLayoutEngine {}
+  method measureTextWidth (tutil: TextLayoutEngine, text: str, font: Font, size: int) : float
+  method getFontMetrics (tutil: TextLayoutEngine, font: Font) : FontMetrics
 
   struct LineLayout {
     text: str
@@ -42,7 +45,6 @@ export extern vizify {
     width: int
     height: int
   }
-
 }
 
 #
