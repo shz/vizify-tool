@@ -11,16 +11,16 @@ export struct Layout {
 
 export function layout(canvasSize: Size, tutil: TextLayoutEngine, data: Data) : Layout {
 
-  let config = new ParagraphConfig { 
+  let config = new ParagraphConfig {
     verticalAlign = "bottom"
     textAlign = "center"
-    fontName = "bold"
+    font = new Font {weight = 500}
     fontSize = 26
     lineHeight = 1.32
     width = canvasSize.width
     height = canvasSize.height
   }
-  
+
   return new Layout {
     messageFormatted = tutil.paragraph("HELLO THERE!", config)
     radius = 50f
