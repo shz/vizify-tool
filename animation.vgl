@@ -203,7 +203,7 @@ export method apply(rc: RenderContext<'T, 'L>, f: func<RenderContext<'T, 'L>, vo
 
   # Now that we've used the operations stack, wipe it so that child
   # draw() calls don't inherit the operations themselves.
-  root.config.operations = new list<func<Canvas, Clock, void>>
+  root.config.operations = []
   f(root)
 
   # Undo the effects of the operation stack
