@@ -9,15 +9,14 @@ var virgil = require('virgil');
 var util = require('../../../lib/util');
 var VzJson = require('vizify-javascript/lib/json');
 
-var compile = function(code, callback) {
-  virgil.compileModule("dataparser.vgl", code, "javascript", {
-    libs: util.parseLibs("./src/vizify"),
-    namespace: "testing"
-  }, callback);
-};
-
-
 describe("generateDataModel", function() {
+
+  var compile = function(code, callback) {
+    virgil.compileModule("dataparser.vgl", code, "javascript", {
+      libs: util.parseLibs("./src/vizify"),
+      namespace: "testing"
+    }, callback);
+  };
 
   var schema;
   beforeEach(function() {
@@ -267,6 +266,53 @@ describe("generateDataModel", function() {
             done();
           });
         });
+      });
+
+      it("should support lists of lists", function(done) {
+        var schema = {
+          type: "object",
+          title: "thingamabob",
+          properties: {
+            bobs: {
+              type: "array",
+              items: {
+                type: "array",
+                items: {type: "boolean"}
+              }
+            }
+          }
+        };
+
+        var input = {
+          bobs: [
+            [true, false],
+            [false, true, true]
+          ]
+        };
+
+        generateDataModel.run(schema, function(err, code) {
+          assert.ifError(err);
+
+          compile(code, function(err, out) {
+            try {
+              (function(window) {
+                var json = new VzJson(JSON.stringify(input));
+                eval(out["dataparser.js"]);
+
+                var slurped = window.testing.jsonToThingamabob(json);
+                assert.isArray(slurped.bobs);
+                assert.isArray(slurped.bobs[0]);
+                assert.isBoolean(slurped.bobs[0][0]);
+              }({}));
+            } catch (e) {
+              done(e);
+              return;
+            }
+
+            done();
+          });
+        });
+
       });
 
     });
