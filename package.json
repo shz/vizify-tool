@@ -5,9 +5,9 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "./script/build.sh",
-    "test": "./node_modules/.bin/mocha --reporter spec",
-    "cover": "./node_modules/.bin/istanbul cover --print detail --dir artifacts -- _mocha --reporter tap",
-    "screwdriver": "./node_modules/.bin/mocha --reporter xunit > ${TEST_RESULTS_DIR}/results.xml && ./node_modules/.bin/istanbul cover --dir ${COVERAGE_DIR} -- _mocha --reporter tap",
+    "test": "./node_modules/.bin/mocha --recursive --reporter spec",
+    "cover": "./node_modules/.bin/istanbul cover --print detail --dir artifacts -- _mocha --recursive --reporter tap",
+    "screwdriver": "./node_modules/.bin/mocha --recursive --reporter xunit > ${TEST_RESULTS_DIR}/results.xml && ./node_modules/.bin/istanbul cover --dir ${COVERAGE_DIR} -- _mocha --recursive --reporter tap",
     "lint": "./script/lint.sh",
     "watch": "./script/watch.sh"
   },
