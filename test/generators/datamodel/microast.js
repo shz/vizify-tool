@@ -65,22 +65,15 @@ describe("generators/datamodel/microast", function() {
     });
 
     describe("codegen", function() {
-      it("should generate code for a Virgil struct statement", function() {
-        var code = struct.generate();
-        var parsed = parser.snippet(code)[0];
-        assert.equal(parsed.constructor.name, "StructStatement");
-      });
-
       it("should generate code for an exported Virgil struct statement", function() {
-        struct.export = true;
         var code = struct.generate();
         var parsed = parser.snippet(code)[0];
-        assert.isTrue(parsed.ex);
         assert.equal(parsed.constructor.name, "StructStatement");
+        assert.isTrue(parsed.ex);
       });
 
-      it("should generate code for an exported maker function that converts Json to struct", function() {
-        struct.export = true;
+      it("should generate code for an exported maker function that converts Json to the root struct", function() {
+        struct.isRoot = true;
         var code = struct.generate();
         var parsed = parser.snippet(code)[1];
         assert.isTrue(parsed.ex);
