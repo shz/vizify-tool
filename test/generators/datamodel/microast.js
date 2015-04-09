@@ -87,14 +87,14 @@ describe("generators/datamodel/microast", function() {
         var code = struct.generateMakerFunction();
         var parsed = parser.snippet(code)[0];
         assert.equal(parsed.constructor.name, "FunctionStatement");
-        assert.equal(parsed.name, "make__StructTestObject");
+        assert.equal(parsed.name, "makeStructTestObject");
         assert.equal(parsed.returnType.name, "TestObject");
         assert.equal(parsed.args[0][1].name, "JSON");
       });
 
       it("should generate an expression that calls the maker function", function() {
         var code = struct.generateJsonConversionExpression("asdf");
-        assert.equal(code, 'make__StructTestObject(json.get("asdf"))');
+        assert.equal(code, 'makeStructTestObject(asdf)');
       });
     });
 
@@ -160,7 +160,7 @@ describe("generators/datamodel/microast", function() {
         var code = list.generateMakerFunction();
         var parsed = parser.snippet(code)[0];
         assert.equal(parsed.constructor.name, "FunctionStatement");
-        assert.equal(parsed.name, "make__listOf_str");
+        assert.equal(parsed.name, "makeListOfStr");
         assert.equal(parsed.returnType.name, "list");
         assert.equal(parsed.returnType.generics[0].name, "str");
         assert.equal(parsed.args[0][1].name, "list");
@@ -169,7 +169,7 @@ describe("generators/datamodel/microast", function() {
 
       it("should generate an expression that calls the maker function", function() {
         var code = list.generateJsonConversionExpression("asdf");
-        assert.equal(code, 'make__listOf_str(json.get("asdf").asList())');
+        assert.equal(code, 'makeListOfStr(asdf.asList())');
       });
     });
 
@@ -245,7 +245,7 @@ describe("generators/datamodel/microast", function() {
       describe("codegen", function() {
         it("should generate an expression that converts json to " + testCase.vgType, function() {
           var code = str.generateJsonConversionExpression("asdf");
-          assert.equal(code, 'json.get("asdf").as' + testCase.vgType.camelize() + '()');
+          assert.equal(code, 'asdf.as' + testCase.vgType.camelize() + '()');
         });
       });
 
