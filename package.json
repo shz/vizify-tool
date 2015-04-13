@@ -1,6 +1,6 @@
 {
   "name": "vizify-tool",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Command line tool for working with Vizify cards",
   "main": "lib/index.js",
   "scripts": {
