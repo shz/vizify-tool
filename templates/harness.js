@@ -3,9 +3,17 @@ var querySt = function(name, def) { return def; };
 
 
 (function() {
+  // Helpers
+  var ev = function(el, name, f) {
+    el.addEventListener(name, f, false);
+  };
+  var $ = function(id) {
+    return document.getElementById(id);
+  };
+
   {{#size}}
     var canvas = window.canvas = new vizify.Canvas({{width}}, {{height}}, 1);
-    document.getElementById('holder').appendChild(canvas.canvas);
+    $('holder').appendChild(canvas.canvas);
 
     // Sizes the card based on current window size
     var size = function() {
@@ -27,13 +35,13 @@ var querySt = function(name, def) { return def; };
 
   // Trigger size() on debounced window size event
   var sizeTimeout = null;
-  window.addEventListener('resize', function(e) {
+  ev(window, 'resize', function(e) {
     if (sizeTimeout) return;
     sizeTimeout = setTimeout(function() {
       sizeTimeout = null;
       size();
     }, 20);
-  }, false);
+  });
 
   // Kick things off by fetching data
   var xhr = new XMLHttpRequest();
@@ -53,7 +61,7 @@ var querySt = function(name, def) { return def; };
             btn.href = '#';
             btn.className = 'replay';
             btn.innerHTML = 'Replay';
-            document.getElementById('holder').appendChild(btn);
+            $('holder').appendChild(btn);
             document.body.offsetLeft; // reflow
             btn.className = 'replay visible';
 
@@ -64,8 +72,8 @@ var querySt = function(name, def) { return def; };
               btn.parentElement.removeChild(btn);
               e.preventDefault();
             };
-            btn.addEventListener('click', tapHandler);
-            btn.addEventListener('touchstart', tapHandler);
+            ev(btn, 'click', tapHandler);
+            ev(btn, 'touchstart', tapHandler);
 
           });
           {{/replayable}}
@@ -81,7 +89,7 @@ var querySt = function(name, def) { return def; };
 })();
 
 // When requested, send screenshot
-window.addEventListener('message', function(e) {
+ev(window, 'message', function(e) {
   if (e.data != 'screenshot') return;
 
   var data = '';
@@ -95,4 +103,4 @@ window.addEventListener('message', function(e) {
   }
   // TODO - Probably limit this to cards.yahoo.com
   e.source.postMessage(data, '*');
-}, false);
+});
