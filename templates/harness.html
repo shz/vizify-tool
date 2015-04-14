@@ -1,34 +1,27 @@
 <!doctype html>
-<html>
-  <head>
-    <style>
-    html { display: table; font-family: "Helvetica Neue", "Helvetica", sans-serif; }
-    body { display: table-cell; margin: 0; font-size: 0; text-align: center; vertical-align: middle; }
-    html, body { width: 100%; height: 100%; overflow: hidden; }
-    #holder { display: inline-block; position: relative; }
-    {{#replayable}}
-    .replay {
-      text-decoration: none; border-radius: 4px;
-      padding: 10px 16px; display: block;
-      background-color: #444; font-size: 12pt;
-      position: absolute; bottom: 6px; left: 6px;
-      transition: all 0.4s;
-      transform: translateY(200%);
-      opacity: 0; color: white;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
-      border-bottom: 3px solid black;
-    }
-    .replay.visible {
-      transform: none;
-      opacity: 1;
-    }
-    {{/replayable}}
-    </style>
-  </head>
-  <body>
-    <div id="holder"></div>
-    <script src="vizify.js"></script>
-    <script src="card.js"></script>
-    <script src="show.js"></script>
-  </body>
-</html>
+<html><head><style>
+html{display:table;}
+body{display:table-cell;margin:0;font-size:0;text-align:center;vertical-align:middle;}
+html,body{width:100%;height:100%;overflow:hidden;}
+{{#replayable}}
+.replay {
+font-family: "Helvetica Neue", "Helvetica", sans-serif;
+text-decoration: none; border-radius: 4px;
+padding: 10px 16px; display: block;
+background-color: #444; font-size: 12pt;
+position: absolute; bottom: 6px; left: 6px;
+transition: all 0.4s;
+transform: translateY(200%);
+opacity: 0; color: white;
+box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+border-bottom: 3px solid black;
+}
+.replay.visible {
+transform: none;
+opacity: 1;
+}
+{{/replayable}}
+</style></head><body>
+<script>{{{ harnessJS }}}</script><script src="vizify.js"></script><script src="card.js"></script>
+<script>go()</script>
+</body></html>
