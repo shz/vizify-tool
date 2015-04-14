@@ -63,6 +63,7 @@ function h(data) {
     sizeTimeout = setTimeout(function() {
       sizeTimeout = 0;
       v.resize({{size.width}}, {{size.height}}, s());
+      v.frame(v.getTime());
     }, 20);
   });
 
