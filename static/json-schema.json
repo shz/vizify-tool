@@ -1,0 +1,166 @@
+{
+  "id": "https://git.corp.yahoo.com/vizify/tool/blob/master/static/json-schema.json#",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Vizify datamodel meta-schema",
+  "definitions": {
+    "positiveInteger": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "positiveIntegerDefault0": {
+      "allOf": [
+        {"$ref": "#/definitions/positiveInteger"},
+        {"default": 0}
+      ]
+    },
+    "vglRefDef": {
+      "type": "object",
+      "properties": {
+        "$ref": {
+          "type": "string"
+        }
+      }
+    },
+    "vglBooleanDef": {
+      "type": "object",
+      "properties": {
+        "type": {"enum": ["boolean"]},
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": ["type"]
+    },
+    "vglStringDef": {
+      "type": "object",
+      "properties": {
+        "type": {"enum": ["string"]},
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "maxLength": {"$ref": "#/definitions/positiveInteger"},
+        "minLength": {"$ref": "#/definitions/positiveIntegerDefault0"},
+        "enum": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": ["type"]
+    },
+    "vglNumberDef": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "number",
+            "integer"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "multipleOf": {
+          "type": "number",
+          "minimum": 0,
+          "exclusiveMinimum": true
+        },
+        "maximum": {
+          "type": "number"
+        },
+        "exclusiveMaximum": {
+          "type": "boolean",
+          "default": false
+        },
+        "minimum": {
+          "type": "number"
+        },
+        "exclusiveMinimum": {
+          "type": "boolean",
+          "default": false
+        },
+        "enum": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "dependencies": {
+        "exclusiveMaximum": ["maximum"],
+        "exclusiveMinimum": ["minimum"]
+      },
+      "required": ["type"]
+    },
+    "vglArrayDef": {
+      "type": "object",
+      "required": [
+        "type",
+        "items"
+      ],
+      "properties": {
+        "type": {"enum": ["array"]},
+        "items": {
+          "anyOf": [
+            {"$ref": "#/definitions/vglBooleanDef"},
+            {"$ref": "#/definitions/vglStringDef"},
+            {"$ref": "#/definitions/vglNumberDef"},
+            {"$ref": "#/definitions/vglArrayDef"},
+            {"$ref": "#/definitions/vglObjectDef"},
+            {"$ref": "#/definitions/vglRefDef"}
+          ]
+        },
+        "uniqueItems": {
+          "type": "boolean",
+          "default": false
+        },
+        "maxItems": {"$ref": "#/definitions/positiveInteger"},
+        "minItems": {"$ref": "#/definitions/positiveIntegerDefault0"}
+      }
+    },
+    "vglObjectDef": {
+      "type": "object",
+      "properties": {
+        "type": {"enum": ["object"]},
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              {"$ref": "#/definitions/vglBooleanDef"},
+              {"$ref": "#/definitions/vglStringDef"},
+              {"$ref": "#/definitions/vglNumberDef"},
+              {"$ref": "#/definitions/vglArrayDef"},
+              {"$ref": "#/definitions/vglObjectDef"},
+              {"$ref": "#/definitions/vglRefDef"}
+            ]
+          },
+          "default": {}
+        }
+      },
+      "required": ["type"]
+    }
+  },
+  "allOf": [
+    {"$ref": "#/definitions/vglObjectDef"},
+    {
+      "required": [
+        "type",
+        "title"
+      ]
+    }
+  ]
+}

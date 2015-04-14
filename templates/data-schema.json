@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "definitions": {
+    "sampleArray": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "title": "list-item",
+        "properties": {
+          "position": {"type": "integer"}
+        }
+      }
+    }
+  },
+  "title": "data-model",
+  "type": "object",
+  "properties": {
+    "intField": {
+      "type": "integer",
+      "default": 35690
+    },
+    "floatField": {
+      "type": "number"
+    },
+    "boolField": {
+      "type": "boolean"
+    },
+    "strField": {
+      "type": "string",
+      "default": "Lorem Ipsum"
+    },
+    "arrayField": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "referencedArrayField": {
+      "$ref": "#/definitions/sampleArray"
+    },
+    "structField": {
+      "type": "object",
+      "properties": {
+        "hello": {"type": "string"}
+      }
+    }
+  }
+}
+

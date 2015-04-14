@@ -29,10 +29,14 @@ function performLayout(canvasSize:Size, t:TextLayoutEngine, d:Data) : Layout {
   return new Layout
 }
 
-export function main(json: str) : CardConfig<Data, Layout> {
+export function main(rawData: str) : CardConfig<Data, Layout> {
+  let json = parseJSON(rawData)
   let d = new Data
-  # Fill in your data object.
+  # Fill in your data object
   # d.someData = json.get("someData").asStr()
+  #
+  # Or, write a data schema and autogenerate the data object code
+  # (see https://git.corp.yahoo.com/vizify/tool#working-with-data)
 
   return new CardConfig<Data, Layout> {
     data = d
