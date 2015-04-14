@@ -3,7 +3,6 @@
 html { display: table; }
 body { display: table-cell; margin: 0; font-size: 0; text-align: center; vertical-align: middle; }
 html, body { width: 100%; height: 100%; overflow: hidden; }
-#holder { display: inline-block; position: relative; }
 {{#replayable}}
 .replay {
 font-family: "Helvetica Neue", "Helvetica", sans-serif;
@@ -23,6 +22,6 @@ opacity: 1;
 }
 {{/replayable}}
 </style></head><body>
-<div id="holder"></div>
-<script src="vizify.js"></script><script src="card.js"></script><script>{{{ harnessJS }}}</script>
+<script>{{{ harnessJS }}}</script><script src="vizify.js"></script><script src="card.js"></script>
+<script>go()</script>
 </body></html>

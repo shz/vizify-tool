@@ -1,106 +1,110 @@
-// Dummy -- need to replace
-var querySt = function(name, def) { return def; };
+//
+// This file is as terse as possible to get the size down.  Sorry if
+// it's a little wonky to read.
+//
 
+// DRY
+var w = this;
+var d = document;
+var v; // the viz
 
-(function() {
+// Launch gate
+var r; // ready flag
+function go() {
+  r ? r() : (r = 1)
+}
+
+// Calculate size
+function s() {
+  var cardRatio = {{size.width}} / {{size.height}};
+  var screenRatio = w.innerWidth / w.innerHeight;
+
+  var scaleFactor = 0;
+  if (cardRatio > screenRatio) {
+    scaleFactor = window.innerWidth / {{size.width}};
+  } else {
+    scaleFactor = window.innerHeight / {{size.height}};
+  }
+
+  return scaleFactor;
+}
+
+// Fetch data
+var x = new XMLHttpRequest();
+x.onreadystatechange = function() {
+  if (x.readyState == 4 && x.status == 200) {
+    var t = x.responseText;
+    r ? h(t) : (r = h.bind(0, t));
+  }
+};
+x.open('GET', window.location.hash.replace(/^#/, '') || '{{{dataSource}}}');
+x.send();
+
+// Handle data and launch the viz itself
+function h(data) {
+  // Launch the viz
+  v = new vizify.Viz({{entryPoint}}, {{size.width}}, {{size.height}}, s(), data);
+  v.load(function() {
+    v.play();
+  });
+
   // Helpers
   var ev = function(el, name, f) {
     el.addEventListener(name, f, false);
   };
-  var $ = function(id) {
-    return document.getElementById(id);
-  };
 
-  {{#size}}
-    var canvas = window.canvas = new vizify.Canvas({{width}}, {{height}}, 1);
-    $('holder').appendChild(canvas.canvas);
+  // Add viz to DOM
+  d.body.appendChild(v.element);
 
-    // Sizes the card based on current window size
-    var size = function() {
-      var cardRatio = {{width}} / {{height}};
-      var screenRatio = window.innerWidth / window.innerHeight;
-
-      var scaleFactor = 0;
-      if (cardRatio > screenRatio) {
-        scaleFactor = window.innerWidth / {{width}};
-      } else {
-        scaleFactor = window.innerHeight / {{height}};
-      }
-
-      canvas.resize({{width}}, {{height}}, scaleFactor);
-    };
-  {{/size}}
-
-  size();
-
-  // Trigger size() on debounced window size event
+  // Debounce window resize to trigger viz resize
   var sizeTimeout = null;
-  ev(window, 'resize', function(e) {
+  ev(w, 'resize', function(e) {
     if (sizeTimeout) return;
     sizeTimeout = setTimeout(function() {
-      sizeTimeout = null;
-      size();
+      sizeTimeout = 0;
+      v.resize({{size.width}}, {{size.height}}, s());
     }, 20);
   });
 
-  // Kick things off by fetching data
-  var xhr = new XMLHttpRequest();
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState == 4) {
-      if (xhr.status == 200) {
-        var card = window.card = new vizify.Card(canvas, {{entryPoint}}, xhr.responseText);
-        card.load(function() {
-          // environment setting: replayable is {{replayable}}
-          {{#replayable}}
-          card.on('end', function() {
-            // Each time the end of the movie is reached, a new
-            // Replay button is constructed.  The button element
-            // is deleted if the user initiates a Replay, so
-            // there is no leak in the case of multiple replays.
-            var btn = document.createElement('a');
-            btn.href = '#';
-            btn.className = 'replay';
-            btn.innerHTML = 'Replay';
-            $('holder').appendChild(btn);
-            document.body.offsetLeft; // reflow
-            btn.className = 'replay visible';
+  // When requested, send screenshot
+  ev(w, 'message', function(e) {
+    if (e.data != 'screenshot') return;
 
-            // Responding to a user tap on "Replay":
-            var tapHandler = function(e) {
-              card.seek(0);
-              card.play();
-              btn.parentElement.removeChild(btn);
-              e.preventDefault();
-            };
-            ev(btn, 'click', tapHandler);
-            ev(btn, 'touchstart', tapHandler);
-
-          });
-          {{/replayable}}
-          card.play();
-        });
-      } else {
-        // TODO - Error message of some kind
-      }
+    var data = '';
+    try {
+      v.frame(v.duration);
+      data = v.canvas.canvas.toDataURL();
+    } catch (err) {
+      setTimeout(function() {
+        throw err;
+      }, 10);
     }
-  };
-  xhr.open('GET', window.location.hash.replace(/^#/, '') || '{{{dataSource}}}');
-  xhr.send();
-})();
+    // TODO - Probably limit this to cards.yahoo.com
+    e.source.postMessage(data, '*');
+  });
 
-// When requested, send screenshot
-ev(window, 'message', function(e) {
-  if (e.data != 'screenshot') return;
+  // Show replay button if enabled
+  {{#replayable}}
+  v.on('end', function() {
+    var btn = d.createElement('a');
+    btn.href = '#';
+    btn.className = 'replay';
+    btn.innerHTML = 'Replay';
+    v.element.appendChild(btn);
+    d.body.offsetLeft; // reflow
+    btn.className = 'replay visible';
 
-  var data = '';
-  try {
-    window.card.frame(window.card.duration);
-    data = window.canvas.canvas.toDataURL();
-  } catch (err) {
-    setTimeout(function() {
-      throw err;
-    }, 10);
-  }
-  // TODO - Probably limit this to cards.yahoo.com
-  e.source.postMessage(data, '*');
-});
+    // Responding to a user tap on "Replay":
+    var tapHandler = function(e) {
+      v.seek(0);
+      v.play();
+      v.element.removeChild(btn);
+      e.preventDefault();
+    };
+    ev(btn, 'click', tapHandler);
+    ev(btn, 'touchstart', tapHandler);
+
+  });
+  {{/replayable}}
+}
+

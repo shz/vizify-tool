@@ -54,7 +54,8 @@ describe("harness", function() {
 
     describe("production harness", function() {
       it("should fit inside one MTU", function(done) {
-        harness.create('javascript', {entryPoint: 'foo.main', name: 'foo', dir: dir}, function(err, result) {
+        var opts = {entryPoint: 'foo.main', name: 'foo', dir: dir, size: {width: 100, height: 100}};
+        harness.create('javascript', opts, function(err, result) {
           try {
             assert.ifError(err);
             assert.isDefined(result);
@@ -69,7 +70,7 @@ describe("harness", function() {
       });
 
       it("should fit inside one MTU when replayable", function(done) {
-        var opts = {entryPoint: 'foo.main', name: 'foo', dir: dir, replayable: true};
+        var opts = {entryPoint: 'foo.main', name: 'foo', dir: dir, replayable: true, size: {width: 100, height: 100}};
         harness.create('javascript', opts, function(err, result) {
           try {
             assert.ifError(err);
