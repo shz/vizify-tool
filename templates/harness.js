@@ -4,12 +4,12 @@
 //
 
 // DRY
-var w = this;
-var d = document;
-var v; // the viz
+w = this;
+d = document;
+v = 0; // the viz
+r = 0; // ready flag
 
 // Launch gate
-var r; // ready flag
 function go() {
   r ? r() : (r = 1)
 }
@@ -21,23 +21,23 @@ function s() {
 
   var scaleFactor = 0;
   if (cardRatio > screenRatio) {
-    scaleFactor = window.innerWidth / {{size.width}};
+    scaleFactor = w.innerWidth / {{size.width}};
   } else {
-    scaleFactor = window.innerHeight / {{size.height}};
+    scaleFactor = w.innerHeight / {{size.height}};
   }
 
   return scaleFactor;
 }
 
 // Fetch data
-var x = new XMLHttpRequest();
+x = new XMLHttpRequest();
 x.onreadystatechange = function() {
   if (x.readyState == 4 && x.status == 200) {
     var t = x.responseText;
     r ? h(t) : (r = h.bind(0, t));
   }
 };
-x.open('GET', window.location.hash.replace(/^#/, '') || '{{{dataSource}}}');
+x.open('GET', w.location.hash.replace(/^#/, '') || '{{{dataSource}}}');
 x.send();
 
 // Handle data and launch the viz itself
@@ -49,7 +49,7 @@ function h(data) {
   });
 
   // Helpers
-  var ev = function(el, name, f) {
+  function ev(el, name, f) {
     el.addEventListener(name, f, false);
   };
 
