@@ -8,6 +8,8 @@ w = this;
 d = document;
 v = 0; // the viz
 r = 0; // ready flag
+iw = 'innerWidth';
+ih = 'innerHeight';
 
 // Launch gate
 function go() {
@@ -17,13 +19,13 @@ function go() {
 // Calculate size
 function s() {
   var cardRatio = {{size.width}} / {{size.height}};
-  var screenRatio = w.innerWidth / w.innerHeight;
+  var screenRatio = w[iw] / w[ih];
 
   var scaleFactor = 0;
   if (cardRatio > screenRatio) {
-    scaleFactor = w.innerWidth / {{size.width}};
+    scaleFactor = w[iw] / {{size.width}};
   } else {
-    scaleFactor = w.innerHeight / {{size.height}};
+    scaleFactor = w[ih] / {{size.height}};
   }
 
   return scaleFactor;
@@ -32,9 +34,14 @@ function s() {
 // Fetch data
 x = new XMLHttpRequest();
 x.onreadystatechange = function() {
-  if (x.readyState == 4 && x.status == 200) {
-    var t = x.responseText;
-    r ? h(t) : (r = h.bind(0, t));
+  var readyState = x.readyState;
+  if (readyState == 4) {
+    if (x.status == 200) {
+      var t = x.responseText;
+      r ? h(t) : (r = h.bind(0, t));
+    } else {
+      try { w.parent.requestHide('data') } catch (e) {}
+    }
   }
 };
 x.open('GET', w.location.hash.replace(/^#/, '') || '{{{dataSource}}}');
