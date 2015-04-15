@@ -13,7 +13,7 @@ using namespace std;
 using namespace vizify;
 
 int SIZE = 286;
-double SCALE = 3.0f;
+double SCALE = 1.0f;
 
 // See render.cpp
 // void render(vizify::Canvas& canvas);
@@ -65,14 +65,45 @@ int main(void)
   // std::cout << json << endl;
 
   // vizify::Card card(main, json);
+
   vizify::Canvas canvas(SIZE, SIZE, SCALE * dpi);
   canvas.loadFont("Liberation Sans", "sandbox/liberation-sans-regular.ttf");
   // card.setCanvas(canvas);
 
   auto start = curMS();
+  
+  Color *redC = new Color(0.8f, 0, 0);
+  Color *greenC = new Color(0, 0.8f, 0);
+  Color *blueC = new Color(0,0,0.8);
+  Color *yellowC = new Color(0.8, 0.8f, 0);
+  Color *whiteStrong = new Color(1, 1, 1, 0.7);
+  Color *whiteWeak = new Color(1, 1, 1, 0.1);
+
+  double S = SIZE;
+
+  GradientSpec *gradspecRadial = canvas.createRadialGradient(S/2, S/2, 0, S/3, whiteStrong, whiteWeak);
+  GradientSpec *gradspecLinear = canvas.createLinearGradient(0, 0, S, S, redC, greenC);
+  GradientSpec *gradspecStroke = canvas.createLinearGradient(0, 0, S, S, blueC, yellowC);
+
   while (!glfwWindowShouldClose(window))
   {
-    // card.frame(((curMS() - start) % card.duration));
+    {
+      CanvasFrame frame(canvas);
+
+      canvas.setFillGradient(gradspecLinear);
+      canvas.fillRect(0,0,SIZE,SIZE);
+      canvas.setFillGradient(gradspecRadial);
+      canvas.fillRect(0,0,SIZE,SIZE);
+
+      canvas.setStrokeGradient(gradspecStroke);
+      canvas.setLineWidth(15);
+      canvas.beginPath();
+      canvas.moveTo(0,0);
+      canvas.lineTo(SIZE,SIZE);
+      canvas.closePath();
+      canvas.stroke();
+    }
+
     glfwSwapBuffers(window);
     glfwPollEvents();
   }

@@ -96,7 +96,7 @@ $(SANDBOX): $(wildcard sandbox/*.cpp) $(LIB_NATIVE) | $(RELEASE_DIR)
 		-framework CoreVideo \
 		-I sandbox/deps/glfw/include -L sandbox/deps/glfw/lib-osx -l glfw3 \
 		-I include -L release -l vizify \
-		$(wildcard sandbox/*.cpp) -o release/sandbox
+		sandbox/main.cpp -o release/sandbox
 
 # Friendly names
 lib-ios-native: $(LIB_IOS_NATIVE)

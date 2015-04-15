@@ -25,6 +25,7 @@
 
 #include "../../deps/nanovg/nanovg.h"
 #include "image.hpp"
+#include "gradient_spec.hpp"
 #include "color.hpp"
 
 namespace vizify
@@ -42,15 +43,22 @@ namespace vizify
     void resize(int width, int height);
     void resize(int width, int height, double scale);
 
-    Color* getFillStyle();
-    void setFillStyle(Color* c);
-    void setFillStyle(double r, double g, double b);
-    void setFillStyle(double r, double g, double b, double a);
+    Color* getFillColor();
+    void setFillColor(Color* c);
+    void setFillColor(double r, double g, double b);
+    void setFillColor(double r, double g, double b, double a);
 
-    Color* getStrokeStyle();
-    void setStrokeStyle(Color* c);
-    void setStrokeStyle(double r, double g, double b);
-    void setStrokeStyle(double r, double g, double b, double a);
+    void setFillGradient(GradientSpec* gspec);
+
+    Color* getStrokeColor();
+    void setStrokeColor(Color* c);
+    void setStrokeColor(double r, double g, double b);
+    void setStrokeColor(double r, double g, double b, double a);
+
+    void setStrokeGradient(GradientSpec* gspec);
+
+    GradientSpec* createLinearGradient(double xStart, double yStart, double xEnd, double yEnd, Color* stop0, Color* stop1);
+    GradientSpec* createRadialGradient(double xCenter, double yCenter, double radiusInner, double radiusOuter, Color* stop0, Color* stop1);
 
     double getGlobalAlpha();
     void setGlobalAlpha(double a);
