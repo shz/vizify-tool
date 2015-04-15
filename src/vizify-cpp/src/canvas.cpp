@@ -90,46 +90,68 @@ namespace vizify
     nvgEndFrame(this->vg);
   }
 
-  Color* Canvas::getFillStyle()
+  Color* Canvas::getFillColor()
   {
     return this->fillStyle;
   }
 
-  void Canvas::setFillStyle(Color* c)
+  void Canvas::setFillColor(Color* c)
   {
     this->fillStyle = c;
     nvgFillColor(this->vg, nvgRGBAf(c->r, c->g, c->b, c->a));
   }
 
-  void Canvas::setFillStyle(double r, double g, double b)
-  {
-    this->setFillStyle(new Color(r, g, b));
+  GradientSpec* Canvas::createLinearGradient(double xStart, double yStart, double xEnd, double yEnd, Color* stop0, Color* stop1) {
+    GradientSpec *ret = new GradientSpec();
+    ret->setLinear(this->vg, xStart, yStart, xEnd, yEnd, nvgRGBAf(stop0->r, stop0->g, stop0->b, stop0->a), nvgRGBAf(stop1->r, stop1->g, stop1->b, stop1->a));
+    return ret;
   }
 
-  void Canvas::setFillStyle(double r, double g, double b, double a)
-  {
-    this->setFillStyle(new Color(r, g, b, a));
+  GradientSpec* Canvas::createRadialGradient(double xCenter, double yCenter, double radiusInner, double radiusOuter, Color* stop0, Color* stop1) {
+    GradientSpec *ret = new GradientSpec();
+    ret->setRadial(this->vg, xCenter, yCenter, radiusInner, radiusOuter, nvgRGBAf(stop0->r, stop0->g, stop0->b, stop0->a), nvgRGBAf(stop1->r, stop1->g, stop1->b, stop1->a));
+    return ret;
   }
 
-  Color* Canvas::getStrokeStyle()
+  void Canvas::setFillGradient(GradientSpec* gs)
+  {
+    nvgFillPaint(this->vg, gs->inqValue());
+  }
+
+  void Canvas::setStrokeGradient(GradientSpec* gs)
+  {
+    nvgStrokePaint(this->vg, gs->inqValue());
+  }
+
+  void Canvas::setFillColor(double r, double g, double b)
+  {
+    this->setFillColor(new Color(r, g, b));
+  }
+
+  void Canvas::setFillColor(double r, double g, double b, double a)
+  {
+    this->setFillColor(new Color(r, g, b, a));
+  }
+
+  Color* Canvas::getStrokeColor()
   {
     return this->strokeStyle;
   }
 
-  void Canvas::setStrokeStyle(Color* c)
+  void Canvas::setStrokeColor(Color* c)
   {
     this->strokeStyle = c;
     nvgStrokeColor(this->vg, nvgRGBAf(c->r, c->g, c->b, c->a));
   }
 
-  void Canvas::setStrokeStyle(double r, double g, double b)
+  void Canvas::setStrokeColor(double r, double g, double b)
   {
-    this->setStrokeStyle(new Color(r, g, b));
+    this->setStrokeColor(new Color(r, g, b));
   }
 
-  void Canvas::setStrokeStyle(double r, double g, double b, double a)
+  void Canvas::setStrokeColor(double r, double g, double b, double a)
   {
-    this->setStrokeStyle(new Color(r, g, b));
+    this->setStrokeColor(new Color(r, g, b));
   }
 
   void Canvas::setGlobalMaskMode(const std::string& mode)  // "normal", "mask", "reverse_mask"
@@ -212,7 +234,7 @@ namespace vizify
 
   void Canvas::clearRect(double x, double y, double w, double h)
   {
-    setFillStyle(0, 0, 0, 255.0f);
+    setFillColor(0, 0, 0, 1.0f);
     fillRect(x, y, w, h);
   }
 
