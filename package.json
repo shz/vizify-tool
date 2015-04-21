@@ -70,7 +70,7 @@
     "stylus": "^0.50.0",
     "sugar": "^1.4.1",
     "tmp": "0.0.24",
-    "virgil": "^2.0.1-alpha",
+    "virgil": "^2.0.1-alpha2",
     "vizify-javascript": "^2.2.0"
   },
   "devDependencies": {

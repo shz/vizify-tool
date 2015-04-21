@@ -10,15 +10,15 @@ describe('parse-libs', function() {
 
     libs = parseLibs();
     assert.property(libs, 'vizify')
-    assert.match(libs.vizify, /\/src$/);
+    assert.match(libs.vizify, /\/src\/vizify$/);
 
     libs = parseLibs('');
     assert.property(libs, 'vizify')
-    assert.match(libs.vizify, /\/src$/);
+    assert.match(libs.vizify, /\/src\/vizify$/);
 
     libs = parseLibs('foo=bar');
     assert.property(libs, 'vizify')
-    assert.match(libs.vizify, /\/src$/);
+    assert.match(libs.vizify, /\/src\/vizify$/);
 
     libs = parseLibs('vizify=sham/wow');
     assert.propertyVal(libs, 'vizify', 'sham/wow');
