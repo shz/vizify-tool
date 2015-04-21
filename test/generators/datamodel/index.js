@@ -12,8 +12,9 @@ var VzJson = require('vizify-javascript/lib/json');
 describe("generateDataModel", function() {
 
   var compile = function(code, callback) {
-    virgil.compileModule("dataparser.vgl", code, "javascript", {
-      libs: util.parseLibs("./src/vizify"),
+    virgil.compile(code, "javascript", {
+      filename: "dataparser.vgl",
+      libs: util.parseLibs("vizify=./src/vizify"),
       namespace: "testing"
     }, callback);
   };
@@ -218,6 +219,15 @@ describe("generateDataModel", function() {
             try {
               (function(window) {
                 var json = new VzJson(JSON.stringify(input));
+                var require = function(f) {
+                  var result = out[f.replace(/^\.\//, '').replace(/\.js$/, '') + '.js'];
+                  if (result === undefined) {
+                    throw new Error('Cannot find module ' + f);
+                  } else {
+                    return result;
+                  }
+                };
+                var exports = window.testing = {};
                 eval(out["dataparser.js"]);
 
                 var slurped = window.testing.jsonToWidget(json);
@@ -253,6 +263,15 @@ describe("generateDataModel", function() {
             try {
               (function(window) {
                 var json = new VzJson(JSON.stringify(input));
+                var require = function(f) {
+                  var result = out[f.replace(/^\.\//, '').replace(/\.js$/, '') + '.js'];
+                  if (result === undefined) {
+                    throw new Error('Cannot find module ' + f);
+                  } else {
+                    return result;
+                  }
+                };
+                var exports = window.testing = {};
                 eval(out["dataparser.js"]);
 
                 var slurped = window.testing.jsonToWidget(json);
@@ -297,6 +316,15 @@ describe("generateDataModel", function() {
             try {
               (function(window) {
                 var json = new VzJson(JSON.stringify(input));
+                var require = function(f) {
+                  var result = out[f.replace(/^\.\//, '').replace(/\.js$/, '') + '.js'];
+                  if (result === undefined) {
+                    throw new Error('Cannot find module ' + f);
+                  } else {
+                    return result;
+                  }
+                };
+                var exports = window.testing = {};
                 eval(out["dataparser.js"]);
 
                 var slurped = window.testing.jsonToThingamabob(json);

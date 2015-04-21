@@ -4,23 +4,30 @@ var assert = chai.assert;
 
 var parseLibs = require('./util/require')('util/parse-libs');
 
-describe("parse-libs", function() {
-  it("should return a 1 element array with default lib path ending in 'tool/src', given null input", function() {
-    var libs = parseLibs();
-    assert.equal(libs.length, 1);
-    assert.match(libs[0], /\/src$/);
+describe('parse-libs', function() {
+  it('should always have a vizify lib', function() {
+    var libs;
+
+    libs = parseLibs();
+    assert.property(libs, 'vizify')
+    assert.match(libs.vizify, /\/src$/);
+
+    libs = parseLibs('');
+    assert.property(libs, 'vizify')
+    assert.match(libs.vizify, /\/src$/);
+
+    libs = parseLibs('foo=bar');
+    assert.property(libs, 'vizify')
+    assert.match(libs.vizify, /\/src$/);
+
+    libs = parseLibs('vizify=sham/wow');
+    assert.propertyVal(libs, 'vizify', 'sham/wow');
   });
 
-  it("should have a single path as the first element of the returned array, with default path second", function() {
-    var libs = parseLibs('foo/bar');
-    assert.equal(libs.length, 2);
-    assert.match(libs[0], /foo\/bar$/);
-  });
+  it('should allow multiple libs', function() {
+    var libs = parseLibs('a=/a/lib,b=/b/lib');
 
-  it("should split paths on colons", function() {
-    var libs = parseLibs('foo/bar:baz/bing');
-    assert.equal(libs.length, 3);
-    assert.match(libs[0], /foo\/bar$/);
-    assert.match(libs[1], /baz\/bing$/);
+    assert.propertyVal(libs, 'a', '/a/lib');
+    assert.propertyVal(libs, 'b', '/b/lib');
   });
 });
