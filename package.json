@@ -1,7 +1,7 @@
 {
   "name": "vizify-tool",
   "version": "2.2.3",
-  "description": "Command line tool for working with Vizify cards",
+  "description": "Command line tool for working with Vizify",
   "main": "lib/index.js",
   "scripts": {
     "build": "./script/build.sh",
@@ -16,10 +16,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@git.corp.yahoo.com:vizify/tool.git",
-    "revision": "2eda6b6abf7e8be06e2473817c7d9b420dd7d2f3"
+    "url": "git@git.corp.yahoo.com:vizify/tool.git"
   },
-  "author": "Patrick Stein <lpstein@yahoo-inc.com>",
+  "authors": [
+    "Patrick Stein <lpstein@yahoo-inc.com>",
+    "Jeff Cutler-Stamm <jeffcs@yahoo-inc.com>",
+    "Will Dalton <wdalton@yahoo-inc.com>",
+    "Dave Sklar <dfsklar@yahoo-inc.com>",
+    "Cedric Han <cedrich@yahoo-inc.com>"
+  ],
   "engines": {
     "node": "0.10.x"
   },
@@ -65,7 +70,7 @@
     "stylus": "^0.50.0",
     "sugar": "^1.4.1",
     "tmp": "0.0.24",
-    "virgil": "1.1.20",
+    "virgil": "^2.0.1-alpha",
     "vizify-javascript": "^2.2.0"
   },
   "devDependencies": {
