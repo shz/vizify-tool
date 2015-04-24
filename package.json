@@ -18,7 +18,8 @@
     "type": "git",
     "url": "git@git.corp.yahoo.com:vizify/tool.git"
   },
-  "authors": [
+  "author": "Various authors",
+  "contributors": [
     "Patrick Stein <lpstein@yahoo-inc.com>",
     "Jeff Cutler-Stamm <jeffcs@yahoo-inc.com>",
     "Will Dalton <wdalton@yahoo-inc.com>",
