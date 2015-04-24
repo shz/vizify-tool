@@ -161,7 +161,7 @@ export method paragraph (tutil: TextLayoutEngine, text: str, settings: Paragraph
   }
 
   # Calculate line metrics
-  mut maxWidth = 0
+  mut maxWidth = 0f
 
   let resultB: list<LineLayout> = []
 
