@@ -1,6 +1,6 @@
 {
   "name": "vizify-tool",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "description": "Command line tool for working with Vizify",
   "main": "lib/index.js",
   "scripts": {
