@@ -1,0 +1,5 @@
+Run a development server for the card in the current directory
+      --dir ROOT_DIR - Directory containing card.json. Defaults to .
+      --port PORT - Port to run on. Defaults to 3000
+      --libs LIB_PATH - Comma separated list of virgil lib locations, e.g.
+                        mylib=/my/lib,otherlib=other/lib
