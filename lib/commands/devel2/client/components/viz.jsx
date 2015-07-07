@@ -8,9 +8,6 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    console.log(this.props.viz);
-
-
     return (
       <div className="viz-component">
         <div className="container">
