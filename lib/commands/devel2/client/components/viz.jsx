@@ -1,7 +1,3 @@
-var PlayPause = require('./playpause')
-  , Scrubber = require('./scrubber')
-  ;
-
 module.exports = React.createClass({
   propTypes: {
     viz: React.PropTypes.object.isRequired
@@ -10,11 +6,7 @@ module.exports = React.createClass({
   render: function() {
     return (
       <div className="viz-component">
-        <div className="container">
-          <div ref="holder" />
-          <PlayPause viz={this.props.viz} />
-          <Scrubber viz={this.props.viz} />
-        </div>
+        <div ref="holder" className="container"></div>
       </div>
     );
   },

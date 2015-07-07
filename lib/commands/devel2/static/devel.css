@@ -108,3 +108,50 @@ body {
   z-index: 10;
   cursor: pointer;
 }
+.player-component {
+  display: inline-block;
+  position: relative;
+}
+.player-component .sized {
+  z-index: 2;
+  margin-bottom: 10px;
+  border: 1px solid #000;
+  position: relative;
+  overflow: hidden;
+  margin-left: -1px;
+  margin-top: -1px;
+}
+.player-component .sized .dragger {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background-color: rgba(128,0,128,0.4);
+}
+.player-component .size-diff {
+  z-index: 10;
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  border: 1px dashed #400090;
+  color: #400090;
+}
+.player-component .size-diff .height {
+  position: absolute;
+  top: 50%;
+  height: 20px;
+  width: 60px;
+  line-height: 20px;
+  margin-top: -10px;
+  right: -80px;
+}
+.player-component .size-diff .width {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  height: 20px;
+  line-height: 20px;
+  width: 80px;
+  margin-left: -40px;
+}

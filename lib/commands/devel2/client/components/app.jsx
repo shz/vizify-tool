@@ -1,6 +1,6 @@
 var vizify = require('vizify-javascript')
   , Bridge = require('../bridge')
-  , Viz = require('./viz')
+  , Player = require('./player')
   , CompileError = require('./compile_error')
   ;
 
@@ -14,11 +14,11 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var viz = null;
+    var player = null;
     if (this.state.viz) {
-      viz = <Viz viz={this.state.viz} />;
+      player = <Player viz={this.state.viz} />;
     } else {
-      viz = <h1>Loading</h1>;
+      player = <h1>Loading</h1>;
     }
 
     var error = null;
@@ -28,7 +28,7 @@ module.exports = React.createClass({
 
     return (
       <div className="app-component">
-        {viz}
+        {player}
         {error}
       </div>
     );
