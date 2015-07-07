@@ -6,13 +6,12 @@ module.exports = React.createClass({
   getInitialState: function() {
     return {
       ts: 0,
-      duration: 0,
-      playing: false
+      duration: 0
     };
   },
 
   render: function() {
-    var scale = 'scale(' + this.state.ts / this.state.duration + ', 1)';
+    var scale = 'scale(' + (this.state.ts / this.state.duration) + ', 1)';
     var innerStyle = {
       transform: scale,
       OTransform: scale,
@@ -33,7 +32,7 @@ module.exports = React.createClass({
     this.props.viz.on('frame', this.onFrame);
   },
   componentWillUnmount: function() {
-    this.props.viz.removeEventListener('frame', this.onFrame);
+    this.props.viz.removeListener('frame', this.onFrame);
   },
   onFrame: function(ts) {
     this.setState({ ts: ts, duration: this.props.viz.card.duration });

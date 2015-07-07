@@ -1,0 +1,113 @@
+ui-blue = #0078FF
+ui-blue-active = #003ABC
+ui-inactive = #E2E2E6
+
+red = #F80E5D
+orange = #FF8B12
+blue = #0078FF
+green = #00CD7A
+purple-light = #6D00F6
+purple-dark = #400090
+
+html
+  width 100%
+  height 100%
+  display table
+  font-family "Helvetica Neue", "Helvetica", "Arial", sans-serif
+
+body
+  width 100%
+  height 100%
+  display table-cell
+  vertical-align middle
+  text-align center
+
+.compile-error-component
+  pre
+    font-family "Consolas", "Monaco"
+    font-size 10pt
+    line-height 1.3
+    margin 0
+  .gutter, .context
+    display inline-block
+    vertical-align top
+  .gutter
+    margin-right 1em
+    padding-right 1em
+    border-right 1px solid #222
+
+  .context
+    .normal
+      color #222
+    .comment
+      font-style italic
+      color #AAA
+    .type
+      color blue
+    .string
+      color green
+    .keyword
+      color purple-light
+    .operator
+      color #777
+
+    .error
+      border-bottom 1px solid red
+
+  .filename
+    margin 0.5em auto
+  .message
+    margin 0.5em auto
+
+.playpause-component
+  transition background 0.2s
+  display inline-block
+  width 20px
+  height 20px
+  line-height 20px
+  text-align center
+  border-radius 2px
+  background-color ui-blue
+  color white
+  padding 4px
+  cursor pointer
+  user-select none
+  touch-callout none
+  -webkit-user-select none
+  -webkit-touch-callout none
+  -moz-user-select none
+  -ms-user-select none
+
+  &:active
+    transition none
+    background-color ui-blue-active
+
+.scrubber-component
+  opacity 0.4
+  display inline-block
+  background-color purple-dark
+  position relative
+  height 28px
+  vertical-align top
+  width calc(100% - 28px)
+  color rgba(white, 0.9)
+  line-height 28px
+  cursor pointer
+  background-image radial-gradient(400px at -10% 120px, blue 0%, transparent 100%)
+
+  .inner
+    box-sizing border-box
+    border-right 1px solid rgba(white, 0.5)
+    width 100%
+    height 100%
+    position absolute
+    top 0
+    left 0
+    background-color rgba(255, 255, 255, 0.3)
+    transform-origin left
+    z-index 1
+
+  .text
+    position relative
+    z-index 10
+    cursor pointer

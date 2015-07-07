@@ -1,0 +1,110 @@
+html {
+  width: 100%;
+  height: 100%;
+  display: table;
+  font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
+body {
+  width: 100%;
+  height: 100%;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+.compile-error-component pre {
+  font-family: "Consolas", "Monaco";
+  font-size: 10pt;
+  line-height: 1.3;
+  margin: 0;
+}
+.compile-error-component .gutter,
+.compile-error-component .context {
+  display: inline-block;
+  vertical-align: top;
+}
+.compile-error-component .gutter {
+  margin-right: 1em;
+  padding-right: 1em;
+  border-right: 1px solid #222;
+}
+.compile-error-component .context .normal {
+  color: #222;
+}
+.compile-error-component .context .comment {
+  font-style: italic;
+  color: #aaa;
+}
+.compile-error-component .context .type {
+  color: #0078ff;
+}
+.compile-error-component .context .string {
+  color: #00cd7a;
+}
+.compile-error-component .context .keyword {
+  color: #6d00f6;
+}
+.compile-error-component .context .operator {
+  color: #777;
+}
+.compile-error-component .context .error {
+  border-bottom: 1px solid #f80e5d;
+}
+.compile-error-component .filename {
+  margin: 0.5em auto;
+}
+.compile-error-component .message {
+  margin: 0.5em auto;
+}
+.playpause-component {
+  transition: background 0.2s;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  border-radius: 2px;
+  background-color: #0078ff;
+  color: #fff;
+  padding: 4px;
+  cursor: pointer;
+  user-select: none;
+  touch-callout: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.playpause-component:active {
+  transition: none;
+  background-color: #003abc;
+}
+.scrubber-component {
+  opacity: 0.4;
+  display: inline-block;
+  background-color: #400090;
+  position: relative;
+  height: 28px;
+  vertical-align: top;
+  width: calc(100% - 28px);
+  color: rgba(255,255,255,0.9);
+  line-height: 28px;
+  cursor: pointer;
+  background-image: radial-gradient(400px at -10% 120px, #0078ff 0%, transparent 100%);
+}
+.scrubber-component .inner {
+  box-sizing: border-box;
+  border-right: 1px solid rgba(255,255,255,0.5);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(255,255,255,0.3);
+  transform-origin: left;
+  z-index: 1;
+}
+.scrubber-component .text {
+  position: relative;
+  z-index: 10;
+  cursor: pointer;
+}

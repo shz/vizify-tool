@@ -1,35 +1,43 @@
 var vizify = require('vizify-javascript')
   , Bridge = require('../bridge')
   , Viz = require('./viz')
+  , CompileError = require('./compile_error')
   ;
 
 module.exports = React.createClass({
   getInitialState: function() {
     return {
       viz: null,
+      error: null,
       data: '{"status": "active"}'
     }
   },
 
   render: function() {
+    var viz = null;
     if (this.state.viz) {
-      return (
-        <div className="app-component">
-          <Viz viz={this.state.viz} />
-        </div>
-      );
+      viz = <Viz viz={this.state.viz} />;
     } else {
-      return (
-        <div className="app-component">
-          <h1>Loading</h1>
-        </div>
-      );
+      viz = <h1>Loading</h1>;
     }
+
+    var error = null;
+    if (this.state.error) {
+      error = <CompileError details={this.state.error} />;
+    }
+
+    return (
+      <div className="app-component">
+        {viz}
+        {error}
+      </div>
+    );
   },
 
   componentDidMount: function() {
     this.bridge = new Bridge();
     this.bridge.on('compile', this.onCompile);
+    this.bridge.on('error', this.onCompileError);
     this.bridge.send('watch');
     this.bridge.send('compile');
   },
@@ -53,11 +61,15 @@ module.exports = React.createClass({
     if (!this.state.viz) {
       var viz = new vizify.Viz(window.viz.main, 500, 60, 1, this.state.data);
       viz.load(function() {
-        this.setState({ viz: viz });
+        this.setState({ viz: viz, error: null });
       }.bind(this));
     } else {
+      this.setState({ error: null });
       this.reload();
     }
+  },
+  onCompileError: function(data) {
+    this.setState({ error: data });
   },
 
   reload: function() {

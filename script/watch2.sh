@@ -4,4 +4,7 @@
   --extension=.jsx \
   -t reactify \
   -o 'exorcist lib/commands/devel2/static/devel.js.map >lib/commands/devel2/static/devel.js && echo Built JS' \
-  -d
+  -d \
+  & \
+./node_modules/.bin/stylus -w lib/commands/devel2/client/style/index.styl \
+  -o lib/commands/devel2/static/devel.css
