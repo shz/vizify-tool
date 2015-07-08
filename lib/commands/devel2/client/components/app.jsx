@@ -11,17 +11,23 @@ module.exports = React.createClass({
       viz: null,
       error: null,
       data: null,
-      cardJSON: null
+      vizData: null
     }
   },
 
   render: function() {
     var player = null;
-    if (this.state.viz && this.state.cardJSON && this.state.data) {
+    if (this.canShowPlayer()) {
+      var dataSelector = null;
+      if (this.state.vizData.hasSampleData) {
+        dataSelector = <DataSelector choices={this.state.vizData.sampleData}
+                                     onChange={this.requestDataFile} />;
+      }
+
       player = <div>
-                 <h1>{this.state.cardJSON.name}</h1>
+                 <h1>{this.state.vizData.name} {this.state.vizData.version}</h1>
                  <Player viz={this.state.viz}/>
-                 <DataSelector choices={['active.json', 'landed.json']} onChange={this.requestDataFile} />
+                 {dataSelector}
                </div>;
     } else {
       player = <h1>Loading</h1>;
@@ -44,7 +50,7 @@ module.exports = React.createClass({
     this.bridge = new Bridge();
     this.bridge.on('compile', this.onCompile);
     this.bridge.on('error', this.onCompileError);
-    this.bridge.on('cardJSON', this.onUpdateCardJSON);
+    this.bridge.on('vizData', this.onUpdateVizData);
     this.bridge.on('dataFile', this.onDataFile);
   },
   componentWillUnmount: function() {
@@ -53,12 +59,15 @@ module.exports = React.createClass({
   },
 
   componentDidUpdate: function() {
-    if (this.state.data && this.state.cardJSON && !this.state.viz) {
-      var size = (this.state.cardJSON || {}).size || {};
-      var viz = new vizify.Viz(window.viz.main, size.width || 600, size.height || 450, 1, this.state.data);
+    if (this.state.vizData && !this.state.viz) {
+      var viz = new vizify.Viz(window.viz.main,
+        this.state.vizData.size.width,
+        this.state.vizData.size.height,
+        1,
+        this.state.data);
+
       viz.load(function() {
         this.setState({ viz: viz, error: null });
-        viz.resize(size.width || 600, size.height || 450, 1);
         viz.play();
       }.bind(this));
 
@@ -78,18 +87,23 @@ module.exports = React.createClass({
   onCompileError: function(data) {
     this.setState({ error: data });
   },
-  onUpdateCardJSON: function(data) {
+  onUpdateVizData: function(data) {
     data = data.data;
 
-    if (!this.state.data) {
-      this.requestDataFile('active.json');
+    if (!this.state.data && data.hasSampleData) {
+      this.requestDataFile(data.sampleData[0]);
     }
-    this.setState({ cardJSON: data });
+    this.setState({ vizData: data });
   },
   onDataFile: function(data) {
     this.setState({ data: data.data });
   },
 
+  canShowPlayer: function() {
+    return this.state.viz &&
+           this.state.vizData &&
+           (!this.state.vizData.hasSampleData || this.state.data);
+  },
   requestDataFile: function(name) {
     this.bridge.send('requestDataFile', {name: name});
   },

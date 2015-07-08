@@ -14,7 +14,7 @@ module.exports = React.createClass({
         </div>
         <div className="context">
           {this.props.details.highlighted.map(function(s) {
-            return <pre dangerouslySetInnerHTML={{__html: s}} />
+            return <pre dangerouslySetInnerHTML={{__html: s || '&nbsp;'}} />
           })}
         </div>
         <div className="message">{this.props.details.message}</div>
