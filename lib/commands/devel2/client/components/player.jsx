@@ -10,8 +10,8 @@ module.exports = React.createClass({
 
   getInitialState: function() {
     return {
-      width: 600,
-      height: 450,
+      width: this.props.viz.card.width,
+      height: this.props.viz.card.height,
       diffWidth: 0,
       diffHeight: 0,
       diffEnabled: false

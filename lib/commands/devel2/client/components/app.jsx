@@ -9,14 +9,18 @@ module.exports = React.createClass({
     return {
       viz: null,
       error: null,
-      data: '{"status": "active"}'
+      data: '{"status": "active"}',
+      cardJSON: null
     }
   },
 
   render: function() {
     var player = null;
-    if (this.state.viz) {
-      player = <Player viz={this.state.viz} />;
+    if (this.state.viz && this.state.cardJSON) {
+      player = <div>
+                 <h1>{this.state.cardJSON.name}</h1>
+                 <Player viz={this.state.viz}/>
+               </div>;
     } else {
       player = <h1>Loading</h1>;
     }
@@ -38,8 +42,7 @@ module.exports = React.createClass({
     this.bridge = new Bridge();
     this.bridge.on('compile', this.onCompile);
     this.bridge.on('error', this.onCompileError);
-    this.bridge.send('watch');
-    this.bridge.send('compile');
+    this.bridge.on('cardJSON', this.onUpdateCardJSON);
   },
   componentWillUnmount: function() {
     this.bridge.close();
@@ -59,9 +62,11 @@ module.exports = React.createClass({
     (function() { eval(data.code) }).call(window);
 
     if (!this.state.viz) {
-      var viz = new vizify.Viz(window.viz.main, 500, 60, 1, this.state.data);
+      var size = (this.state.cardJSON || {}).size || {};
+      var viz = new vizify.Viz(window.viz.main, size.width || 600, size.height || 450, 1, this.state.data);
       viz.load(function() {
         this.setState({ viz: viz, error: null });
+        viz.resize(size.width || 600, size.height || 450, 1);
       }.bind(this));
     } else {
       this.setState({ error: null });
@@ -70,6 +75,15 @@ module.exports = React.createClass({
   },
   onCompileError: function(data) {
     this.setState({ error: data });
+  },
+  onUpdateCardJSON: function(data) {
+    data = data.data;
+
+    if (!this.state.cardJSON && this.state.viz) {
+      var size = data.size || {};
+      this.state.viz.resize(size.width || 600, size.height || 450, 1);
+    }
+    this.setState({ cardJSON: data });
   },
 
   reload: function() {
