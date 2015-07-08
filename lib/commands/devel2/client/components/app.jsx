@@ -67,6 +67,7 @@ module.exports = React.createClass({
       viz.load(function() {
         this.setState({ viz: viz, error: null });
         viz.resize(size.width || 600, size.height || 450, 1);
+        viz.play();
       }.bind(this));
     } else {
       this.setState({ error: null });
