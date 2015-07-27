@@ -1,0 +1,183 @@
+html {
+  width: 100%;
+  height: 100%;
+  display: table;
+  font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
+body {
+  width: 100%;
+  height: 100%;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+.compile-error-component {
+  text-align: left;
+  display: inline-block;
+  margin: 20px;
+}
+.compile-error-component pre {
+  font-family: "Consolas", "Monaco";
+  font-size: 10pt;
+  line-height: 1.3;
+  margin: 0;
+}
+.compile-error-component .gutter,
+.compile-error-component .context {
+  display: inline-block;
+  vertical-align: top;
+}
+.compile-error-component .gutter {
+  margin-right: 1em;
+  padding-right: 1em;
+  border-right: 1px solid #222;
+}
+.compile-error-component .context .normal {
+  color: #222;
+}
+.compile-error-component .context .comment {
+  font-style: italic;
+  color: #aaa;
+}
+.compile-error-component .context .type {
+  color: #0078ff;
+}
+.compile-error-component .context .string {
+  color: #00cd7a;
+}
+.compile-error-component .context .keyword {
+  color: #6d00f6;
+}
+.compile-error-component .context .operator {
+  color: #777;
+}
+.compile-error-component .context .error {
+  border-bottom: 1px solid #f80e5d;
+}
+.compile-error-component .filename {
+  margin: 0.5em auto;
+}
+.compile-error-component .message {
+  margin: 0.5em auto;
+}
+.playpause-component {
+  transition: background 0.2s;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  border-radius: 2px;
+  background-color: #0078ff;
+  color: #fff;
+  padding: 4px;
+  cursor: pointer;
+  user-select: none;
+  touch-callout: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+.playpause-component:active {
+  transition: none;
+  background-color: #003abc;
+}
+.scrubber-component {
+  opacity: 0.4;
+  display: inline-block;
+  background-color: #400090;
+  position: relative;
+  height: 28px;
+  vertical-align: top;
+  width: calc(100% - 28px);
+  color: rgba(255,255,255,0.9);
+  line-height: 28px;
+  cursor: pointer;
+  background-image: radial-gradient(400px at -10% 120px, #0078ff 0%, transparent 100%);
+}
+.scrubber-component .inner {
+  box-sizing: border-box;
+  border-right: 1px solid rgba(255,255,255,0.5);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(255,255,255,0.3);
+  transform-origin: left;
+  z-index: 1;
+}
+.scrubber-component .text {
+  position: relative;
+  z-index: 10;
+  cursor: pointer;
+}
+.app-component h1 img {
+  display: inline-block;
+  vertical-align: middle;
+  width: 64px;
+  height: 64px;
+  margin: -40px 20px -40px 0;
+}
+.player-component {
+  display: inline-block;
+  position: relative;
+}
+.player-component .sized {
+  z-index: 2;
+  margin-bottom: 10px;
+  border: 1px solid #000;
+  position: relative;
+  overflow: hidden;
+  margin-left: -1px;
+  margin-top: -1px;
+}
+.player-component .sized .dragger {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background-color: rgba(128,0,128,0.4);
+}
+.player-component .size-diff {
+  z-index: 10;
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  border: 1px dashed #400090;
+  color: #400090;
+}
+.player-component .size-diff .height {
+  position: absolute;
+  top: 50%;
+  height: 20px;
+  width: 60px;
+  line-height: 20px;
+  margin-top: -10px;
+  right: -80px;
+}
+.player-component .size-diff .width {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  height: 20px;
+  line-height: 20px;
+  width: 80px;
+  margin-left: -40px;
+}
+.data-selector-component {
+  margin-top: 7px;
+}
+.data-selector-component h2 {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 12pt;
+  margin: 0;
+}
+.data-selector-component select {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 10px;
+}
