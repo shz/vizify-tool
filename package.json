@@ -65,13 +65,10 @@
     "mime": "1.2.11",
     "minimist": "^1.1.0",
     "mkdirp": "^0.5.0",
-    "mustache": "^0.8.2",
     "node-uuid": "^1.4.2",
-    "omnistor": "^2.0.0",
     "shelljs": "^0.3.0",
     "stylus": "^0.50.0",
     "sugar": "^1.4.1",
-    "tmp": "0.0.24",
     "virgil": "^2.0.1-alpha2",
     "vizify-javascript": "^2.2.0",
     "ws": "~0.7.2"
