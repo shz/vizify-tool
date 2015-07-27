@@ -7,53 +7,21 @@
     "build": "./script/build.sh",
     "test": "./node_modules/.bin/mocha --recursive --reporter spec",
     "cover": "./node_modules/.bin/istanbul cover --print detail --dir artifacts -- _mocha --recursive --reporter tap",
-    "screwdriver": "./node_modules/.bin/mocha --recursive --reporter xunit > ${TEST_RESULTS_DIR}/results.xml && ./node_modules/.bin/istanbul cover --dir ${COVERAGE_DIR} -- _mocha --recursive --reporter tap",
     "lint": "./script/lint.sh",
     "watch": "./script/watch.sh"
   },
   "bin": {
     "vz": "./bin/vz.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@git.corp.yahoo.com:vizify/tool.git"
-  },
   "author": "Various authors",
   "contributors": [
     "Patrick Stein <lpstein@yahoo-inc.com>",
-    "Jeff Cutler-Stamm <jeffcs@yahoo-inc.com>",
     "Will Dalton <wdalton@yahoo-inc.com>",
     "Dave Sklar <dfsklar@yahoo-inc.com>",
     "Cedric Han <cedrich@yahoo-inc.com>"
   ],
   "engines": {
     "node": "0.10.x"
-  },
-  "bugs": {
-    "url": "https://git.corp.yahoo.com/vizify/tool/issues"
-  },
-  "yhint": {
-    "excludes": ".*"
-  },
-  "yahoo": {
-    "bugzilla": {
-      "product": "TODO",
-      "component": "General"
-    },
-    "custodian": {
-      "email": "lpstein@yahoo-inc.com",
-      "url": "https://git.corp.yahoo.com/vizify/tool"
-    },
-    "screwdriver": {
-      "build_url": "http://jenkins.screwdriver.corp.yahoo.com:9999/jenkins/job/27334-v3-component/BUILD_CONTAINER=node10,label=DOCKER-LOW/22/",
-      "project_id": 27334,
-      "project_url": "http://screwdriver.corp.yahoo.com/projects/27334"
-    }
-  },
-  "aliasify": {
-    "aliases": {
-      "fs": "./lib/fsproxy/index.js"
-    }
   },
   "dependencies": {
     "acorn": "^0.9.0",
